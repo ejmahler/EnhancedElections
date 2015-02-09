@@ -6,7 +6,11 @@ public class District : MonoBehaviour {
 
     public string DistrictName { get; set; }
     public int Count { get; private set; }
+
     public Constituent.Party CurrentMajority  { get; private set; }
+	public int VotesRed { get; private set; }
+	public int VotesBlue { get; private set; }
+	public int VotesYellow { get; private set; }
 
     public Material BorderMaterial { get; private set; }
     public Material BackgroundMaterial { get; private set; }
@@ -29,9 +33,11 @@ public class District : MonoBehaviour {
         }
         set
         {
-            //update the border color
             if (value != _currentlySelected)
             {
+				_currentlySelected = value;
+
+				//update the border color
                 Color newColor = GetBorderColor(value);
                 Color oldColor = GetBorderColor(_currentlySelected);
                 LeanTween.value(gameObject, oldColor, newColor, 0.25f).setOnUpdateColor((currentColor) =>
@@ -39,7 +45,11 @@ public class District : MonoBehaviour {
                     BorderMaterial.SetColor("_Color", currentColor);
                 });
 
-                _currentlySelected = value;
+				//tell our constituents to update their borders
+				foreach(var c in Constituents)
+				{
+					c.UpdateBorders();
+				}
             }
         }
     }
@@ -77,8 +87,7 @@ public class District : MonoBehaviour {
     public void UpdateMajority()
     {
         //get all the current consistuents
-        var constituents = gameController.GetComponentsInChildren<Constituent>()
-            .Where((obj) => { return obj.district == this && obj.party != Constituent.Party.None; });
+		var constituents = VotingConstituents;
 
         Count = constituents.Count();
 
@@ -92,14 +101,15 @@ public class District : MonoBehaviour {
         }
 
         Constituent.Party majority;
-        int blueVotes = 0, redVotes = 0;
-        voteCounts.TryGetValue(Constituent.Party.Blue, out blueVotes);
-        voteCounts.TryGetValue(Constituent.Party.Red, out redVotes);
-        if (blueVotes > redVotes)
+		int votesBlue = 0, votesRed = 0, votesYellow = 0;
+		voteCounts.TryGetValue(Constituent.Party.Blue, out votesBlue);
+		voteCounts.TryGetValue(Constituent.Party.Red, out votesRed);
+		voteCounts.TryGetValue(Constituent.Party.Yellow, out votesYellow);
+		if (votesBlue > votesRed)
         {
             majority = Constituent.Party.Blue;
         }
-        else if (blueVotes < redVotes)
+		else if (votesBlue < votesRed)
         {
             majority = Constituent.Party.Red;
         }
@@ -107,6 +117,9 @@ public class District : MonoBehaviour {
         {
             majority = Constituent.Party.None;
         }
+		VotesBlue = votesBlue;
+		VotesRed = votesRed;
+		VotesYellow = votesYellow;
 
         //update the background color
         if (majority != CurrentMajority)

@@ -393,7 +393,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ae16dd1563297e4b9589ed9af16fb1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  party: 0
+  _partyRedMaterial: {fileID: 2100000, guid: 76b8725b8a8da2d488a5c56cdb4146b2, type: 2}
+  _partyBlueMaterial: {fileID: 2100000, guid: c77050fa7efaeb44e994d89e6d4254f0, type: 2}
+  _partyYellowMaterial: {fileID: 2100000, guid: fd8355a6afd93c944a6a58d29f361cf4,
+    type: 2}
   neighborTop: {fileID: 0}
   neighborBottom: {fileID: 0}
   neighborLeft: {fileID: 0}

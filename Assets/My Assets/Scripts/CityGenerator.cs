@@ -27,7 +27,7 @@ public class CityGenerator : MonoBehaviour {
 
     private int minDistrictSize, maxDistrictSize;
 
-	void Awake () {
+	void Start () {
         float baseX = -width / 2.0f + 0.5f;
         float baseY = -height / 2.0f + 0.5f;
 
@@ -75,7 +75,7 @@ public class CityGenerator : MonoBehaviour {
         foreach (var partition in partitionResults)
         {
             var components = Utils.ConnectedComponents(partition, (c) => {
-                return c.Neighbors.Where((n) => { return n != null && c.district == n.district; }).ToList();
+                return c.Neighbors.Where((n) => { return n != null && c.district == n.district; });
             });
 
             //if the component count is more than 1, we have some disconnected pieces
@@ -103,6 +103,10 @@ public class CityGenerator : MonoBehaviour {
         {
             d.UpdateMajority();
         }
+
+		foreach (Constituent c in Constituents) {
+			c.UpdateBorders();
+		}
 
         int averageDistrictSize = Constituents.Where((c) => { return c.party != Constituent.Party.None; }).Count() / numDistricts;
         minDistrictSize = (int)(averageDistrictSize * 0.666f);
@@ -181,19 +185,19 @@ public class CityGenerator : MonoBehaviour {
         axis = Quaternion.AngleAxis(randomAngle, Vector3.forward) * axis;
 
         //project every point onto that axis
-        SortedList<float, Constituent> pointProjection = new SortedList<float, Constituent>(new DuplicateKeyComparer<float>());
-
+        List<float> pointProjection = new List<float>();
         foreach (var c in populatedConstituents)
         {
-            pointProjection.Add(Vector3.Dot(axis, c.transform.position), c);
+            pointProjection.Add(Vector3.Dot(axis, c.transform.position));
         }
+		pointProjection.Sort ();
 
         //choose a pivot point based on numPartitions
         int smallerPartition = numPartitions / 2;
         float partitionRatio = ((float)smallerPartition) / numPartitions;
         int pivotIndex = (int)(partitionRatio * pointProjection.Count);
 
-        float pivot = pointProjection.Keys[pivotIndex];
+        float pivot = pointProjection[pivotIndex];
 
         //sort every constituent (even blank ones) below that pivot into one partition, above into another
         List<Constituent> belowPivot = new List<Constituent>();
@@ -242,7 +246,7 @@ public class CityGenerator : MonoBehaviour {
         //get the connected components for the old district. if there's more than one, return false
         var oldDistrictComponents = Utils.ConnectedComponents(oldDistrictConstituents, (c) =>
         {
-            return c.Neighbors.Where((n) => { return oldDistrictConstituents.Contains(n); }).ToList();
+            return c.Neighbors.Where((n) => { return oldDistrictConstituents.Contains(n); });
         });
 
         if (oldDistrictComponents.Count > 1)
@@ -253,7 +257,7 @@ public class CityGenerator : MonoBehaviour {
         //if there's only one, do the same for the new district. if there's more than one, return false
         var newDistrictComponents = Utils.ConnectedComponents(newDistrictConstituents, (c) =>
         {
-            return c.Neighbors.Where((n) => { return newDistrictConstituents.Contains(n); }).ToList();
+            return c.Neighbors.Where((n) => { return newDistrictConstituents.Contains(n); });
         });
 
         if (newDistrictComponents.Count > 1)

@@ -35,11 +35,11 @@ public class Utils : MonoBehaviour {
     }
 
 
-    public static List<List<T>> ConnectedComponents<T>(IEnumerable<T> items, System.Func<T, List<T>> neighborFunc)
+	public static List<HashSet<T>> ConnectedComponents<T>(IEnumerable<T> items, System.Func<T, IEnumerable<T>> neighborFunc)
     {
         HashSet<T> remainingSet = new HashSet<T>(items);
 
-        List<List<T>> result = new List<List<T>>();
+		List<HashSet<T>> result = new List<HashSet<T>>();
 
         while (remainingSet.Count > 0)
         {
@@ -63,7 +63,7 @@ public class Utils : MonoBehaviour {
                 }
             }
 
-            result.Add(closedSet.ToList());
+            result.Add(closedSet);
 
             foreach (T item in closedSet)
             {

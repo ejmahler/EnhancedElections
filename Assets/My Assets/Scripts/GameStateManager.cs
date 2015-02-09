@@ -39,6 +39,13 @@ public class GameStateManager : MonoBehaviour {
 
                 oldDistrict.UpdateMajority();
                 CurrentlySelectedDistrict.UpdateMajority();
+
+				//update the borders of this constituent and its 4 neghbors
+				c.UpdateBorders();
+				foreach(var n in c.Neighbors)
+				{
+					n.UpdateBorders();
+				}
             }
         }
     }

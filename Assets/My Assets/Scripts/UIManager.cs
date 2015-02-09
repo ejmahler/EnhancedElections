@@ -31,11 +31,11 @@ public class UIManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         currentDistrictTextbox.text = DisplayNumber(gameStateManager.CurrentlySelectedDistrict.name) + " District";
-        constituentCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.VotingConstituents.Count().ToString();
+        constituentCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.Count.ToString();
 
-        redCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.Constituents.Where((c) => { return c.party == Constituent.Party.Red; }).Count().ToString();
-        blueCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.Constituents.Where((c) => { return c.party == Constituent.Party.Blue; }).Count().ToString();
-        otherCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.Constituents.Where((c) => { return c.party == Constituent.Party.Yellow; }).Count().ToString();
+		redCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.VotesRed.ToString();
+		blueCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.VotesBlue.ToString();
+		otherCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.VotesYellow.ToString();
 
         redDistrictTextbox.text = cityGenerator.Districts.Where((c) => { return c.CurrentMajority == Constituent.Party.Red; }).Count().ToString();
         blueDistrictTextbox.text = cityGenerator.Districts.Where((c) => { return c.CurrentMajority == Constituent.Party.Blue; }).Count().ToString();
