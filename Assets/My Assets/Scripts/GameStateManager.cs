@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Collections;
+using System.Linq;
 
 [RequireComponent(typeof(CityGenerator))]
 public class GameStateManager : MonoBehaviour {
@@ -42,7 +42,7 @@ public class GameStateManager : MonoBehaviour {
 
 				//update the borders of this constituent and its 4 neghbors
 				c.UpdateBorders();
-				foreach(var n in c.Neighbors)
+				foreach(var n in c.Neighbors.Where((n) => { return n != null;}))
 				{
 					n.UpdateBorders();
 				}
