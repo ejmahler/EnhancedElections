@@ -101,7 +101,7 @@ public class CityGenerator : MonoBehaviour {
 
         foreach (District d in Districts)
         {
-            d.UpdateMajority();
+			d.UpdateMemberData();
         }
 
 		foreach (Constituent c in Constituents) {
@@ -225,67 +225,31 @@ public class CityGenerator : MonoBehaviour {
 
     public bool IsValidMove(Constituent constituent, District newDistrict)
     {
-        //make sure the size of the old district is within constraints
-        HashSet<Constituent> oldDistrictConstituents = new HashSet<Constituent>(constituent.district.Constituents);
-        oldDistrictConstituents.Remove(constituent);
-
-        if (oldDistrictConstituents.Where((c) => { return c.party != Constituent.Party.None; }).Count() < minDistrictSize)
+        //make sure the size of the old district will be within size constraints
+		if (constituent.district.Count - 1 < minDistrictSize)
         {
             return false;
         }
 
-        //make sure the size of the new district is within constraints
-        HashSet<Constituent> newDistrictConstituents = new HashSet<Constituent>(newDistrict.Constituents);
-        newDistrictConstituents.Add(constituent);
-
-        if (newDistrictConstituents.Where((c) => { return c.party != Constituent.Party.None; }).Count() > maxDistrictSize)
+        //make sure the size of the new district will be within constraints
+		if (constituent.district.Count + 1 > maxDistrictSize)
         {
             return false;
         }
 
-        //get the connected components for the old district. if there's more than one, return false
-        var oldDistrictComponents = Utils.ConnectedComponents(oldDistrictConstituents, (c) =>
-        {
-            return c.Neighbors.Where((n) => { return oldDistrictConstituents.Contains(n); });
-        });
-
-        if (oldDistrictComponents.Count > 1)
+        //check if this constituent is a cut vertex for the old district. if it is, return false
+        if (constituent.district.ArticulationPoints.Contains(constituent))
         {
             return false;
         }
 
-        //if there's only one, do the same for the new district. if there's more than one, return false
-        var newDistrictComponents = Utils.ConnectedComponents(newDistrictConstituents, (c) =>
-        {
-            return c.Neighbors.Where((n) => { return newDistrictConstituents.Contains(n); });
-        });
-
-        if (newDistrictComponents.Count > 1)
-        {
+        //verify that this constituent is actually adjacent to the new district
+		if(!newDistrict.NeighborConstituents.Contains(constituent))
+		{
             return false;
         }
 
         //return true
         return true;
-    }
-
-
-
-
-
-
-
-    //create our own comparator so that the point projection in PartitionConstituents can have identical keys
-    private class DuplicateKeyComparer<TKey>: IComparer<TKey> where TKey : System.IComparable
-    {
-        public int Compare(TKey x, TKey y)
-        {
-            int result = x.CompareTo(y);
-
-            if (result == 0)
-                return 1;   // Handle equality as beeing greater
-            else
-                return result;
-        }
     }
 }

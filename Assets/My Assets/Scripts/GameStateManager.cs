@@ -37,8 +37,8 @@ public class GameStateManager : MonoBehaviour {
                 var oldDistrict = c.district;
                 c.district = CurrentlySelectedDistrict;
 
-                oldDistrict.UpdateMajority();
-                CurrentlySelectedDistrict.UpdateMajority();
+				oldDistrict.UpdateMemberData();
+				CurrentlySelectedDistrict.UpdateMemberData();
 
 				//update the borders of this constituent and its 4 neghbors
 				c.UpdateBorders();

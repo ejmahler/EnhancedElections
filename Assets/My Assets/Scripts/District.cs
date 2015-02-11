@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class District : MonoBehaviour {
 
-    public string DistrictName { get; set; }
     public int Count { get; private set; }
 
     public Constituent.Party CurrentMajority  { get; private set; }
@@ -14,6 +13,12 @@ public class District : MonoBehaviour {
 
     public Material BorderMaterial { get; private set; }
     public Material BackgroundMaterial { get; private set; }
+
+	//set of constituents that would split this vertex in two if removed
+	public HashSet<Constituent> ArticulationPoints { get; private set; }
+
+	//set of consistituents that are adjacent, but not members of, this district
+	public HashSet<Constituent> NeighborConstituents { get; private set; }
 
     [SerializeField] private Color selectedBorderColor;
     [SerializeField] private Color normalBorderColor;
@@ -84,15 +89,25 @@ public class District : MonoBehaviour {
         CurrentMajority = Constituent.Party.None;
     }
 
-    public void UpdateMajority()
+    public void UpdateMemberData()
     {
-        //get all the current consistuents
-		var constituents = VotingConstituents;
+		Count = VotingConstituents.Count ();
 
-        Count = constituents.Count();
+		HashSet<Constituent> members = new HashSet<Constituent> (Constituents);
+
+		//update the set of articulation points
+		ArticulationPoints = Utils.FindArticulationPoints<Constituent>(members.First(), (c) =>
+		{
+			return c.Neighbors.Where ((n) => { return members.Contains (n); });
+		});
+
+		//update the set of neighbors - find all constituents that share a n edge with a member of this district
+		NeighborConstituents = new HashSet<Constituent>(members.SelectMany ((member) => { 
+			return member.Neighbors.Where((neighbor) => { return neighbor != null && neighbor.district != this; });
+		}));
 
         //filter the consistuents by the ones in this district and then group them by party
-        var partyGrouping = constituents.GroupBy((obj) => { return obj.party; });
+		var partyGrouping = members.GroupBy((obj) => { return obj.party; });
 
         Dictionary<Constituent.Party, int> voteCounts = new Dictionary<Constituent.Party, int>();
         foreach (var group in partyGrouping)
