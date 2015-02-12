@@ -11,8 +11,9 @@ public class District : MonoBehaviour {
 	public int VotesBlue { get; private set; }
 	public int VotesYellow { get; private set; }
 
-    public Material BorderMaterial { get; private set; }
-    public Material BackgroundMaterial { get; private set; }
+	public Material ValidBorderMaterial { get; private set; }
+	public Material InvalidBorderMaterial { get; private set; }
+	public Material BackgroundMaterial { get; private set; }
 
 	//set of constituents that would split this vertex in two if removed
 	public HashSet<Constituent> ArticulationPoints { get; private set; }
@@ -21,9 +22,10 @@ public class District : MonoBehaviour {
 	public HashSet<Constituent> NeighborConstituents { get; private set; }
 
     [SerializeField] private Color selectedBorderColor;
-    [SerializeField] private Color normalBorderColor;
-
-    [SerializeField] private Color redBackgroundColor;
+	[SerializeField] private Color normalBorderColor;
+	[SerializeField] private Color invalidBorderColor;
+	
+	[SerializeField] private Color redBackgroundColor;
     [SerializeField] private Color blueBackgroundColor;
     [SerializeField] private Color evenBackgroundColor;
 
@@ -43,18 +45,19 @@ public class District : MonoBehaviour {
 				_currentlySelected = value;
 
 				//update the border color
-                Color newColor = GetBorderColor(value);
-                Color oldColor = GetBorderColor(_currentlySelected);
-                LeanTween.value(gameObject, oldColor, newColor, 0.25f).setOnUpdateColor((currentColor) =>
+                Color newValidColor = GetValidBorderColor(value);
+                Color oldValidColor = GetValidBorderColor(_currentlySelected);
+                LeanTween.value(gameObject, oldValidColor, newValidColor, 0.25f).setOnUpdateColor((currentColor) =>
                 {
-                    BorderMaterial.SetColor("_Color", currentColor);
+                    ValidBorderMaterial.SetColor("_Color", currentColor);
                 });
 
-				//tell our constituents to update their borders
-				foreach(var c in Constituents)
-				{
-					c.UpdateBorders();
-				}
+				Color newInvalidColor = GetInvalidBorderColor(value);
+				Color oldInvalidColor = GetInvalidBorderColor(_currentlySelected);
+				LeanTween.value(gameObject, oldInvalidColor, newInvalidColor, 0.25f).setOnUpdateColor((currentColor) =>
+				                                                                        {
+					InvalidBorderMaterial.SetColor("_Color", currentColor);
+				});
             }
         }
     }
@@ -81,12 +84,14 @@ public class District : MonoBehaviour {
 
         //be sure to copy the materials rather than just using them directly - that way we can mess with the colors without screwing up other districts 
         BackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
-        BorderMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Border"));
-
-        BackgroundMaterial.SetColor("_Color", evenBackgroundColor);
-        BorderMaterial.SetColor("_Color", normalBorderColor);
-
-        CurrentMajority = Constituent.Party.None;
+		ValidBorderMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Border"));
+		InvalidBorderMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Border"));
+		
+		BackgroundMaterial.SetColor("_Color", evenBackgroundColor);
+		ValidBorderMaterial.SetColor("_Color", normalBorderColor);
+		InvalidBorderMaterial.SetColor("_Color", normalBorderColor);
+		
+		CurrentMajority = Constituent.Party.None;
     }
 
     public void UpdateMemberData()
@@ -165,15 +170,27 @@ public class District : MonoBehaviour {
         }
     }
 
-    private Color GetBorderColor(bool selected)
-    {
-        if (selected)
-        {
-            return selectedBorderColor;
-        }
-        else
-        {
-            return normalBorderColor;
-        }
-    }
+	private Color GetValidBorderColor(bool selected)
+	{
+		if (selected)
+		{
+			return selectedBorderColor;
+		}
+		else
+		{
+			return normalBorderColor;
+		}
+	}
+
+	private Color GetInvalidBorderColor(bool selected)
+	{
+		if (selected)
+		{
+			return invalidBorderColor;
+		}
+		else
+		{
+			return normalBorderColor;
+		}
+	}
 }

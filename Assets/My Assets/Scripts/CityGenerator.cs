@@ -232,7 +232,7 @@ public class CityGenerator : MonoBehaviour {
         }
 
         //make sure the size of the new district will be within constraints
-		if (constituent.district.Count + 1 > maxDistrictSize)
+		if (newDistrict.Count + 1 > maxDistrictSize)
         {
             return false;
         }

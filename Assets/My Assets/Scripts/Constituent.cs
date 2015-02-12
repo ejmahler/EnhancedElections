@@ -5,6 +5,48 @@ public class Constituent : MonoBehaviour {
 
     public enum Party { Red, Blue, Yellow, None }
 
+
+	[SerializeField] private Material _partyRedMaterial;
+	[SerializeField] private Material _partyBlueMaterial;
+	[SerializeField] private Material _partyYellowMaterial;
+	
+	public Material validBorder, invalidBorder;
+
+	private GameStateManager gameStateManager;
+
+    private Renderer _backgroundMesh, _sphereMesh;
+
+    private Renderer _borderTop, _borderBottom, _borderLeft, _borderRight;
+    private Renderer[] NeighborBorders {
+				get {
+						return new Renderer[] { _borderTop, _borderBottom, _borderLeft, _borderRight };
+				}
+		}
+
+    private District _district;
+    public District district
+    {
+        get { return _district; }
+        set
+        {
+            _district = value;
+            _backgroundMesh.material = value.BackgroundMaterial;
+			validBorder = value.ValidBorderMaterial;
+			invalidBorder = value.InvalidBorderMaterial;
+
+			UpdateBorders();
+        }
+    }
+
+    public Constituent neighborTop, neighborBottom, neighborLeft, neighborRight;
+    public Constituent[] Neighbors
+    {
+        get
+        {
+            return new Constituent[] { neighborTop, neighborBottom, neighborLeft, neighborRight };
+        }
+    }
+
 	private Party _party;
 	public Party party {
 		get { return _party; }
@@ -22,45 +64,6 @@ public class Constituent : MonoBehaviour {
 		}
 	}
 
-    private Renderer _backgroundMesh, _sphereMesh;
-
-    private Renderer _borderTop, _borderBottom, _borderLeft, _borderRight;
-    private Renderer[] NeighborBorders
-    {
-        get
-        {
-            return new Renderer[] { _borderTop, _borderBottom, _borderLeft, _borderRight };
-        }
-    }
-
-	[SerializeField] private Material _partyRedMaterial;
-	[SerializeField] private Material _partyBlueMaterial;
-	[SerializeField] private Material _partyYellowMaterial;
-
-    private District _district;
-    public District district
-    {
-        get { return _district; }
-        set
-        {
-            _district = value;
-            _backgroundMesh.material = value.BackgroundMaterial;
-            foreach (var border in NeighborBorders)
-            {
-                border.material = value.BorderMaterial;
-            }
-        }
-    }
-
-    public Constituent neighborTop, neighborBottom, neighborLeft, neighborRight;
-    public Constituent[] Neighbors
-    {
-        get
-        {
-            return new Constituent[] { neighborTop, neighborBottom, neighborLeft, neighborRight };
-        }
-    }
-
 	void Awake () {
         _backgroundMesh = transform.Find("Background").GetComponent<MeshRenderer>();
         _sphereMesh = transform.Find("Sphere").GetComponent<MeshRenderer>();
@@ -69,6 +72,8 @@ public class Constituent : MonoBehaviour {
         _borderBottom = transform.Find("Border Bottom").GetComponent<MeshRenderer>();
         _borderLeft = transform.Find("Border Left").GetComponent<MeshRenderer>();
         _borderRight = transform.Find("Border Right").GetComponent<MeshRenderer>();
+
+		gameStateManager = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameStateManager> ();
 	}
 
 	public void UpdateBorders()
@@ -79,6 +84,15 @@ public class Constituent : MonoBehaviour {
 		for (int i = 0; i < 4; i++)
 		{
 			borders[i].gameObject.SetActive(neighbors[i] != null && neighbors[i].district != this.district);
+
+			if(gameStateManager.CurrentValidMoves == null || gameStateManager.CurrentValidMoves.Contains(neighbors[i]))
+			{
+				borders[i].renderer.material = validBorder;
+			}
+			else
+			{
+				borders[i].renderer.material = invalidBorder;
+			}
 		}
 		
 		//if our district is selected, move our borders forward in the z direction so that they appear on top of unselected
