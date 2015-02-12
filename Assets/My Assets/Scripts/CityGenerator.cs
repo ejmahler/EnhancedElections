@@ -225,17 +225,20 @@ public class CityGenerator : MonoBehaviour {
 
     public bool IsValidMove(Constituent constituent, District newDistrict)
     {
-        //make sure the size of the old district will be within size constraints
-		if (constituent.district.Count - 1 < minDistrictSize)
-        {
-            return false;
-        }
+		if (constituent.party != Constituent.Party.None)
+		{
+			//make sure the size of the old district will be within size constraints
+			if (constituent.district.Count - 1 < minDistrictSize)
+			{
+				return false;
+			}
 
-        //make sure the size of the new district will be within constraints
-		if (newDistrict.Count + 1 > maxDistrictSize)
-        {
-            return false;
-        }
+			//make sure the size of the new district will be within constraints
+			if (newDistrict.Count + 1 > maxDistrictSize)
+			{
+				return false;
+			}
+		}
 
         //check if this constituent is a cut vertex for the old district. if it is, return false
         if (constituent.district.ArticulationPoints.Contains(constituent))
