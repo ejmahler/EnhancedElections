@@ -31,14 +31,14 @@ public class UIManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         currentDistrictTextbox.text = DisplayNumber(gameStateManager.CurrentlySelectedDistrict.name) + " District";
-        constituentCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.Count.ToString();
+        constituentCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.VotingMemberCount.ToString();
 
 		redCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.VotesRed.ToString();
 		blueCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.VotesBlue.ToString();
 		otherCountTextbox.text = gameStateManager.CurrentlySelectedDistrict.VotesYellow.ToString();
 
-        redDistrictTextbox.text = cityGenerator.Districts.Where((c) => { return c.CurrentMajority == Constituent.Party.Red; }).Count().ToString();
-        blueDistrictTextbox.text = cityGenerator.Districts.Where((c) => { return c.CurrentMajority == Constituent.Party.Blue; }).Count().ToString();
+        redDistrictTextbox.text = cityGenerator.Districts.Count((c) => { return c.CurrentMajority == Constituent.Party.Red; }).ToString();
+        blueDistrictTextbox.text = cityGenerator.Districts.Count((c) => { return c.CurrentMajority == Constituent.Party.Blue; }).ToString();
 	}
 
     private string DisplayNumber(string number)

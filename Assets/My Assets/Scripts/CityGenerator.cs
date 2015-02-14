@@ -108,7 +108,7 @@ public class CityGenerator : MonoBehaviour {
 			c.UpdateBorders();
 		}
 
-        int averageDistrictSize = Constituents.Where((c) => { return c.party != Constituent.Party.None; }).Count() / numDistricts;
+        int averageDistrictSize = Constituents.Count((c) => { return c.party != Constituent.Party.None; }) / numDistricts;
         minDistrictSize = (int)(averageDistrictSize * 0.666f);
         maxDistrictSize = averageDistrictSize + (averageDistrictSize - minDistrictSize);
 	}
@@ -228,13 +228,13 @@ public class CityGenerator : MonoBehaviour {
 		if (constituent.party != Constituent.Party.None)
 		{
 			//make sure the size of the old district will be within size constraints
-			if (constituent.district.Count - 1 < minDistrictSize)
+			if (constituent.district.VotingMemberCount - 1 < minDistrictSize)
 			{
 				return false;
 			}
 
 			//make sure the size of the new district will be within constraints
-			if (newDistrict.Count + 1 > maxDistrictSize)
+            if (newDistrict.VotingMemberCount + 1 > maxDistrictSize)
 			{
 				return false;
 			}

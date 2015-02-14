@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class District : MonoBehaviour {
 
-    public int Count { get; private set; }
+    public int MemberCount { get; private set; }
+    public int VotingMemberCount { get; private set; }
 
     public Constituent.Party CurrentMajority  { get; private set; }
 	public int VotesRed { get; private set; }
@@ -29,7 +30,7 @@ public class District : MonoBehaviour {
     [SerializeField] private Color blueBackgroundColor;
     [SerializeField] private Color evenBackgroundColor;
 
-    private GameObject gameController;
+    private CityGenerator cityGenerator;
 
     private bool _currentlySelected;
     public bool CurrentlySelected
@@ -66,7 +67,7 @@ public class District : MonoBehaviour {
     {
         get
         {
-            return gameController.GetComponentsInChildren<Constituent>().Where((obj) => { return obj.district == this; });
+            return cityGenerator.Constituents.Where((obj) => { return obj.district == this; });
         }
     }
 
@@ -74,13 +75,13 @@ public class District : MonoBehaviour {
     {
         get
         {
-            return gameController.GetComponentsInChildren<Constituent>().Where((obj) => { return obj.district == this && obj.party != Constituent.Party.None; });
+            return cityGenerator.Constituents.Where((obj) => { return obj.district == this && obj.party != Constituent.Party.None; });
         }
     }
 
     void Awake()
     {
-        gameController = GameObject.FindGameObjectWithTag("GameController");
+        cityGenerator = GameObject.FindGameObjectWithTag("GameController").GetComponent<CityGenerator>();
 
         //be sure to copy the materials rather than just using them directly - that way we can mess with the colors without screwing up other districts 
         BackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
@@ -96,9 +97,9 @@ public class District : MonoBehaviour {
 
     public void UpdateMemberData()
     {
-		Count = VotingConstituents.Count ();
-
 		HashSet<Constituent> members = new HashSet<Constituent> (Constituents);
+        MemberCount = members.Count();
+        VotingMemberCount = VotingConstituents.Count();
 
 		//update the set of articulation points
 		ArticulationPoints = Utils.FindArticulationPoints<Constituent>(members.First(), (c) =>
