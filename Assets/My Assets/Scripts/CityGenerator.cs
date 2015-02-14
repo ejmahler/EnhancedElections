@@ -27,7 +27,7 @@ public class CityGenerator : MonoBehaviour {
 
     private int minDistrictSize, maxDistrictSize;
 
-	void Start () {
+	void Awake () {
         float baseX = -width / 2.0f + 0.5f;
         float baseY = -height / 2.0f + 0.5f;
 

@@ -44,7 +44,7 @@ MonoBehaviour:
   invalidBorderColor: {r: .683823526, g: 0, b: 0, a: 1}
   redBackgroundColor: {r: 1, g: .691176474, b: .691176474, a: 1}
   blueBackgroundColor: {r: .588235259, g: .795537591, b: 1, a: 1}
-  evenBackgroundColor: {r: 1, g: 1, b: 1, a: 1}
+  evenBackgroundColor: {r: .877207339, g: .882352948, b: .733131468, a: 1}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

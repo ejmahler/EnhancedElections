@@ -12,7 +12,7 @@ public class Constituent : MonoBehaviour {
 	
 	public Material validBorder, invalidBorder;
 
-	private GameStateManager gameStateManager;
+	private TurnManager turnManager;
 
     private Renderer _backgroundMesh, _sphereMesh;
 
@@ -73,7 +73,7 @@ public class Constituent : MonoBehaviour {
         _borderLeft = transform.Find("Border Left").GetComponent<MeshRenderer>();
         _borderRight = transform.Find("Border Right").GetComponent<MeshRenderer>();
 
-		gameStateManager = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameStateManager> ();
+        turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
 	}
 
 	public void UpdateBorders()
@@ -85,7 +85,7 @@ public class Constituent : MonoBehaviour {
 		{
 			borders[i].gameObject.SetActive(neighbors[i] != null && neighbors[i].district != this.district);
 
-			if(gameStateManager.CurrentValidMoves == null || gameStateManager.CurrentValidMoves.Contains(neighbors[i]))
+            if (turnManager.CurrentValidMoves == null || turnManager.CurrentValidMoves.Contains(neighbors[i]))
 			{
 				borders[i].renderer.material = validBorder;
 			}
