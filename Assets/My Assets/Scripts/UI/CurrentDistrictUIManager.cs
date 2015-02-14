@@ -12,11 +12,11 @@ public class CurrentDistrictUIManager : MonoBehaviour {
     [SerializeField] private Text blueCountTextbox;
     [SerializeField] private Text otherCountTextbox;
 
-    private TurnManager turnManager;
+    private MoveManager turnManager;
 
 	// Use this for initialization
 	void Start () {
-        turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
+        turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MoveManager>();
 	}
 	
 	// Update is called once per frame

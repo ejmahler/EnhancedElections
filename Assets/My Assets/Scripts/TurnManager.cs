@@ -1,128 +1,67 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
-[RequireComponent(typeof(CityGenerator))]
+[RequireComponent(typeof(MoveManager))]
 public class TurnManager : MonoBehaviour {
 
-    public District CurrentlySelectedDistrict { get; private set; }
-    public HashSet<Constituent> CurrentValidMoves { get; private set; }
+    private MoveManager moveManager;
 
-    private Stack<Move> undoStack;
-
-    private CityGenerator cityGenerator;
-
-    // Use this for initialization
-    void Start()
+    public int MovesThisTurn
     {
-        cityGenerator = GetComponent<CityGenerator>();
-        SelectDistrict(cityGenerator.Districts[0]);
-
-        undoStack = new Stack<Move>();
-    }
-
-    public void ConstituentClicked(Constituent c)
-    {
-        SelectDistrict(c.district);
-    }
-
-    public void ConstituentDragged(Constituent c)
-    {
-        if (CurrentlySelectedDistrict != null && cityGenerator.IsValidMove(c, CurrentlySelectedDistrict))
+        get
         {
-            undoStack.Push(new Move(c, c.district, CurrentlySelectedDistrict));
-            MoveConstituent(c, CurrentlySelectedDistrict);
+            return moveManager.MoveHistory.Keys.Count((entry) => { return entry.party != Constituent.Party.None; });
         }
     }
 
-    public void Undo()
+    [SerializeField]
+    private int _MovesPerTurn; //0 implies that we don't care about moves per turn
+    public int MovesPerTurn { get { return _MovesPerTurn; } }
+
+    private int currentTurnIndex = 0;
+    private Player firstPlayer;
+    public Player CurrentPlayer
     {
-        if(undoStack.Count > 0)
+        get
         {
-            var lastMove = undoStack.Pop();
-            MoveConstituent(lastMove.constituent, lastMove.oldDistrict);
+            int currentSide = currentTurnIndex % 2;
+            return (Player)(((int)firstPlayer + currentSide) % 2);
         }
     }
+    public int CurrentRound { get { return currentTurnIndex / 2; } }
 
-    private void MoveConstituent(Constituent c, District newDistrict)
+	// Use this for initialization
+	void Start () {
+        moveManager = GetComponent<MoveManager>();
+
+        firstPlayer = Utils.ChooseRandom(new List<Player> { Player.Red, Player.Blue });
+	}
+	
+	// Update is called once per frame
+	void Update ()
     {
-        var oldDistrict = c.district;
-        c.district = newDistrict;
-
-        oldDistrict.UpdateMemberData();
-        newDistrict.UpdateMemberData();
-
-        UpdateValidMoves();
-
-        //update the borders of the new district
-        foreach (var member in oldDistrict.Constituents)
+	    if(MovesThisTurn >= MovesPerTurn && moveManager.AllowMoves)
         {
-            member.UpdateBorders();
+            moveManager.AllowMoves = false;
         }
-        foreach (var member in newDistrict.Constituents)
+        else if(MovesThisTurn < MovesPerTurn && !moveManager.AllowMoves)
         {
-            member.UpdateBorders();
+            moveManager.AllowMoves = true;
         }
-    }
+	}
 
-    private void SelectDistrict(District newDistrict)
+    public void AdvanceTurn()
     {
-        if (CurrentlySelectedDistrict != newDistrict)
-        {
-            var oldDistrict = CurrentlySelectedDistrict;
-            CurrentlySelectedDistrict = newDistrict;
-
-            foreach (District d in cityGenerator.Districts)
-            {
-                if (d == newDistrict)
-                {
-                    d.CurrentlySelected = true;
-                }
-                else
-                {
-                    d.CurrentlySelected = false;
-                }
-            }
-            UpdateValidMoves();
-
-            foreach (var member in newDistrict.Constituents)
-            {
-                member.UpdateBorders();
-            }
-
-            if (oldDistrict != null)
-            {
-                foreach (var member in oldDistrict.Constituents)
-                {
-                    member.UpdateBorders();
-                }
-            }
-        }
-    }
-
-    private void UpdateValidMoves()
-    {
-        CurrentValidMoves = new HashSet<Constituent>();
-        foreach (Constituent districtNeighbor in CurrentlySelectedDistrict.NeighborConstituents)
-        {
-            if (cityGenerator.IsValidMove(districtNeighbor, CurrentlySelectedDistrict))
-            {
-                CurrentValidMoves.Add(districtNeighbor);
-            }
-        }
+        currentTurnIndex += 1;
+        moveManager.MoveHistory.Clear();
+        moveManager.UndoStack.Clear();
     }
 
 
 
-
-    private struct Move
+    public enum Player
     {
-        public Constituent constituent { get; private set; }
-        public District oldDistrict { get; private set; }
-        public District newDistrict { get; private set; }
-
-        public Move(Constituent c, District old, District n)
-        {
-            constituent = c; oldDistrict = old; newDistrict = n;
-        }
+        Red = 0, Blue = 1,
     }
 }

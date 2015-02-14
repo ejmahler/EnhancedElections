@@ -12,7 +12,7 @@ public class Constituent : MonoBehaviour {
 	
 	public Material validBorder, invalidBorder;
 
-	private TurnManager turnManager;
+	private MoveManager turnManager;
 
     private Renderer _backgroundMesh, _sphereMesh;
 
@@ -73,7 +73,7 @@ public class Constituent : MonoBehaviour {
         _borderLeft = transform.Find("Border Left").GetComponent<MeshRenderer>();
         _borderRight = transform.Find("Border Right").GetComponent<MeshRenderer>();
 
-        turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
+        turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MoveManager>();
 	}
 
 	public void UpdateBorders()

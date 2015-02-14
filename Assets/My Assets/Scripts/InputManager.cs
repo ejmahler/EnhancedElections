@@ -2,17 +2,17 @@
 using UnityEngine.UI;
 using System.Linq;
 
-[RequireComponent(typeof(TurnManager))]
+[RequireComponent(typeof(MoveManager))]
 public class InputManager : MonoBehaviour {
 
     private Constituent currentConstituent = null;
 
     private Camera mainCamera;
-    private TurnManager turnManager;
+    private MoveManager turnManager;
 
 	// Use this for initialization
 	void Start () {
-        turnManager = GetComponent<TurnManager>();
+        turnManager = GetComponent<MoveManager>();
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 	}
 	

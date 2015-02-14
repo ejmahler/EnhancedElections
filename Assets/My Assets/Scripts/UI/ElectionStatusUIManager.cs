@@ -13,7 +13,7 @@ public class ElectionStatusUIManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-        cityGenerator = GetComponent<CityGenerator>();
+        cityGenerator = GameObject.FindGameObjectWithTag("GameController").GetComponent<CityGenerator>();
 	}
 	
 	// Update is called once per frame

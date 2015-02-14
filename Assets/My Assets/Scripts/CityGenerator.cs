@@ -108,9 +108,9 @@ public class CityGenerator : MonoBehaviour {
 			c.UpdateBorders();
 		}
 
-        int averageDistrictSize = Constituents.Count((c) => { return c.party != Constituent.Party.None; }) / numDistricts;
-        minDistrictSize = (int)(averageDistrictSize * 0.666f);
-        maxDistrictSize = averageDistrictSize + (averageDistrictSize - minDistrictSize);
+        float averageDistrictSize = (float)Constituents.Count((c) => { return c.party != Constituent.Party.None; }) / numDistricts;
+        minDistrictSize = (int)System.Math.Round(averageDistrictSize * 0.75f);
+        maxDistrictSize = (int)System.Math.Round(averageDistrictSize * 1.25f);
 	}
 
     private Constituent MakeConstituent(Vector3 position)
