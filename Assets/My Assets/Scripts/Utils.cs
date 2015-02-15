@@ -10,6 +10,13 @@ public class Utils : MonoBehaviour {
         return items[index];
     }
 
+    public static T ChooseRandom<T>(T[] items)
+    {
+        int index = Random.Range(0, items.Length);
+        return items[index];
+    }
+
+
     public static T ChooseWeightedRandom<T>(SortedList<T, float> items)
     {
 
@@ -27,13 +34,6 @@ public class Utils : MonoBehaviour {
 
         return items.Keys[index];
     }
-
-    public static T ChooseRandom<T>(T[] items)
-    {
-        int index = Random.Range(0, items.Length);
-        return items[index];
-    }
-
 
 	public static List<HashSet<T>> ConnectedComponents<T>(IEnumerable<T> items, System.Func<T, IEnumerable<T>> neighborFunc)
     {
