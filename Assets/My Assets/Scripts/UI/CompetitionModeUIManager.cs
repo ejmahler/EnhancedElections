@@ -17,10 +17,16 @@ public class CompetitionModeUIManager : MonoBehaviour {
     [SerializeField] private Text currentPlayerTextbox;
     [SerializeField] private Text currentMovesTextbox;
 
+    [SerializeField] private Text redScoreTextbox;
+    [SerializeField] private Text blueScoreTextbox;
+
     [SerializeField] private Button endTurnButton;
 
     [SerializeField] private Image sidePanel;
     [SerializeField] private Image bottomPanel;
+
+    private int displayScoreBlue;
+    private int displayScoreRed;
 
     private TurnManager turnManager;
 
@@ -36,6 +42,9 @@ public class CompetitionModeUIManager : MonoBehaviour {
         bottomPanel.color = GetBackgroundColorForPlayer(currentPlayer);
 
         currentPlayerTextbox.text = string.Format("{0}'s Turn", currentPlayer.ToString());
+
+        displayScoreBlue = 0;
+        displayScoreRed = 0;
 	}
 	
 	// Update is called once per frame
@@ -74,6 +83,10 @@ public class CompetitionModeUIManager : MonoBehaviour {
                 currentMovesTextbox.text = string.Format("{0} Moves Left", turnManager.MovesPerTurn - turnManager.MovesThisTurn);
             }
         }
+
+        //update the score textboxes
+        blueScoreTextbox.text = displayScoreBlue.ToString();
+        redScoreTextbox.text = displayScoreRed.ToString();
 	}
 
     public void DoneButtonClicked()
@@ -96,7 +109,35 @@ public class CompetitionModeUIManager : MonoBehaviour {
         LeanTween.color(sidePanel.rectTransform, targetBackgroundColor, transitionDuration);
         LeanTween.color(bottomPanel.rectTransform, targetBackgroundColor, transitionDuration);
 
+        if(turnManager.CurrentRound != turnManager.NextRound)
+        {
+            UpdateScores(transitionDuration);
+        }
+
         Invoke("TurnTransitionsFinished", transitionDuration);
+    }
+
+    private void UpdateScores(float transitionDuration)
+    {
+        var currentScoreBlue = turnManager.BlueScore;
+        if (currentScoreBlue != displayScoreBlue)
+        {
+            System.Action<float> updateBlueScore = (currentValue) =>
+            {
+                displayScoreBlue = (int)System.Math.Round(currentValue);
+            };
+            LeanTween.value(gameObject, updateBlueScore, (float)displayScoreBlue, (float)currentScoreBlue, transitionDuration).setEase(LeanTweenType.easeOutCirc);
+        }
+
+        var currentScoreRed = turnManager.RedScore;
+        if (currentScoreRed != displayScoreRed)
+        {
+            System.Action<float> updateRedScore = (currentValue) =>
+            {
+                displayScoreRed = (int)System.Math.Round(currentValue);
+            };
+            LeanTween.value(gameObject, updateRedScore, (float)displayScoreRed, (float)currentScoreRed, transitionDuration).setEase(LeanTweenType.easeOutCirc);
+        }
     }
 
     private void TurnTransitionsFinished()
