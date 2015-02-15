@@ -62,7 +62,7 @@ public class MoveManager : MonoBehaviour {
 
     public void Undo()
     {
-        if(UndoStack.Count > 0)
+        if (UndoStack.Count > 0)
         {
             //undo the most recent move
             var lastMove = UndoStack.Pop();
@@ -75,6 +75,39 @@ public class MoveManager : MonoBehaviour {
                 MoveConstituent(lastMove.constituent, lastMove.oldDistrict);
             }
         }
+    }
+
+    public void UndoAll()
+    {
+        HashSet<District> modifiedDistricts = new HashSet<District>();
+
+        foreach(var item in MoveHistory)
+        {
+            modifiedDistricts.Add(item.Value);
+            modifiedDistricts.Add(item.Key.district);
+
+            //move this constituent back into its original district
+            item.Key.district = item.Value;
+        }
+
+        //update the member data of all the districts we've modified
+        foreach(District d in modifiedDistricts)
+        {
+            d.UpdateMemberData();
+        }
+
+        //update our set of valid moves
+        UpdateValidMoves();
+
+        //tell every constituent of a modified district to update their borders
+        foreach(Constituent c in cityGenerator.Constituents.Where((c) => { return modifiedDistricts.Contains(c.district); }))
+        {
+            c.UpdateBorders();
+        }
+
+        //clear the move history and undo stack
+        UndoStack.Clear();
+        MoveHistory.Clear();
     }
 
     private void MoveConstituent(Constituent c, District newDistrict)

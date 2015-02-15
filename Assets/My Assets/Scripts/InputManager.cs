@@ -60,9 +60,4 @@ public class InputManager : MonoBehaviour {
             return null;
         }
     }
-
-    public void ReloadClicked()
-    {
-        Application.LoadLevel(Application.loadedLevelName);
-    }
 }

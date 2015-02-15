@@ -16,16 +16,12 @@ public class CompetitionModeUIManager : MonoBehaviour {
 
     [SerializeField] private Button endTurnButton;
 
-    [SerializeField] private Button undoButton;
-
     private TurnManager turnManager;
-    private MoveManager moveManager;
 
 	// Use this for initialization
 	void Start ()
     {
         turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
-        moveManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MoveManager>();
 	}
 	
 	// Update is called once per frame
@@ -73,16 +69,6 @@ public class CompetitionModeUIManager : MonoBehaviour {
                 endTurnButton.image.color = doneButtonNormalColor;
                 currentMovesTextbox.text = string.Format("{0} Moves Left", turnManager.MovesPerTurn - turnManager.MovesThisTurn);
             }
-        }
-
-        //enable/disable the undo button
-        if(moveManager.UndoStack.Count > 0)
-        {
-            undoButton.interactable = true;
-        }
-        else
-        {
-            undoButton.interactable = false;
         }
 	}
 

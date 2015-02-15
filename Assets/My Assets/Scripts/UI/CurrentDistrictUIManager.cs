@@ -10,7 +10,6 @@ public class CurrentDistrictUIManager : MonoBehaviour {
 
     [SerializeField] private Text redCountTextbox;
     [SerializeField] private Text blueCountTextbox;
-    [SerializeField] private Text otherCountTextbox;
 
     private MoveManager turnManager;
 
@@ -26,7 +25,6 @@ public class CurrentDistrictUIManager : MonoBehaviour {
 
         redCountTextbox.text = turnManager.CurrentlySelectedDistrict.VotesRed.ToString();
         blueCountTextbox.text = turnManager.CurrentlySelectedDistrict.VotesBlue.ToString();
-        otherCountTextbox.text = turnManager.CurrentlySelectedDistrict.VotesYellow.ToString();
 	}
 
     private string DisplayNumber(string number)
