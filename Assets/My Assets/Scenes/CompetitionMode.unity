@@ -915,6 +915,10 @@ Prefab:
       propertyPath: bottomPanel
       value: 
       objectReference: {fileID: 1504434578}
+    - target: {fileID: 11461384, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
+      propertyPath: m_Text
+      value: Round 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
   m_RootGameObject: {fileID: 1060435405}
@@ -2139,7 +2143,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Turn 2
+  m_Text: Round 2
 --- !u!222 &1289180978
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2217,7 +2221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fb5cad4d44eddb40a9b3a2d79b5967b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _MovesPerTurn: 6
+  _MovesPerTurn: 15
 --- !u!114 &1467050357
 MonoBehaviour:
   m_ObjectHideFlags: 0

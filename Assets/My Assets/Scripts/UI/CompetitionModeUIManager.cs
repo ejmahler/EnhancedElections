@@ -50,7 +50,7 @@ public class CompetitionModeUIManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        currentTurnTextbox.text = "Turn " + (turnManager.CurrentRound + 1).ToString();
+        currentTurnTextbox.text = "Round " + (turnManager.CurrentRound + 1).ToString();
         
         //update the "x moves left" textbox
         if (turnManager.MovesPerTurn <= 0)
