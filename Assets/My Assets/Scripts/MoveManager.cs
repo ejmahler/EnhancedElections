@@ -56,7 +56,7 @@ public class MoveManager : MonoBehaviour {
         if (CurrentlySelectedDistrict != null && cityGenerator.IsValidMove(c, CurrentlySelectedDistrict) && AllowMoves)
         {
             UndoStack.Push(new Move(c, c.district, CurrentlySelectedDistrict));
-            MoveConstituent(c, CurrentlySelectedDistrict);
+            MoveConstituents(new Dictionary<Constituent, District> {{c, CurrentlySelectedDistrict}});
         }
     }
 
@@ -64,34 +64,59 @@ public class MoveManager : MonoBehaviour {
     {
         if (UndoStack.Count > 0)
         {
+            Dictionary<Constituent, District> undoMoves = new Dictionary<Constituent, District>();
+
             //undo the most recent move
             var lastMove = UndoStack.Pop();
-            MoveConstituent(lastMove.constituent, lastMove.oldDistrict);
+            undoMoves.Add(lastMove.constituent, lastMove.oldDistrict);
 
             //also undo as many 'none' moves as possible, if they're adjacent to the one we just removed
             while (UndoStack.Count > 0 && UndoStack.Peek().constituent.party == Constituent.Party.None && UndoStack.Peek().constituent.Neighbors.Contains(lastMove.constituent))
             {
                 lastMove = UndoStack.Pop();
-                MoveConstituent(lastMove.constituent, lastMove.oldDistrict);
+                undoMoves.Add(lastMove.constituent, lastMove.oldDistrict);
             }
+
+            MoveConstituents(undoMoves);
         }
     }
 
     public void UndoAll()
     {
+        MoveConstituents(new Dictionary<Constituent, District>(MoveHistory));
+
+        //clear the undo stack since it isn't of much use anymore. the move history will be cleared by the move constituents method
+        UndoStack.Clear();
+    }
+
+    private void MoveConstituents(Dictionary<Constituent, District> moves)
+    {
         HashSet<District> modifiedDistricts = new HashSet<District>();
 
-        foreach(var item in MoveHistory)
+        foreach (var item in moves)
         {
-            modifiedDistricts.Add(item.Value);
-            modifiedDistricts.Add(item.Key.district);
+            modifiedDistricts.Add(item.Value);//new district for this constituent
+            modifiedDistricts.Add(item.Key.district);//previous district for this constituent
 
-            //move this constituent back into its original district
+            //if the player has moved this constituent back to its original district, remove it from the move history
+            District originalDistrict;
+            if (MoveHistory.TryGetValue(item.Key, out originalDistrict))
+            {
+                if (item.Value == originalDistrict)
+                    MoveHistory.Remove(item.Key);
+            }
+            else
+            {
+                //since this constituent is not in the move history, oldDistrict is this constituent's original district (for this turn at least)
+                MoveHistory.Add(item.Key, item.Key.district);
+            }
+
+            //move this constituent to its new district
             item.Key.district = item.Value;
         }
 
         //update the member data of all the districts we've modified
-        foreach(District d in modifiedDistricts)
+        foreach (District d in modifiedDistricts)
         {
             d.UpdateMemberData();
         }
@@ -100,47 +125,9 @@ public class MoveManager : MonoBehaviour {
         UpdateValidMoves();
 
         //tell every constituent of a modified district to update their borders
-        foreach(Constituent c in cityGenerator.Constituents.Where((c) => { return modifiedDistricts.Contains(c.district); }))
+        foreach (Constituent c in cityGenerator.Constituents.Where((c) => { return modifiedDistricts.Contains(c.district); }))
         {
             c.UpdateBorders();
-        }
-
-        //clear the move history and undo stack
-        UndoStack.Clear();
-        MoveHistory.Clear();
-    }
-
-    private void MoveConstituent(Constituent c, District newDistrict)
-    {
-        var oldDistrict = c.district;
-        c.district = newDistrict;
-
-        oldDistrict.UpdateMemberData();
-        newDistrict.UpdateMemberData();
-
-        UpdateValidMoves();
-
-        //update the borders of the new district
-        foreach (var member in oldDistrict.Constituents)
-        {
-            member.UpdateBorders();
-        }
-        foreach (var member in newDistrict.Constituents)
-        {
-            member.UpdateBorders();
-        }
-
-        //if the player has moved this constituent back to its original district, remove it from the move history
-        District originalDistrict;
-        if(MoveHistory.TryGetValue(c, out originalDistrict))
-        {
-            if(newDistrict == originalDistrict)
-                MoveHistory.Remove(c);
-        }
-        else
-        {
-            //since this constituent is not in the move history, oldDistrict is this constituent's original district (for this turn at least)
-            MoveHistory.Add(c, oldDistrict);
         }
     }
 
