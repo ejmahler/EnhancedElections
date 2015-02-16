@@ -397,10 +397,7 @@ MonoBehaviour:
   _partyBlueMaterial: {fileID: 2100000, guid: c77050fa7efaeb44e994d89e6d4254f0, type: 2}
   _partyYellowMaterial: {fileID: 2100000, guid: fd8355a6afd93c944a6a58d29f361cf4,
     type: 2}
-  neighborTop: {fileID: 0}
-  neighborBottom: {fileID: 0}
-  neighborLeft: {fileID: 0}
-  neighborRight: {fileID: 0}
+  lockedBackground: {fileID: 2100000, guid: e932ba554e411964ca411f8efe8e20a0, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

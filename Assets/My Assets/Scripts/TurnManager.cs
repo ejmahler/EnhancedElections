@@ -86,7 +86,6 @@ public class TurnManager : MonoBehaviour {
 
     public void BeginTurnTransition()
     {
-        moveManager.MoveHistory.Clear();
         moveManager.UndoStack.Clear();
 
         transitioningTurn = true;
@@ -94,6 +93,8 @@ public class TurnManager : MonoBehaviour {
 
     public void AdvanceTurn()
     {
+        moveManager.LockedConstituents = new HashSet<Constituent>(moveManager.MoveHistory.Keys);
+
         moveManager.MoveHistory.Clear();
         moveManager.UndoStack.Clear();
 

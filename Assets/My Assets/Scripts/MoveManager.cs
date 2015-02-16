@@ -8,6 +8,27 @@ public class MoveManager : MonoBehaviour {
     public District CurrentlySelectedDistrict { get; private set; }
     public HashSet<Constituent> CurrentValidMoves { get; private set; }
 
+    private HashSet<Constituent> _lockedConstituents;
+    public HashSet<Constituent> LockedConstituents
+    {
+        get { return _lockedConstituents; }
+        set
+        {
+            var oldLocked = _lockedConstituents;
+
+            _lockedConstituents = value;
+
+            foreach(var c in oldLocked)
+            {
+                c.UpdateBackground();
+            }
+            foreach(var c in value)
+            {
+                c.UpdateBackground();
+            }
+        }
+    }
+
     public Stack<Move> UndoStack { get; private set; }
 
     //unordered history of movies every key is a constituent that has been changed, and every value is that constituent's original district
@@ -34,16 +55,19 @@ public class MoveManager : MonoBehaviour {
         }
     }
 
+    void Awake()
+    {
+        _lockedConstituents = new HashSet<Constituent>();
+        cityGenerator = GetComponent<CityGenerator>();
+        UndoStack = new Stack<Move>();
+        MoveHistory = new Dictionary<Constituent, District>();
+    }
+
     // Use this for initialization
     void Start()
     {
         _AllowMoves = true;
-
-        cityGenerator = GetComponent<CityGenerator>();
         SelectDistrict(cityGenerator.Districts[0]);
-
-        UndoStack = new Stack<Move>();
-        MoveHistory = new Dictionary<Constituent, District>();
     }
 
     public void ConstituentClicked(Constituent c)
@@ -53,7 +77,7 @@ public class MoveManager : MonoBehaviour {
 
     public void ConstituentDragged(Constituent c)
     {
-        if (CurrentlySelectedDistrict != null && cityGenerator.IsValidMove(c, CurrentlySelectedDistrict) && AllowMoves)
+        if (CurrentlySelectedDistrict != null && CurrentValidMoves.Contains(c))
         {
             UndoStack.Push(new Move(c, c.district, CurrentlySelectedDistrict));
             MoveConstituents(new Dictionary<Constituent, District> {{c, CurrentlySelectedDistrict}});
@@ -83,9 +107,10 @@ public class MoveManager : MonoBehaviour {
 
     public void UndoAll()
     {
+        //move every modified constituent back into its original district
         MoveConstituents(new Dictionary<Constituent, District>(MoveHistory));
 
-        //clear the undo stack since it isn't of much use anymore. the move history will be cleared by the move constituents method
+        //clear the undo stack since it isn't of much use anymore
         UndoStack.Clear();
     }
 
@@ -175,7 +200,7 @@ public class MoveManager : MonoBehaviour {
         {
             foreach (Constituent districtNeighbor in CurrentlySelectedDistrict.NeighborConstituents)
             {
-                if (cityGenerator.IsValidMove(districtNeighbor, CurrentlySelectedDistrict))
+                if (!LockedConstituents.Contains(districtNeighbor) && cityGenerator.IsValidMove(districtNeighbor, CurrentlySelectedDistrict))
                 {
                     CurrentValidMoves.Add(districtNeighbor);
                 }

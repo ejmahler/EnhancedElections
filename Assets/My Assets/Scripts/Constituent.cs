@@ -9,19 +9,27 @@ public class Constituent : MonoBehaviour {
 	[SerializeField] private Material _partyRedMaterial;
 	[SerializeField] private Material _partyBlueMaterial;
 	[SerializeField] private Material _partyYellowMaterial;
-	
-	public Material validBorder, invalidBorder;
 
-	private MoveManager turnManager;
+
+    [System.NonSerialized]
+    public Material validBorder, invalidBorder;
+
+    [System.NonSerialized]
+    public Material normalBackground;
+
+    [SerializeField]
+    private Material lockedBackground;
+
+	private MoveManager moveManager;
 
     private Renderer _backgroundMesh, _sphereMesh;
 
     private Renderer _borderTop, _borderBottom, _borderLeft, _borderRight;
     private Renderer[] NeighborBorders {
-				get {
-						return new Renderer[] { _borderTop, _borderBottom, _borderLeft, _borderRight };
-				}
+		get {
+			return new Renderer[] { _borderTop, _borderBottom, _borderLeft, _borderRight };
 		}
+	}
 
     private District _district;
     public District district
@@ -30,14 +38,16 @@ public class Constituent : MonoBehaviour {
         set
         {
             _district = value;
-            _backgroundMesh.material = value.BackgroundMaterial;
+            normalBackground = value.BackgroundMaterial;
 			validBorder = value.ValidBorderMaterial;
 			invalidBorder = value.InvalidBorderMaterial;
 
 			UpdateBorders();
+            UpdateBackground();
         }
     }
 
+    [System.NonSerialized]
     public Constituent neighborTop, neighborBottom, neighborLeft, neighborRight;
     public Constituent[] Neighbors
     {
@@ -73,7 +83,7 @@ public class Constituent : MonoBehaviour {
         _borderLeft = transform.Find("Border Left").GetComponent<MeshRenderer>();
         _borderRight = transform.Find("Border Right").GetComponent<MeshRenderer>();
 
-        turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MoveManager>();
+        moveManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MoveManager>();
 	}
 
 	public void UpdateBorders()
@@ -85,7 +95,7 @@ public class Constituent : MonoBehaviour {
 		{
 			borders[i].gameObject.SetActive(neighbors[i] != null && neighbors[i].district != this.district);
 
-            if (turnManager.CurrentValidMoves == null || turnManager.CurrentValidMoves.Contains(neighbors[i]))
+            if (moveManager.CurrentValidMoves == null || moveManager.CurrentValidMoves.Contains(neighbors[i]))
 			{
 				borders[i].renderer.material = validBorder;
 			}
@@ -111,6 +121,18 @@ public class Constituent : MonoBehaviour {
 			}
 		}
 	}
+
+    public void UpdateBackground()
+    {
+        if(moveManager.LockedConstituents.Contains(this))
+        {
+            _backgroundMesh.material = lockedBackground;
+        }
+        else
+        {
+            _backgroundMesh.material = normalBackground;
+        }
+    }
 
     private Material GetMaterial(Party party)
     {

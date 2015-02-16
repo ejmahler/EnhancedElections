@@ -427,7 +427,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Turn 2
+  m_Text: Round 2
 --- !u!114 &11461386
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -490,7 +490,7 @@ MonoBehaviour:
   doneButtonHighlightColor: {r: .45588237, g: 1, b: .527180493, a: 1}
   bluesTurnTextColor: {r: 0, g: .247464448, b: .588235259, a: 1}
   redsTurnTextColor: {r: .566176474, g: 0, b: 0, a: 1}
-  bluesTurnBackgroundColor: {r: 0, g: .274509817, b: 1, a: .149019614}
+  bluesTurnBackgroundColor: {r: 0, g: .274509817, b: 1, a: .247058824}
   redsTurnBackgroundColor: {r: 1, g: 0, b: 0, a: .141176477}
   currentTurnTextbox: {fileID: 11461384}
   currentPlayerTextbox: {fileID: 11404444}
