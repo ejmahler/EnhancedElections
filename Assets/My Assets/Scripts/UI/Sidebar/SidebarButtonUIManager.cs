@@ -2,20 +2,15 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class SidebarUIManager : MonoBehaviour {
-
+public class SidebarButtonUIManager : MonoBehaviour
+{
     [SerializeField]
     private Button undoButton;
 
     [SerializeField]
     private Button undoAllButton;
 
-    [SerializeField]
-    private Button reloadButton;
-
     private MoveManager moveManager;
-
-    public bool AllowReload = false;
 
 	// Use this for initialization
 	void Start () {
@@ -44,9 +39,6 @@ public class SidebarUIManager : MonoBehaviour {
         {
             undoAllButton.interactable = false;
         }
-
-        //hide/show the reload button
-        reloadButton.gameObject.SetActive(AllowReload);
 	}
 
     public void UndoClicked()
@@ -62,5 +54,10 @@ public class SidebarUIManager : MonoBehaviour {
     public void ReloadClicked()
     {
         Application.LoadLevel(Application.loadedLevelName);
+    }
+
+    public void MainMenuClicked()
+    {
+        Application.LoadLevel("MainMenu");
     }
 }

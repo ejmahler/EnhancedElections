@@ -18,16 +18,16 @@ public class TurnManager : MonoBehaviour {
 
     private bool transitioningTurn = false;
 
-    private int PreviousBlueScore;
-    private int PreviousRedScore;
+    public int CurrentBlueScore { get; private set; }
+    public int CurrentRedScore { get; private set; }
 
-    public int BlueScore
+    public int NextBlueScore
     {
-        get { return PreviousBlueScore + cityGenerator.Districts.Count((c) => { return c.CurrentMajority == Constituent.Party.Blue; }); }
+        get { return CurrentBlueScore + cityGenerator.Districts.Count((c) => { return c.CurrentMajority == Constituent.Party.Blue; }); }
     }
-    public int RedScore
+    public int NextRedScore
     {
-        get { return PreviousRedScore + cityGenerator.Districts.Count((c) => { return c.CurrentMajority == Constituent.Party.Red; }); }
+        get { return CurrentRedScore + cityGenerator.Districts.Count((c) => { return c.CurrentMajority == Constituent.Party.Red; }); }
     }
 
     //code to deterime which player is currently playing, and which player is up next
@@ -67,8 +67,8 @@ public class TurnManager : MonoBehaviour {
 
         firstPlayer = Utils.ChooseRandom(new List<Player> { Player.Red, Player.Blue });
 
-        PreviousBlueScore = 0;
-        PreviousRedScore = 0;
+        CurrentBlueScore = 0;
+        CurrentRedScore = 0;
 	}
 	
 	// Update is called once per frame
@@ -101,14 +101,9 @@ public class TurnManager : MonoBehaviour {
         currentTurnIndex += 1;
         transitioningTurn = false;
 
-        if(currentTurnIndex % 2 == 0)
-        {
-            PreviousBlueScore = BlueScore;
-            PreviousRedScore = RedScore;
-        }
+        CurrentBlueScore = NextBlueScore;
+        CurrentRedScore = NextRedScore;
     }
-
-
 
     public enum Player
     {
