@@ -70,11 +70,6 @@ public class MoveManager : MonoBehaviour {
         SelectDistrict(cityGenerator.Districts[0]);
     }
 
-    public void ConstituentClicked(Constituent c)
-    {
-        SelectDistrict(c.district);
-    }
-
     public void ConstituentDragged(Constituent c)
     {
         if (CurrentlySelectedDistrict != null && CurrentValidMoves.Contains(c))
@@ -156,7 +151,7 @@ public class MoveManager : MonoBehaviour {
         }
     }
 
-    private void SelectDistrict(District newDistrict)
+    public void SelectDistrict(District newDistrict)
     {
         if (CurrentlySelectedDistrict != newDistrict)
         {

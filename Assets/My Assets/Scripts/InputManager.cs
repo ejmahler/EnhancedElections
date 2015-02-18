@@ -5,46 +5,41 @@ using System.Linq;
 [RequireComponent(typeof(MoveManager))]
 public class InputManager : MonoBehaviour {
 
-    private Constituent currentConstituent = null;
+    private District currentDistrict = null;
 
     private Camera mainCamera;
-    private MoveManager turnManager;
+    private MoveManager moveManager;
 
 	// Use this for initialization
 	void Start () {
-        turnManager = GetComponent<MoveManager>();
+        moveManager = GetComponent<MoveManager>();
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 	}
 	
 	// Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButton("Fire1"))
         {
             var constituent = PickConstituent();
-            if (constituent != null)
+            if (constituent != null && constituent.district != currentDistrict)
             {
-                turnManager.ConstituentClicked(constituent);
-                currentConstituent = constituent;
-            }
-        }
-        else if (Input.GetButton("Fire1"))
-        {
-            var constituent = PickConstituent();
-            if (constituent != null && constituent != currentConstituent)
-            {
-                turnManager.ConstituentDragged(constituent);
-                currentConstituent = constituent;
+                moveManager.ConstituentDragged(constituent);
             }
         }
         else
         {
-            currentConstituent = null;
+            var constituent = PickConstituent();
+            if (constituent != null)
+            {
+                moveManager.SelectDistrict(constituent.district);
+                currentDistrict = constituent.district;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            turnManager.Undo();
+            moveManager.Undo();
         }
     }
 
