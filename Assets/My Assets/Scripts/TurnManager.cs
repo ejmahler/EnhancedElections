@@ -6,7 +6,10 @@ using System.Linq;
 public class TurnManager : MonoBehaviour {
 
     [SerializeField]
-    private int _MovesPerTurn; //0 implies that we don't care about moves per turn
+    private int lockDuration;
+
+    [SerializeField]
+    private int _MovesPerTurn;
     public int MovesPerTurn { get { return _MovesPerTurn; } }
 
     private int currentTurnIndex = 0;
@@ -15,6 +18,9 @@ public class TurnManager : MonoBehaviour {
 
     private MoveManager moveManager;
     private CityGenerator cityGenerator;
+
+    //dictionarry mapping constituents to the turn index on which that lock expires
+    private Dictionary<Constituent, int> lockedConstituents;
 
     private bool transitioningTurn = false;
 
@@ -65,6 +71,8 @@ public class TurnManager : MonoBehaviour {
         moveManager = GetComponent<MoveManager>();
         cityGenerator = GetComponent<CityGenerator>();
 
+        lockedConstituents = new Dictionary<Constituent, int>();
+
         firstPlayer = Utils.ChooseRandom(new List<Player> { Player.Red, Player.Blue });
 
         CurrentBlueScore = 0;
@@ -93,13 +101,24 @@ public class TurnManager : MonoBehaviour {
 
     public void AdvanceTurn()
     {
-        moveManager.LockedConstituents = new HashSet<Constituent>(moveManager.MoveHistory.Keys);
+        currentTurnIndex += 1;
+        transitioningTurn = false;
+
+        //remove locked constituents if the lock has expired, aka only keep them if their turn hasn't been reached yet
+        lockedConstituents = lockedConstituents.Where(pair => pair.Value > currentTurnIndex)
+                                 .ToDictionary(pair => pair.Key,
+                                               pair => pair.Value);
+
+        //add locked constituents from the move manager's move history
+        foreach(var c in moveManager.MoveHistory.Keys)
+        {
+            lockedConstituents.Add(c, currentTurnIndex + lockDuration);
+        }
+
+        moveManager.LockedConstituents = new HashSet<Constituent>(lockedConstituents.Keys);
 
         moveManager.MoveHistory.Clear();
         moveManager.UndoStack.Clear();
-
-        currentTurnIndex += 1;
-        transitioningTurn = false;
 
         CurrentBlueScore = NextBlueScore;
         CurrentRedScore = NextRedScore;
