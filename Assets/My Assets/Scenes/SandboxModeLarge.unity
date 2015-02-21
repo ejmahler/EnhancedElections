@@ -1824,10 +1824,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ed8ba7fb1c50fe4eb5dfd7fd23f6481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 20
-  height: 15
-  numDistricts: 12
-  populationFalloffDistance: 4
+  width: 40
+  height: 32
+  numDistricts: 30
+  populationFalloffDistance: 10
   constituentPrefab: {fileID: 151446, guid: 4aa03a5967bf242479f3460af0c201a6, type: 2}
   districtPrefab: {fileID: 110426, guid: 1f80e96e20b73f74e821e6c40da8a2f1, type: 2}
 --- !u!114 &1467050356
@@ -2430,7 +2430,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 7.5
+  orthographic size: 15
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2449,7 +2449,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1852830775}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 0, z: -10}
+  m_LocalPosition: {x: 4, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
