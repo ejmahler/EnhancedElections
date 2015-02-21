@@ -62,7 +62,7 @@ public class TurnManager : MonoBehaviour {
     {
         get
         {
-            return moveManager.MoveHistory.Keys.Count((entry) => { return entry.party != Constituent.Party.None; });
+            return moveManager.MoveHistory.Keys.Count;
         }
     }
 

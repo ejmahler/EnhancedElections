@@ -14,6 +14,8 @@ public class CompetitionModeUIManager : MonoBehaviour {
     private ScoreUIManager scoreUIManager;
     private EndTurnUIManager endTurnUIManager;
 
+    private AudioManager audioManager;
+
     private TurnManager turnManager;
 
 	// Use this for initialization
@@ -23,6 +25,8 @@ public class CompetitionModeUIManager : MonoBehaviour {
         currentTurnUIManager = GetComponentInChildren<CurrentTurnUIManager>();
         scoreUIManager = GetComponentInChildren<ScoreUIManager>();
         endTurnUIManager = GetComponentInChildren<EndTurnUIManager>();
+
+        audioManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<AudioManager>();
 
         //color the text based on whose turn it is
         var currentBackgroundColor = GetBackgroundColorForPlayer(turnManager.CurrentPlayer);

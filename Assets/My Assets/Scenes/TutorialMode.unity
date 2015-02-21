@@ -2245,6 +2245,7 @@ GameObject:
   - 114: {fileID: 1467050353}
   - 114: {fileID: 1467050356}
   - 114: {fileID: 1467050358}
+  - 114: {fileID: 1467050359}
   m_Layer: 0
   m_Name: Managers
   m_TagString: GameController
@@ -2336,6 +2337,17 @@ MonoBehaviour:
   uiBottomIntroPrefab: {fileID: 132100, guid: 17c273fc708c6d0439fc5566f094634e, type: 2}
   uiSideIntroPrefab: {fileID: 132100, guid: d76e579657dfe2248b1069f9083fcb6c, type: 2}
   conclusionPrefab: {fileID: 132100, guid: 67a7ab6f6eb87374183793217c4b174d, type: 2}
+--- !u!114 &1467050359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1467050352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4e6316a4fa5e814aa6c9d9580a8561c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1504434577
 GameObject:
   m_ObjectHideFlags: 0

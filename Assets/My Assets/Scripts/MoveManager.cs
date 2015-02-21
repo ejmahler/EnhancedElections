@@ -5,6 +5,8 @@ using System.Linq;
 [RequireComponent(typeof(CityGenerator))]
 public class MoveManager : MonoBehaviour {
 
+    private AudioManager audioManager;
+
     public District CurrentlySelectedDistrict { get; private set; }
     public HashSet<Constituent> CurrentValidMoves { get; private set; }
 
@@ -62,6 +64,7 @@ public class MoveManager : MonoBehaviour {
     {
         _lockedConstituents = new HashSet<Constituent>();
         cityGenerator = GetComponent<CityGenerator>();
+        audioManager = GetComponent<AudioManager>();
         UndoStack = new Stack<Move>();
         MoveHistory = new Dictionary<Constituent, District>();
     }
