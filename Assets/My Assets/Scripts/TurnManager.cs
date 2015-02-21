@@ -13,7 +13,7 @@ public class TurnManager : MonoBehaviour {
     public int MovesPerTurn { get { return _MovesPerTurn; } }
 
     private int currentTurnIndex = 0;
-    private Player firstPlayer;
+    public Player firstPlayer;
 
 
     private MoveManager moveManager;
@@ -82,11 +82,11 @@ public class TurnManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-	    if((MovesThisTurn >= MovesPerTurn || transitioningTurn) && moveManager.AllowMoves)
+	    if(MovesThisTurn >= MovesPerTurn || transitioningTurn)
         {
             moveManager.AllowMoves = false;
         }
-        else if((MovesThisTurn < MovesPerTurn && !transitioningTurn) && !moveManager.AllowMoves)
+        else if(MovesThisTurn < MovesPerTurn && !transitioningTurn)
         {
             moveManager.AllowMoves = true;
         }

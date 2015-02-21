@@ -11,3 +11,9 @@ EditorBuildSettings:
     path: Assets/My Assets/Scenes/CompetitionMode.unity
   - enabled: 1
     path: Assets/My Assets/Scenes/SandboxMode.unity
+  - enabled: 1
+    path: Assets/My Assets/Scenes/SandboxModeLarge.unity
+  - enabled: 1
+    path: Assets/My Assets/Scenes/CompetitionModeLarge.unity
+  - enabled: 1
+    path: Assets/My Assets/Scenes/TutorialMode.unity

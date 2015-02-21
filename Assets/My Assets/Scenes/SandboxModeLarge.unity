@@ -259,7 +259,7 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: .5, y: 1}
   m_AnchorMax: {x: .5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -140}
+  m_AnchoredPosition: {x: 0, y: -132}
   m_SizeDelta: {x: 160, y: 41}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &147531426
@@ -1009,7 +1009,7 @@ RectTransform:
   m_RootOrder: 2
   m_AnchorMin: {x: .5, y: 1}
   m_AnchorMax: {x: .5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchoredPosition: {x: 0, y: -92}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &636581448
@@ -1112,7 +1112,7 @@ RectTransform:
   m_RootOrder: 6
   m_AnchorMin: {x: .5, y: 1}
   m_AnchorMax: {x: .5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -232}
+  m_AnchoredPosition: {x: 0, y: -224}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: .5, y: .5}
 --- !u!1 &986864596
@@ -1230,7 +1230,7 @@ RectTransform:
   m_RootOrder: 5
   m_AnchorMin: {x: .5, y: 1}
   m_AnchorMax: {x: .5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -200}
+  m_AnchoredPosition: {x: 0, y: -192}
   m_SizeDelta: {x: 160, y: 41}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1147339035
@@ -1299,7 +1299,7 @@ RectTransform:
   m_RootOrder: 4
   m_AnchorMin: {x: .5, y: 1}
   m_AnchorMax: {x: .5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -172}
+  m_AnchoredPosition: {x: 0, y: -164}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1159445245
@@ -1746,7 +1746,7 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: .5, y: 1}
   m_AnchorMax: {x: .5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -68}
+  m_AnchoredPosition: {x: 0, y: -60}
   m_SizeDelta: {x: 160, y: 41}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1427069458
@@ -1826,10 +1826,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 40
   height: 32
-  numDistricts: 30
+  numDistricts: 31
   populationFalloffDistance: 10
   constituentPrefab: {fileID: 151446, guid: 4aa03a5967bf242479f3460af0c201a6, type: 2}
   districtPrefab: {fileID: 110426, guid: 1f80e96e20b73f74e821e6c40da8a2f1, type: 2}
+  setupString: 
 --- !u!114 &1467050356
 MonoBehaviour:
   m_ObjectHideFlags: 0

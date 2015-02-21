@@ -43,14 +43,17 @@ public class MoveManager : MonoBehaviour {
         get { return _AllowMoves; }
         set
         {
-            _AllowMoves = value;
-
-            UpdateValidMoves();
-
-            //update the borders of the currently selected district
-            foreach (var member in CurrentlySelectedDistrict.Constituents)
+            if (_AllowMoves != value)
             {
-                member.UpdateBorders();
+                _AllowMoves = value;
+
+                UpdateValidMoves();
+
+                //update the borders of the currently selected district
+                foreach (var member in CurrentlySelectedDistrict.Constituents)
+                {
+                    member.UpdateBorders();
+                }
             }
         }
     }

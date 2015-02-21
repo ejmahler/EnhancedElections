@@ -5,22 +5,15 @@ using System.Collections.Generic;
 
 public class CityGenerator : MonoBehaviour {
 
-    private struct Point
-    {
-        public int x, y;
+    [SerializeField] private int width;
+    [SerializeField] private int height;
+    [SerializeField] private int numDistricts;
+    [SerializeField] private float populationFalloffDistance;
 
-        public Point(int _x, int _y) { x = _x; y = _y; }
-        public static Point operator +(Point lhs, Point rhs) {
-            return new Point(lhs.x + rhs.x, lhs.y + rhs.y);
-        }
-    }
+    [SerializeField] private GameObject constituentPrefab;
+    [SerializeField] private GameObject districtPrefab;
 
-    public int width, height;
-    public int numDistricts;
-    public float populationFalloffDistance;
-
-    public GameObject constituentPrefab;
-    public GameObject districtPrefab;
+    [SerializeField] private string setupString;
 
     public List<District> Districts { get; private set; }
     public List<Constituent> Constituents { get; private set; }
@@ -56,9 +49,78 @@ public class CityGenerator : MonoBehaviour {
             locationDict.TryGetValue(p + new Point( 1, 0), out c.neighborRight);
         }
 
+        if (setupString.Length > 0)
+        {
+            ParseCity(setupString);
+        }
+        else
+        {
+            PartitionCity(Constituents);
+        }
+
+        foreach (District d in Districts)
+        {
+			d.UpdateMemberData();
+        }
+
+		foreach (Constituent c in Constituents) {
+			c.UpdateBorders();
+		}
+
+        float averageDistrictSize = (float)Constituents.Count((c) => { return c.party != Constituent.Party.None; }) / numDistricts;
+        minDistrictSize = (int)System.Math.Round(averageDistrictSize * 0.75f);
+        maxDistrictSize = (int)System.Math.Round(averageDistrictSize * 1.25f);
+	}
+
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log(SerializeCity());
+        }
+    }
+
+    private void ParseCity(string cityString)
+    {
+        string[] splitData = setupString.Split('|');
+
+        if (splitData.Length != Constituents.Count)
+        {
+            throw new System.Exception("Wrong setup string length");
+        }
+
+        SortedDictionary<string, District> districtMap = new SortedDictionary<string, District>();
+
+        for (int i = 0; i < splitData.Length; i++)
+        {
+            var partitioned = splitData[i].Split('-');
+            Constituents[i].party = Utils.ParseEnumString<Constituent.Party>(partitioned[0]);
+
+            if (!districtMap.ContainsKey(partitioned[1]))
+            {
+                District newDistrict = MakeDistrict(partitioned[1]);
+                districtMap.Add(partitioned[1], newDistrict);
+            }
+
+            Constituents[i].district = districtMap[partitioned[1]];
+        }
+
+        Districts = districtMap.Values.ToList();
+    }
+
+    private string SerializeCity()
+    {
+        return string.Join("|", Constituents.Select((c) =>
+        {
+            return c.party.ToString() + "-" + c.district.name;
+        }).ToArray());
+    }
+
+    private void PartitionCity(List<Constituent> constituents)
+    {
         //partition the constituents into districts
         Districts = new List<District>();
-        var partitionResults = PartitionConstituents(locationDict.Values.ToList(), numDistricts);
+        var partitionResults = PartitionConstituents(constituents, numDistricts);
         int i = 0;
         foreach (var partition in partitionResults)
         {
@@ -74,7 +136,8 @@ public class CityGenerator : MonoBehaviour {
         //go through the partitions again and make sure there are no disconnected pieces
         foreach (var partition in partitionResults)
         {
-            var components = Utils.ConnectedComponents(partition, (c) => {
+            var components = Utils.ConnectedComponents(partition, (c) =>
+            {
                 return c.Neighbors.Where((n) => { return n != null && c.district == n.district; });
             });
 
@@ -98,20 +161,7 @@ public class CityGenerator : MonoBehaviour {
                 }
             }
         }
-
-        foreach (District d in Districts)
-        {
-			d.UpdateMemberData();
-        }
-
-		foreach (Constituent c in Constituents) {
-			c.UpdateBorders();
-		}
-
-        float averageDistrictSize = (float)Constituents.Count((c) => { return c.party != Constituent.Party.None; }) / numDistricts;
-        minDistrictSize = (int)System.Math.Round(averageDistrictSize * 0.75f);
-        maxDistrictSize = (int)System.Math.Round(averageDistrictSize * 1.25f);
-	}
+    }
 
     private Constituent MakeConstituent(Vector3 position)
     {
@@ -254,5 +304,16 @@ public class CityGenerator : MonoBehaviour {
 
         //return true
         return true;
+    }
+
+    private struct Point
+    {
+        public int x, y;
+
+        public Point(int _x, int _y) { x = _x; y = _y; }
+        public static Point operator +(Point lhs, Point rhs)
+        {
+            return new Point(lhs.x + rhs.x, lhs.y + rhs.y);
+        }
     }
 }

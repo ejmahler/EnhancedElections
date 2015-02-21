@@ -10,10 +10,14 @@ public class InputManager : MonoBehaviour {
     private Camera mainCamera;
     private MoveManager moveManager;
 
+    public bool SelectionEnabled { get; set; }
+
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         moveManager = GetComponent<MoveManager>();
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+
+        SelectionEnabled = true;
 	}
 	
 	// Update is called once per frame
@@ -27,7 +31,7 @@ public class InputManager : MonoBehaviour {
                 moveManager.ConstituentDragged(constituent);
             }
         }
-        else
+        else if (SelectionEnabled)
         {
             var constituent = PickConstituent();
             if (constituent != null)

@@ -16,6 +16,11 @@ public class Utils : MonoBehaviour {
         return items[index];
     }
 
+    public static T ParseEnumString<T>(string enumString)
+    {
+        return (T)System.Enum.Parse(typeof(T), enumString);
+    }
+
 
     public static T ChooseWeightedRandom<T>(SortedList<T, float> items)
     {
