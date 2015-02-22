@@ -11,6 +11,9 @@ public class TutorialScript : MonoBehaviour {
     private CityGenerator cityGenerator;
     private InputManager inputManager;
 
+    [SerializeField]
+    private Button endTurnButton;
+
     private List<Constituent> allowedMoves;
 
     [SerializeField]
@@ -71,6 +74,7 @@ public class TutorialScript : MonoBehaviour {
 
         turnManager.firstPlayer = TurnManager.Player.Red;
         inputManager.SelectionEnabled = false;
+        endTurnButton.interactable = false;
 
         //show the intro screen
         yield return StartCoroutine(ShowCard(introPrefab));
@@ -161,11 +165,12 @@ public class TutorialScript : MonoBehaviour {
 
         //instuct the player to end the turn
         instructionText.text = "Great! Now it'll be more difficult for Blue to take that district from us.\n\nWe've run out of moves for this turn. Press the \"End turn\" button.";
-
+        endTurnButton.interactable = true;
         while (turnManager.CurrentPlayer == TurnManager.Player.Red)
         {
             yield return null;
         }
+        endTurnButton.interactable = false;
 
         //inform the player about locked etc's
         instructionText.text = "See how the constituents we moved last turn are gray now? That means they're Locked. Neither player is allowed to move locked constituents into other districts.\n\nPress any key to continue.";
@@ -191,6 +196,7 @@ public class TutorialScript : MonoBehaviour {
         instructionText.text = "Feel free to keep playing. Click the \"Main Menu\" button when you're ready to play an actual game.";
 
         //allow all moves, so that the player can keep messing around
+        endTurnButton.interactable = true;
         allowedMoves = cityGenerator.Constituents;
     }
 

@@ -6,9 +6,9 @@ public class Constituent : MonoBehaviour {
     public enum Party { Red, Blue, Yellow, None }
 
 
-	[SerializeField] private Material _partyRedMaterial;
-	[SerializeField] private Material _partyBlueMaterial;
-	[SerializeField] private Material _partyYellowMaterial;
+	private GameObject _partyRedShape;
+    private GameObject _partyBlueShape;
+    private GameObject _partyOtherShape;
 
 
     [System.NonSerialized]
@@ -22,7 +22,7 @@ public class Constituent : MonoBehaviour {
 
 	private MoveManager moveManager;
 
-    private Renderer _backgroundMesh, _sphereMesh;
+    private Renderer _backgroundMesh;
 
     private Renderer _borderTop, _borderBottom, _borderLeft, _borderRight;
     private Renderer[] NeighborBorders {
@@ -62,21 +62,18 @@ public class Constituent : MonoBehaviour {
 		get { return _party; }
 		set {
 			_party = value;
-			if (value == Party.None)
-			{
-				_sphereMesh.gameObject.SetActive(false);
-			}
-			else
-			{
-				_sphereMesh.gameObject.SetActive(true);
-				_sphereMesh.material = GetMaterial(value);
-			}
+            _partyRedShape.SetActive(value == Party.Red);
+            _partyBlueShape.SetActive(value == Party.Blue);
+            _partyOtherShape.SetActive(value == Party.Yellow);
 		}
 	}
 
 	void Awake () {
         _backgroundMesh = transform.Find("Background").GetComponent<MeshRenderer>();
-        _sphereMesh = transform.Find("Sphere").GetComponent<MeshRenderer>();
+
+        _partyRedShape = transform.Find("RedShape").gameObject;
+        _partyBlueShape = transform.Find("BlueShape").gameObject;
+        _partyOtherShape = transform.Find("OtherShape").gameObject;
 
         _borderTop = transform.Find("Border Top").GetComponent<MeshRenderer>();
         _borderBottom = transform.Find("Border Bottom").GetComponent<MeshRenderer>();
@@ -132,25 +129,5 @@ public class Constituent : MonoBehaviour {
         {
             _backgroundMesh.material = normalBackground;
         }
-    }
-
-    private Material GetMaterial(Party party)
-    {
-        if (party == Party.Blue)
-		{
-			return _partyBlueMaterial;
-		}
-		else if (party == Party.Red)
-		{
-			return _partyRedMaterial;
-		}
-		else if (party == Party.Yellow)
-		{
-			return _partyYellowMaterial;
-		}
-		else
-		{
-			return null;
-		}
     }
 }

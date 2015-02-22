@@ -2330,6 +2330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb1eb13b483b4cb43a19b8876e0f0ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  endTurnButton: {fileID: 2009855848}
   canvas: {fileID: 246687335}
   instructionText: {fileID: 1430973695}
   introPrefab: {fileID: 132100, guid: fe82d18902c9f2446b12296e303c21a2, type: 2}
