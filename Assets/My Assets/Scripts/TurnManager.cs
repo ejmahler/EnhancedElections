@@ -122,7 +122,39 @@ public class TurnManager : MonoBehaviour {
 
         CurrentBlueScore = NextBlueScore;
         CurrentRedScore = NextRedScore;
+
+		ConvertUndecideds ();
     }
+
+	private void ConvertUndecideds()
+	{
+		float conversion_cutoff_low = 0.65f;
+		float conversion_chance_low = 0.2f;
+
+		float conversion_cutoff_high = 0.8f;
+		float conversion_chance_high = 0.4f;
+
+		foreach (District d in cityGenerator.Districts)
+		{
+			if(d.CurrentMajorityPecent > conversion_cutoff_high)
+			{
+				foreach(Constituent c in d.Constituents.Where((c) => c.party == Constituent.Party.Yellow))
+				{
+					if(Utils.Chance(conversion_chance_high))
+						c.party = d.CurrentMajority;
+				}
+			}
+			else if(d.CurrentMajorityPecent > conversion_cutoff_low)
+			{
+				foreach(Constituent c in d.Constituents.Where((c) => c.party == Constituent.Party.Yellow))
+				{
+					if(Utils.Chance(conversion_chance_low))
+						c.party = d.CurrentMajority;
+				}
+			}
+			d.UpdateMemberData();
+		}
+	}
 
     public enum Player
     {

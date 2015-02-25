@@ -4,6 +4,11 @@ using System.Linq;
 
 public class Utils : MonoBehaviour {
 
+	public static bool Chance(float chance)
+	{
+		return Random.value < chance;
+	}
+
     public static T ChooseRandom<T>(List<T> items)
     {
         int index = Random.Range(0, items.Count);
