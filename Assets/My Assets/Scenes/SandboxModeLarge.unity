@@ -1837,7 +1837,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   width: 40
-  height: 32
+  height: 30
   numDistricts: 31
   populationFalloffDistance: 10
   constituentPrefab: {fileID: 151446, guid: 1010c71217b1d48c49373adc7ada98da, type: 2}
