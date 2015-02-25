@@ -21,7 +21,7 @@ public class CurrentTurnUIManager : MonoBehaviour {
         currentPlayerTextbox.color = GetTextColorForPlayer(currentPlayer);
 
         currentPlayerTextbox.text = string.Format("{0}'s Turn", currentPlayer.ToString());
-        currentTurnTextbox.text = string.Format("Round {0} of {1}", (turnManager.CurrentRound + 1).ToString(), turnManager.TotalRounds);
+        currentTurnTextbox.text = string.Format("Round {0} of {1}", (turnManager.CurrentRound).ToString(), turnManager.TotalRounds);
 	}
 
     public void UpdateTurnDisplay(float transitionDuration)
@@ -31,7 +31,7 @@ public class CurrentTurnUIManager : MonoBehaviour {
 
         LeanTween.textColor(currentPlayerTextbox.rectTransform, Color.black, transitionDuration * 0.5f).setOnComplete(() =>
         {
-            currentTurnTextbox.text = string.Format("Round {0} of {1}", (turnManager.CurrentRound + 1).ToString(), turnManager.TotalRounds);
+            currentTurnTextbox.text = string.Format("Round {0} of {1}", (turnManager.NextRound).ToString(), turnManager.TotalRounds);
             currentPlayerTextbox.text = string.Format("{0}'s Turn", nextPlayer.ToString());
             LeanTween.textColor(currentPlayerTextbox.rectTransform, targetTextColor, transitionDuration * 0.5f);
         });

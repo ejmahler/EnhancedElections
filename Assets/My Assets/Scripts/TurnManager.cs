@@ -58,8 +58,8 @@ public class TurnManager : MonoBehaviour {
     }
 
 
-    public int CurrentRound { get { return currentTurnIndex / 2; } }
-    public int NextRound { get { return (currentTurnIndex + 1) / 2; } }
+    public int CurrentRound { get { return currentTurnIndex / 2 + 1; } }
+    public int NextRound { get { return (currentTurnIndex + 1) / 2 + 1; } }
 
     //Property that returns the number of moves that have been made during the current turn
     public int MovesThisTurn
