@@ -123,7 +123,7 @@ public class TutorialScript : MonoBehaviour {
 
             if (!Input.GetButton("Fire1"))
             {
-                instructionText.text = "The district to the right has a pretty even vote. We can swing it red's favor by moving two of its blue voters into the upper left district.\n\nStart by clicking on a constituent in your district and holding the mouse button down.";
+                instructionText.text = "The district to the right has a pretty even vote. We can swing it red's favor by moving two of its blue voters into the upper left district.\n\nStart by clicking on a constituent in the upper left district and holding the mouse button down.";
             }
             else
             {
