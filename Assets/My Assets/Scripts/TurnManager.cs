@@ -12,6 +12,10 @@ public class TurnManager : MonoBehaviour {
     private int _MovesPerTurn;
     public int MovesPerTurn { get { return _MovesPerTurn; } }
 
+    [SerializeField]
+    private int _totalRounds;
+    public int TotalRounds { get { return _totalRounds; } }
+
     private int currentTurnIndex = 0;
     public Player firstPlayer;
 
