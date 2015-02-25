@@ -62,7 +62,7 @@ public class TurnManager : MonoBehaviour {
     {
         get
         {
-            return moveManager.MoveHistory.Keys.Count;
+            return moveManager.OriginalDistricts.Keys.Count;
         }
     }
 
@@ -110,14 +110,14 @@ public class TurnManager : MonoBehaviour {
                                                pair => pair.Value);
 
         //add locked constituents from the move manager's move history
-        foreach(var c in moveManager.MoveHistory.Keys)
+        foreach(var c in moveManager.OriginalDistricts.Keys)
         {
             lockedConstituents.Add(c, currentTurnIndex + lockDuration);
         }
 
         moveManager.LockedConstituents = new HashSet<Constituent>(lockedConstituents.Keys);
 
-        moveManager.MoveHistory.Clear();
+        moveManager.OriginalDistricts.Clear();
         moveManager.UndoStack.Clear();
 
         CurrentBlueScore = NextBlueScore;
@@ -136,7 +136,7 @@ public class TurnManager : MonoBehaviour {
 
 		foreach (District d in cityGenerator.Districts)
 		{
-			if(d.CurrentMajorityPecent > conversion_cutoff_high)
+			if(d.CurrentMajorityPercent > conversion_cutoff_high)
 			{
 				foreach(Constituent c in d.Constituents.Where((c) => c.party == Constituent.Party.Yellow))
 				{
@@ -144,7 +144,7 @@ public class TurnManager : MonoBehaviour {
 						c.party = d.CurrentMajority;
 				}
 			}
-			else if(d.CurrentMajorityPecent > conversion_cutoff_low)
+			else if(d.CurrentMajorityPercent > conversion_cutoff_low)
 			{
 				foreach(Constituent c in d.Constituents.Where((c) => c.party == Constituent.Party.Yellow))
 				{

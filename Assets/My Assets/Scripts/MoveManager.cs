@@ -35,7 +35,7 @@ public class MoveManager : MonoBehaviour {
 
     //unordered history of movies every key is a constituent that has been changed, and every value is that constituent's original district
     //if the player moves a constituent back into its original district, it is removed from this map
-    public Dictionary<Constituent, District> MoveHistory { get; private set; }
+    public Dictionary<Constituent, District> OriginalDistricts { get; private set; }
 
     private CityGenerator cityGenerator;
 
@@ -66,7 +66,7 @@ public class MoveManager : MonoBehaviour {
         cityGenerator = GetComponent<CityGenerator>();
         audioManager = GetComponent<AudioManager>();
         UndoStack = new Stack<Move>();
-        MoveHistory = new Dictionary<Constituent, District>();
+        OriginalDistricts = new Dictionary<Constituent, District>();
     }
 
     // Use this for initialization
@@ -109,7 +109,7 @@ public class MoveManager : MonoBehaviour {
     public void UndoAll()
     {
         //move every modified constituent back into its original district
-        MoveConstituents(new Dictionary<Constituent, District>(MoveHistory));
+        MoveConstituents(new Dictionary<Constituent, District>(OriginalDistricts));
 
         //clear the undo stack since it isn't of much use anymore
         UndoStack.Clear();
@@ -126,15 +126,15 @@ public class MoveManager : MonoBehaviour {
 
             //if the player has moved this constituent back to its original district, remove it from the move history
             District originalDistrict;
-            if (MoveHistory.TryGetValue(item.Key, out originalDistrict))
+            if (OriginalDistricts.TryGetValue(item.Key, out originalDistrict))
             {
                 if (item.Value == originalDistrict)
-                    MoveHistory.Remove(item.Key);
+                    OriginalDistricts.Remove(item.Key);
             }
             else
             {
                 //since this constituent is not in the move history, oldDistrict is this constituent's original district (for this turn at least)
-                MoveHistory.Add(item.Key, item.Key.district);
+                OriginalDistricts.Add(item.Key, item.Key.district);
             }
 
             //move this constituent to its new district

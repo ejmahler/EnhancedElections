@@ -8,7 +8,7 @@ public class District : MonoBehaviour {
     public int VotingMemberCount { get; private set; }
 
     public Constituent.Party CurrentMajority  { get; private set; }
-	public float CurrentMajorityPecent { get; private set; }
+	public float CurrentMajorityPercent { get; private set; }
 	public int VotesRed { get; private set; }
 	public int VotesBlue { get; private set; }
 	public int VotesYellow { get; private set; }
@@ -130,17 +130,17 @@ public class District : MonoBehaviour {
 		if (votesBlue > votesRed)
         {
             majority = Constituent.Party.Blue;
-			CurrentMajorityPecent = ((float)votesBlue) / VotingMemberCount;
+			CurrentMajorityPercent = ((float)votesBlue) / VotingMemberCount;
         }
 		else if (votesBlue < votesRed)
         {
             majority = Constituent.Party.Red;
-			CurrentMajorityPecent = ((float)votesRed) / VotingMemberCount;
+			CurrentMajorityPercent = ((float)votesRed) / VotingMemberCount;
         }
         else
         {
             majority = Constituent.Party.None;
-			CurrentMajorityPecent = 0.5f;
+			CurrentMajorityPercent = 0.5f;
         }
 		VotesBlue = votesBlue;
 		VotesRed = votesRed;
