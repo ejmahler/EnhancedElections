@@ -94,11 +94,11 @@ public class Constituent : MonoBehaviour {
 
             if (moveManager.CurrentValidMoves == null || moveManager.CurrentValidMoves.Contains(neighbors[i]))
 			{
-				borders[i].renderer.material = validBorder;
+				borders[i].GetComponent<Renderer>().material = validBorder;
 			}
 			else
 			{
-				borders[i].renderer.material = invalidBorder;
+				borders[i].GetComponent<Renderer>().material = invalidBorder;
 			}
 		}
 		
