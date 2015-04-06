@@ -15,7 +15,8 @@ public class District : MonoBehaviour {
 
 	public Material ValidBorderMaterial { get; private set; }
 	public Material InvalidBorderMaterial { get; private set; }
-	public Material BackgroundMaterial { get; private set; }
+    public Material BackgroundMaterial { get; private set; }
+    public Material SelectedBackgroundMaterial { get; private set; }
 
 	//set of constituents that would split this vertex in two if removed
 	public HashSet<Constituent> ArticulationPoints { get; private set; }
@@ -86,10 +87,12 @@ public class District : MonoBehaviour {
 
         //be sure to copy the materials rather than just using them directly - that way we can mess with the colors without screwing up other districts 
         BackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
+        SelectedBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
 		ValidBorderMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Border"));
 		InvalidBorderMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Border"));
-		
-		BackgroundMaterial.SetColor("_Color", evenBackgroundColor);
+
+        BackgroundMaterial.SetColor("_Color", evenBackgroundColor);
+        SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(evenBackgroundColor, Color.white, 0.75f));
 		ValidBorderMaterial.SetColor("_Color", normalBorderColor);
 		InvalidBorderMaterial.SetColor("_Color", normalBorderColor);
 		
@@ -153,6 +156,7 @@ public class District : MonoBehaviour {
             Color oldColor = GetBackgroundColor(CurrentMajority);
             LeanTween.value(gameObject, oldColor, newColor, 0.25f).setOnUpdateColor((currentColor) => {
                 BackgroundMaterial.SetColor("_Color", currentColor);
+                SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(currentColor, Color.white, 0.75f));
             });
 
             CurrentMajority = majority;

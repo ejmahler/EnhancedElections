@@ -42,9 +42,9 @@ MonoBehaviour:
   selectedBorderColor: {r: 0, g: .507352948, b: .234431967, a: 1}
   normalBorderColor: {r: 0, g: 0, b: 0, a: 1}
   invalidBorderColor: {r: .683823526, g: 0, b: 0, a: 1}
-  redBackgroundColor: {r: 1, g: .691176474, b: .691176474, a: 1}
-  blueBackgroundColor: {r: .654411793, g: .78549701, b: 1, a: 1}
-  evenBackgroundColor: {r: .775854588, g: .779411793, b: .676254332, a: 1}
+  redBackgroundColor: {r: 1, g: .764705896, b: .764705896, a: 1}
+  blueBackgroundColor: {r: .79411763, g: .872210979, b: 1, a: 1}
+  evenBackgroundColor: {r: .944440842, g: .948529422, b: .829963267, a: 1}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -56,4 +56,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 110426}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

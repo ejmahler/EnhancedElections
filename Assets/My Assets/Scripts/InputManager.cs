@@ -26,7 +26,7 @@ public class InputManager : MonoBehaviour {
         if (Input.GetButton("Fire1"))
         {
             var constituent = PickConstituent();
-            if (constituent != null && constituent.district != currentDistrict)
+            if (constituent != null)
             {
                 moveManager.ConstituentDragged(constituent);
             }
@@ -36,7 +36,7 @@ public class InputManager : MonoBehaviour {
             var constituent = PickConstituent();
             if (constituent != null)
             {
-                moveManager.SelectDistrict(constituent.district);
+                moveManager.SelectConstituent(constituent);
                 currentDistrict = constituent.district;
             }
         }

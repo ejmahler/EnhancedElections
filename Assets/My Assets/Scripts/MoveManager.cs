@@ -8,6 +8,23 @@ public class MoveManager : MonoBehaviour {
     private AudioManager audioManager;
 
     public District CurrentlySelectedDistrict { get; private set; }
+
+    private Constituent _currentlySelectedConstituent;
+    public Constituent CurrentlySelectedConstituent {
+        get { return _currentlySelectedConstituent; }
+        private set
+        {
+            if(value != _currentlySelectedConstituent)
+            {
+                var old = _currentlySelectedConstituent;
+                _currentlySelectedConstituent = value;
+
+                if(old != null) old.UpdateBackground();
+                value.UpdateBackground();
+            }
+        }
+    }
+
     public HashSet<Constituent> CurrentValidMoves { get; private set; }
 
     private HashSet<Constituent> _lockedConstituents;
@@ -73,7 +90,7 @@ public class MoveManager : MonoBehaviour {
     void Start()
     {
         _AllowMoves = true;
-        SelectDistrict(cityGenerator.Districts[0]);
+        SelectConstituent(cityGenerator.Constituents[0]);
     }
 
     public void ConstituentDragged(Constituent c)
@@ -82,6 +99,12 @@ public class MoveManager : MonoBehaviour {
         {
             UndoStack.Push(new Move(c, c.district, CurrentlySelectedDistrict));
             MoveConstituents(new Dictionary<Constituent, District> {{c, CurrentlySelectedDistrict}});
+
+            CurrentlySelectedConstituent = c;
+        }
+        else if(c.district == CurrentlySelectedDistrict)
+        {
+            CurrentlySelectedConstituent = c;
         }
     }
 
@@ -151,14 +174,17 @@ public class MoveManager : MonoBehaviour {
         UpdateValidMoves();
 
         //tell every constituent of a modified district to update their borders
-        foreach (Constituent c in cityGenerator.Constituents.Where((c) => { return modifiedDistricts.Contains(c.district); }))
+        foreach (Constituent c in cityGenerator.Constituents.Where(c => modifiedDistricts.Contains(c.district)))
         {
             c.UpdateBorders();
         }
     }
 
-    public void SelectDistrict(District newDistrict)
+    public void SelectConstituent(Constituent newConstituent)
     {
+        CurrentlySelectedConstituent = newConstituent;
+
+        var newDistrict = newConstituent.district;
         if (CurrentlySelectedDistrict != newDistrict)
         {
             var oldDistrict = CurrentlySelectedDistrict;

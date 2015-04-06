@@ -5,17 +5,18 @@ public class Constituent : MonoBehaviour {
 
     public enum Party { Red, Blue, Yellow, None }
 
-
 	private GameObject _partyRedShape;
     private GameObject _partyBlueShape;
     private GameObject _partyOtherShape;
 
+    [System.NonSerialized]
+    private Material validBorder, invalidBorder;
 
     [System.NonSerialized]
-    public Material validBorder, invalidBorder;
+    private Material normalBackground;
 
     [System.NonSerialized]
-    public Material normalBackground;
+    private Material selectedBackground;
 
     [SerializeField]
     private Material lockedBackground;
@@ -39,6 +40,7 @@ public class Constituent : MonoBehaviour {
         {
             _district = value;
             normalBackground = value.BackgroundMaterial;
+            selectedBackground = value.SelectedBackgroundMaterial;
 			validBorder = value.ValidBorderMaterial;
 			invalidBorder = value.InvalidBorderMaterial;
 
@@ -124,6 +126,10 @@ public class Constituent : MonoBehaviour {
         if(moveManager.LockedConstituents.Contains(this))
         {
             _backgroundMesh.material = lockedBackground;
+        }
+        else if(moveManager.CurrentlySelectedConstituent == this)
+        {
+            _backgroundMesh.material = selectedBackground;
         }
         else
         {
