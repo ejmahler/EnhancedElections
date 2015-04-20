@@ -102,7 +102,7 @@ public class District : MonoBehaviour
     {
         get
         {
-            return cityGenerator.Constituents.Where((obj) => { return obj.district == this; });
+            return cityGenerator.Constituents.Where((obj) => { return obj.District == this; });
         }
     }
 
@@ -110,7 +110,7 @@ public class District : MonoBehaviour
     {
         get
         {
-            return cityGenerator.Constituents.Where((obj) => { return obj.district == this && obj.party != Constituent.Party.None; });
+            return cityGenerator.Constituents.Where((obj) => { return obj.District == this && obj.party != Constituent.Party.None; });
         }
     }
 
@@ -149,7 +149,7 @@ public class District : MonoBehaviour
         //update the set of neighbors - find all constituents that share a n edge with a member of this district
         NeighborConstituents = new HashSet<Constituent>(members.SelectMany((member) =>
         {
-            return member.Neighbors.Where((neighbor) => { return neighbor != null && neighbor.district != this; });
+            return member.Neighbors.Where((neighbor) => { return neighbor != null && neighbor.District != this; });
         }));
 
         //filter the consistuents by the ones in this district and then group them by party

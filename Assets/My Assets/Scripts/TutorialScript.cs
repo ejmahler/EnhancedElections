@@ -119,7 +119,7 @@ public class TutorialScript : MonoBehaviour
             //only allow the player to move into neighbor contituents that are blue
             allowedMoves = moveManager.CurrentlySelectedDistrict.NeighborConstituents.Where((c) =>
             {
-                return c.party == Constituent.Party.Blue && c.district == fourthDistrict;
+                return c.party == Constituent.Party.Blue && c.District == fourthDistrict;
             }).ToList();
 
             if (!Input.GetButton("Fire1"))
@@ -154,7 +154,7 @@ public class TutorialScript : MonoBehaviour
             //only allow the player to move into neighbor contituents that are blue
             allowedMoves = moveManager.CurrentlySelectedDistrict.NeighborConstituents.Where((c) =>
             {
-                return c.party == Constituent.Party.Blue && c.district == seventhDistrict;
+                return c.party == Constituent.Party.Blue && c.District == seventhDistrict;
             }).ToList();
 
             instructionText.text = "We control the district below this, but the vote is too close for comfort. By removing blue voters, we can ensure that Blue can't take it from us.\n\nMove as many blue voters as possible out of the bottom right district.";

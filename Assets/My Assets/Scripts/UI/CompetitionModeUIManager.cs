@@ -118,7 +118,7 @@ public class CompetitionModeUIManager : MonoBehaviour
                 var constituent = Utils.ChooseRandom(nonWinningConstituents.ToList());
 
                 constituent.party = winner;
-                constituent.district.UpdateMemberData();
+                constituent.District.UpdateMemberData();
 
                 yield return null;
             }

@@ -39,7 +39,7 @@ public class InputManager : MonoBehaviour
             if (constituent != null)
             {
                 moveManager.SelectConstituent(constituent);
-                currentDistrict = constituent.district;
+                currentDistrict = constituent.District;
             }
         }
 

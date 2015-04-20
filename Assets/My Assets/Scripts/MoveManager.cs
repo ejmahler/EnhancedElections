@@ -114,12 +114,12 @@ public class MoveManager : MonoBehaviour
     {
         if (CurrentlySelectedDistrict != null && CurrentValidMoves.Contains(c))
         {
-            UndoStack.Push(new Move(c, c.district, CurrentlySelectedDistrict));
+            UndoStack.Push(new Move(c, c.District, CurrentlySelectedDistrict));
             MoveConstituents(new Dictionary<Constituent, District> { { c, CurrentlySelectedDistrict } });
 
             CurrentlySelectedConstituent = c;
         }
-        else if (c.district == CurrentlySelectedDistrict)
+        else if (c.District == CurrentlySelectedDistrict)
         {
             CurrentlySelectedConstituent = c;
         }
@@ -162,7 +162,7 @@ public class MoveManager : MonoBehaviour
         foreach (var item in moves)
         {
             modifiedDistricts.Add(item.Value);//new district for this constituent
-            modifiedDistricts.Add(item.Key.district);//previous district for this constituent
+            modifiedDistricts.Add(item.Key.District);//previous district for this constituent
 
             //if the player has moved this constituent back to its original district, remove it from the move history
             District originalDistrict;
@@ -174,11 +174,11 @@ public class MoveManager : MonoBehaviour
             else
             {
                 //since this constituent is not in the move history, oldDistrict is this constituent's original district (for this turn at least)
-                OriginalDistricts.Add(item.Key, item.Key.district);
+                OriginalDistricts.Add(item.Key, item.Key.District);
             }
 
             //move this constituent to its new district
-            item.Key.district = item.Value;
+            item.Key.District = item.Value;
         }
 
         //update the member data of all the districts we've modified
@@ -191,7 +191,7 @@ public class MoveManager : MonoBehaviour
         UpdateValidMoves();
 
         //tell every constituent of a modified district to update their borders
-        foreach (Constituent c in cityGenerator.Constituents.Where(c => modifiedDistricts.Contains(c.district)))
+        foreach (Constituent c in cityGenerator.Constituents.Where(c => modifiedDistricts.Contains(c.District)))
         {
             c.UpdateBorders();
         }
@@ -201,7 +201,7 @@ public class MoveManager : MonoBehaviour
     {
         CurrentlySelectedConstituent = newConstituent;
 
-        var newDistrict = newConstituent.district;
+        var newDistrict = newConstituent.District;
         if (CurrentlySelectedDistrict != newDistrict)
         {
             var oldDistrict = CurrentlySelectedDistrict;

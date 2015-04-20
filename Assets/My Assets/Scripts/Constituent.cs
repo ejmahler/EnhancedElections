@@ -10,6 +10,8 @@ public class Constituent : MonoBehaviour
     private GameObject _partyBlueShape;
     private GameObject _partyOtherShape;
 
+    private LTDescr activeShapeSizeTween = null;
+
     [System.NonSerialized]
     private Material validBorder, invalidBorder;
 
@@ -35,7 +37,7 @@ public class Constituent : MonoBehaviour
     }
 
     private District _district;
-    public District district
+    public District District
     {
         get { return _district; }
         set
@@ -48,6 +50,34 @@ public class Constituent : MonoBehaviour
 
             UpdateBorders();
             UpdateBackground();
+
+            //if we have a party shape, pulse its size
+            var activeShape = GetShapeForParty();
+            if (activeShape != null)
+            {
+                System.Action tweenSize = () =>
+                {
+                    var originalScale = activeShape.transform.localScale;
+                    activeShape.transform.localScale = originalScale * 1.75f;
+
+                    activeShapeSizeTween = LeanTween.scale(activeShape, originalScale, 0.25f)
+                        .setEase(LeanTweenType.easeInOutQuad)
+                        .setOnComplete(() =>
+                        {
+                            activeShapeSizeTween = null;
+                        }); ;
+                };
+
+                //if we're already tweening the size, wait until it finishes
+                if (activeShapeSizeTween != null)
+                {
+                    activeShapeSizeTween.setOnComplete(tweenSize);
+                }
+                else
+                {
+                    tweenSize();
+                }
+            }
         }
     }
 
@@ -93,7 +123,7 @@ public class Constituent : MonoBehaviour
                 System.Action<float> glazeUpdate = (percent) =>
                 {
                     selectionEffectPercentage = percent;
-                    SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(district.CurrentPartyColor, BackgroundMaterial.GetColor("_Color"), selectionEffectPercentage));
+                    SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(District.CurrentPartyColor, BackgroundMaterial.GetColor("_Color"), selectionEffectPercentage));
                 };
 
                 if (value) //if we are selected, transition from the glaze color back to the normal color
@@ -137,7 +167,7 @@ public class Constituent : MonoBehaviour
         var neighbors = Neighbors;
         for (int i = 0; i < 4; i++)
         {
-            borders[i].gameObject.SetActive(neighbors[i] != null && neighbors[i].district != this.district);
+            borders[i].gameObject.SetActive(neighbors[i] != null && neighbors[i].District != this.District);
 
             if (moveManager.CurrentValidMoves == null || moveManager.CurrentValidMoves.Contains(neighbors[i]))
             {
@@ -150,7 +180,7 @@ public class Constituent : MonoBehaviour
         }
 
         //if our district is selected, move our borders forward in the z direction so that they appear on top of unselected
-        if (district.CurrentlySelected)
+        if (District.CurrentlySelected)
         {
             foreach (var b in borders)
             {
@@ -174,12 +204,27 @@ public class Constituent : MonoBehaviour
         }
         else if (CurrentlySelected || selectionEffectPercentage < 1.0f)
         {
-            SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(district.CurrentPartyColor, BackgroundMaterial.color, selectionEffectPercentage));
+            SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(District.CurrentPartyColor, BackgroundMaterial.color, selectionEffectPercentage));
             _backgroundMesh.material = SelectedBackgroundMaterial;
         }
         else
         {
             _backgroundMesh.material = BackgroundMaterial;
+        }
+    }
+
+    private GameObject GetShapeForParty()
+    {
+        switch (party)
+        {
+            case Party.Blue:
+                return _partyBlueShape;
+            case Party.Red:
+                return _partyRedShape;
+            case Party.Yellow:
+                return _partyOtherShape;
+            default:
+                return null;
         }
     }
 }

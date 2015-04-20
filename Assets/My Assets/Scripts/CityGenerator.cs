@@ -112,7 +112,7 @@ public class CityGenerator : MonoBehaviour
                 districtMap.Add(partitioned[1], newDistrict);
             }
 
-            Constituents[i].district = districtMap[partitioned[1]];
+            Constituents[i].District = districtMap[partitioned[1]];
         }
 
         Districts = districtMap.Values.ToList();
@@ -122,7 +122,7 @@ public class CityGenerator : MonoBehaviour
     {
         return string.Join("|", Constituents.Select((c) =>
         {
-            return c.party.ToString() + "-" + c.district.name;
+            return c.party.ToString() + "-" + c.District.name;
         }).ToArray());
     }
 
@@ -139,7 +139,7 @@ public class CityGenerator : MonoBehaviour
 
             foreach (var c in partition)
             {
-                c.district = d;
+                c.District = d;
             }
         }
 
@@ -148,7 +148,7 @@ public class CityGenerator : MonoBehaviour
         {
             var components = Utils.ConnectedComponents(partition, (c) =>
             {
-                return c.Neighbors.Where((n) => { return n != null && c.district == n.district; });
+                return c.Neighbors.Where((n) => { return n != null && c.District == n.District; });
             });
 
             //if the component count is more than 1, we have some disconnected pieces
@@ -161,12 +161,12 @@ public class CityGenerator : MonoBehaviour
                     //'component' is a disconnected piece. the simplest thing to do is just move each piece into one of the neighboring districts
                     foreach (var c in component)
                     {
-                        District newDistrict = c.district;
-                        while (Object.ReferenceEquals(newDistrict, c.district))
+                        District newDistrict = c.District;
+                        while (Object.ReferenceEquals(newDistrict, c.District))
                         {
-                            newDistrict = Utils.ChooseRandom(c.Neighbors.Where((n) => { return n != null; }).ToList()).district;
+                            newDistrict = Utils.ChooseRandom(c.Neighbors.Where((n) => { return n != null; }).ToList()).District;
                         }
-                        c.district = newDistrict;
+                        c.District = newDistrict;
                     }
                 }
             }
@@ -288,7 +288,7 @@ public class CityGenerator : MonoBehaviour
         if (constituent.party != Constituent.Party.None)
         {
             //make sure the size of the old district will be within size constraints
-            if (constituent.district.VotingMemberCount - 1 < minDistrictSize)
+            if (constituent.District.VotingMemberCount - 1 < minDistrictSize)
             {
                 return false;
             }
@@ -301,7 +301,7 @@ public class CityGenerator : MonoBehaviour
         }
 
         //check if this constituent is a cut vertex for the old district. if it is, return false
-        if (constituent.district.ArticulationPoints.Contains(constituent))
+        if (constituent.District.ArticulationPoints.Contains(constituent))
         {
             return false;
         }
