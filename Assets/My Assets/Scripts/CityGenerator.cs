@@ -3,24 +3,33 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-public class CityGenerator : MonoBehaviour {
+public class CityGenerator : MonoBehaviour
+{
 
-    [SerializeField] private int width;
-    [SerializeField] private int height;
-    [SerializeField] private int numDistricts;
-    [SerializeField] private float populationFalloffDistance;
+    [SerializeField]
+    private int width;
+    [SerializeField]
+    private int height;
+    [SerializeField]
+    private int numDistricts;
+    [SerializeField]
+    private float populationFalloffDistance;
 
-    [SerializeField] private GameObject constituentPrefab;
-    [SerializeField] private GameObject districtPrefab;
+    [SerializeField]
+    private GameObject constituentPrefab;
+    [SerializeField]
+    private GameObject districtPrefab;
 
-    [SerializeField] private string setupString;
+    [SerializeField]
+    private string setupString;
 
     public List<District> Districts { get; private set; }
     public List<Constituent> Constituents { get; private set; }
 
     private int minDistrictSize, maxDistrictSize;
 
-	void Awake () {
+    void Awake()
+    {
         float baseX = -width / 2.0f + 0.5f;
         float baseY = -height / 2.0f + 0.5f;
 
@@ -34,19 +43,19 @@ public class CityGenerator : MonoBehaviour {
             {
                 Vector3 position = new Vector3(baseX + x, baseY + y, 0.0f);
                 var constituent = MakeConstituent(position);
-                locationDict.Add(new Point(x,y), constituent);
+                locationDict.Add(new Point(x, y), constituent);
                 Constituents.Add(constituent);
             }
         }
-        
+
         //assign neighbors to each constistuent
         foreach (Point p in locationDict.Keys)
         {
             Constituent c = locationDict[p];
-            locationDict.TryGetValue(p + new Point( 0, 1), out c.neighborTop);
-            locationDict.TryGetValue(p + new Point( 0,-1), out c.neighborBottom);
+            locationDict.TryGetValue(p + new Point(0, 1), out c.neighborTop);
+            locationDict.TryGetValue(p + new Point(0, -1), out c.neighborBottom);
             locationDict.TryGetValue(p + new Point(-1, 0), out c.neighborLeft);
-            locationDict.TryGetValue(p + new Point( 1, 0), out c.neighborRight);
+            locationDict.TryGetValue(p + new Point(1, 0), out c.neighborRight);
         }
 
         if (setupString.Length > 0)
@@ -60,21 +69,22 @@ public class CityGenerator : MonoBehaviour {
 
         foreach (District d in Districts)
         {
-			d.UpdateMemberData();
+            d.UpdateMemberData();
         }
 
-		foreach (Constituent c in Constituents) {
-			c.UpdateBorders();
-		}
+        foreach (Constituent c in Constituents)
+        {
+            c.UpdateBorders();
+        }
 
         float averageDistrictSize = (float)Constituents.Count((c) => { return c.party != Constituent.Party.None; }) / numDistricts;
         minDistrictSize = (int)System.Math.Round(averageDistrictSize * 0.75f);
         maxDistrictSize = (int)System.Math.Round(averageDistrictSize * 1.25f);
-	}
+    }
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Log(SerializeCity());
         }
@@ -240,7 +250,7 @@ public class CityGenerator : MonoBehaviour {
         {
             pointProjection.Add(Vector3.Dot(axis, c.transform.position));
         }
-		pointProjection.Sort ();
+        pointProjection.Sort();
 
         //choose a pivot point based on numPartitions
         int smallerPartition = numPartitions / 2;
@@ -275,20 +285,20 @@ public class CityGenerator : MonoBehaviour {
 
     public bool IsValidMove(Constituent constituent, District newDistrict)
     {
-		if (constituent.party != Constituent.Party.None)
-		{
-			//make sure the size of the old district will be within size constraints
-			if (constituent.district.VotingMemberCount - 1 < minDistrictSize)
-			{
-				return false;
-			}
+        if (constituent.party != Constituent.Party.None)
+        {
+            //make sure the size of the old district will be within size constraints
+            if (constituent.district.VotingMemberCount - 1 < minDistrictSize)
+            {
+                return false;
+            }
 
-			//make sure the size of the new district will be within constraints
+            //make sure the size of the new district will be within constraints
             if (newDistrict.VotingMemberCount + 1 > maxDistrictSize)
-			{
-				return false;
-			}
-		}
+            {
+                return false;
+            }
+        }
 
         //check if this constituent is a cut vertex for the old district. if it is, return false
         if (constituent.district.ArticulationPoints.Contains(constituent))
@@ -297,8 +307,8 @@ public class CityGenerator : MonoBehaviour {
         }
 
         //verify that this constituent is actually adjacent to the new district
-		if(!newDistrict.NeighborConstituents.Contains(constituent))
-		{
+        if (!newDistrict.NeighborConstituents.Contains(constituent))
+        {
             return false;
         }
 

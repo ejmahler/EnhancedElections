@@ -3,7 +3,8 @@ using UnityEngine.UI;
 using System.Linq;
 
 [RequireComponent(typeof(MoveManager))]
-public class InputManager : MonoBehaviour {
+public class InputManager : MonoBehaviour
+{
 
     private District currentDistrict = null;
 
@@ -12,15 +13,16 @@ public class InputManager : MonoBehaviour {
 
     public bool SelectionEnabled { get; set; }
 
-	// Use this for initialization
-	void Awake () {
+    // Use this for initialization
+    void Awake()
+    {
         moveManager = GetComponent<MoveManager>();
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 
         SelectionEnabled = true;
-	}
-	
-	// Update is called once per frame
+    }
+
+    // Update is called once per frame
     void Update()
     {
         if (Input.GetButton("Fire1"))

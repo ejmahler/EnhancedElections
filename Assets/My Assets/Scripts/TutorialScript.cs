@@ -4,7 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class TutorialScript : MonoBehaviour {
+public class TutorialScript : MonoBehaviour
+{
 
     private MoveManager moveManager;
     private TurnManager turnManager;
@@ -38,8 +39,8 @@ public class TutorialScript : MonoBehaviour {
     private GameObject conclusionPrefab;
 
 
-	// Use this for initialization
-	void Awake ()
+    // Use this for initialization
+    void Awake()
     {
         turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
         turnManager.firstPlayer = TurnManager.Player.Red;
@@ -48,7 +49,7 @@ public class TutorialScript : MonoBehaviour {
         inputManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<InputManager>();
 
         allowedMoves = new List<Constituent>();
-	}
+    }
 
     void Start()
     {
@@ -94,7 +95,7 @@ public class TutorialScript : MonoBehaviour {
 
         //wait until the player has selected 5 districts
         HashSet<District> selectedDistricts = new HashSet<District>();
-        while(selectedDistricts.Count < 5)
+        while (selectedDistricts.Count < 5)
         {
             selectedDistricts.Add(moveManager.CurrentlySelectedDistrict);
             yield return null;
@@ -129,7 +130,7 @@ public class TutorialScript : MonoBehaviour {
             {
                 instructionText.text = "Now, drag the cursor over the constituents you want to add to this district.\n\nNotice how the border is green if you can move in that direction, and red if you can't.";
             }
-            
+
             yield return null;
         }
         allowedMoves.Clear();

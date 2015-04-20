@@ -2,29 +2,34 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class ScoreUIManager : MonoBehaviour {
+public class ScoreUIManager : MonoBehaviour
+{
 
-    [SerializeField] private Text redScoreTextbox;
-    [SerializeField] private Text blueScoreTextbox;
+    [SerializeField]
+    private Text redScoreTextbox;
+    [SerializeField]
+    private Text blueScoreTextbox;
 
     private int displayScoreBlue;
     private int displayScoreRed;
 
     private TurnManager turnManager;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
 
         displayScoreBlue = 0;
         displayScoreRed = 0;
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
         blueScoreTextbox.text = displayScoreBlue.ToString();
         redScoreTextbox.text = displayScoreRed.ToString();
-	}
+    }
 
     public void UpdateScoreDisplay(float transitionDuration)
     {

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MenuNavigation : MonoBehaviour {
+public class MenuNavigation : MonoBehaviour
+{
 
     public void TutorialClicked()
     {

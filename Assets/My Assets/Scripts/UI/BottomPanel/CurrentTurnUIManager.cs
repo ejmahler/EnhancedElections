@@ -2,18 +2,24 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class CurrentTurnUIManager : MonoBehaviour {
+public class CurrentTurnUIManager : MonoBehaviour
+{
 
-    [SerializeField] private Color bluesTurnTextColor;
-    [SerializeField] private Color redsTurnTextColor;
+    [SerializeField]
+    private Color bluesTurnTextColor;
+    [SerializeField]
+    private Color redsTurnTextColor;
 
-    [SerializeField] private Text currentTurnTextbox;
-    [SerializeField] private Text currentPlayerTextbox;
+    [SerializeField]
+    private Text currentTurnTextbox;
+    [SerializeField]
+    private Text currentPlayerTextbox;
 
     private TurnManager turnManager;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
 
         //color the text based on whose turn it is
@@ -22,7 +28,7 @@ public class CurrentTurnUIManager : MonoBehaviour {
 
         currentPlayerTextbox.text = string.Format("{0}'s Turn", currentPlayer.ToString());
         currentTurnTextbox.text = string.Format("Round {0} of {1}", (turnManager.CurrentRound).ToString(), turnManager.TotalRounds);
-	}
+    }
 
     public void UpdateTurnDisplay(float transitionDuration)
     {

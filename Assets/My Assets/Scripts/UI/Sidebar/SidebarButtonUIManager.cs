@@ -12,13 +12,15 @@ public class SidebarButtonUIManager : MonoBehaviour
 
     private MoveManager moveManager;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         moveManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MoveManager>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
 
         //enable/disable the undo button
         if (moveManager.UndoStack.Count > 0)
@@ -39,7 +41,7 @@ public class SidebarButtonUIManager : MonoBehaviour
         {
             undoAllButton.interactable = false;
         }
-	}
+    }
 
     public void UndoClicked()
     {

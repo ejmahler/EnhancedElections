@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 
 [RequireComponent(typeof(CityGenerator))]
-public class MoveManager : MonoBehaviour {
+public class MoveManager : MonoBehaviour
+{
 
     private AudioManager audioManager;
 
     public District CurrentlySelectedDistrict { get; private set; }
 
     private Constituent _currentlySelectedConstituent;
-    public Constituent CurrentlySelectedConstituent {
+    public Constituent CurrentlySelectedConstituent
+    {
         get { return _currentlySelectedConstituent; }
         private set
         {
-            if(value != _currentlySelectedConstituent)
+            if (value != _currentlySelectedConstituent)
             {
                 var old = _currentlySelectedConstituent;
                 _currentlySelectedConstituent = value;
@@ -43,11 +45,11 @@ public class MoveManager : MonoBehaviour {
 
             _lockedConstituents = value;
 
-            foreach(var c in oldLocked)
+            foreach (var c in oldLocked)
             {
                 c.UpdateBackground();
             }
-            foreach(var c in value)
+            foreach (var c in value)
             {
                 c.UpdateBackground();
             }
@@ -105,7 +107,7 @@ public class MoveManager : MonoBehaviour {
         //at the moment, the constituent's background color is changed by its district, EXCEPT when it is the currently selected constituent
         //in that case (and only in that case), it has its own background color for a mouseover effect
         //so we save a ton un update calls here by calling it only on the constituent that needs ot
-        CurrentlySelectedConstituent.UpdateBackground(); 
+        CurrentlySelectedConstituent.UpdateBackground();
     }
 
     public void ConstituentDragged(Constituent c)
@@ -113,11 +115,11 @@ public class MoveManager : MonoBehaviour {
         if (CurrentlySelectedDistrict != null && CurrentValidMoves.Contains(c))
         {
             UndoStack.Push(new Move(c, c.district, CurrentlySelectedDistrict));
-            MoveConstituents(new Dictionary<Constituent, District> {{c, CurrentlySelectedDistrict}});
+            MoveConstituents(new Dictionary<Constituent, District> { { c, CurrentlySelectedDistrict } });
 
             CurrentlySelectedConstituent = c;
         }
-        else if(c.district == CurrentlySelectedDistrict)
+        else if (c.district == CurrentlySelectedDistrict)
         {
             CurrentlySelectedConstituent = c;
         }

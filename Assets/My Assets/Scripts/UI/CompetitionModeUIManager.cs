@@ -4,14 +4,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class CompetitionModeUIManager : MonoBehaviour {
+public class CompetitionModeUIManager : MonoBehaviour
+{
 
-    [SerializeField] private Color bluesTurnBackgroundColor;
-    [SerializeField] private Color redsTurnBackgroundColor;
+    [SerializeField]
+    private Color bluesTurnBackgroundColor;
+    [SerializeField]
+    private Color redsTurnBackgroundColor;
 
-    [SerializeField] private List<Image> backgroundPanels;
+    [SerializeField]
+    private List<Image> backgroundPanels;
 
-    [SerializeField] private GameObject endScreenPrefab;
+    [SerializeField]
+    private GameObject endScreenPrefab;
 
     private CurrentTurnUIManager currentTurnUIManager;
     private ScoreUIManager scoreUIManager;
@@ -22,8 +27,8 @@ public class CompetitionModeUIManager : MonoBehaviour {
     private TurnManager turnManager;
     private CityGenerator cityGenerator;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start()
     {
         turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
         cityGenerator = GameObject.FindGameObjectWithTag("GameController").GetComponent<CityGenerator>();
@@ -35,17 +40,17 @@ public class CompetitionModeUIManager : MonoBehaviour {
 
         //color the text based on whose turn it is
         var currentBackgroundColor = GetBackgroundColorForPlayer(turnManager.CurrentPlayer);
-        foreach(var panel in backgroundPanels)
+        foreach (var panel in backgroundPanels)
         {
             panel.color = currentBackgroundColor;
         }
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    }
+
+    // Update is called once per frame
+    void Update()
     {
-        
-	}
+
+    }
 
     public void AdvanceTurn()
     {
@@ -53,7 +58,7 @@ public class CompetitionModeUIManager : MonoBehaviour {
         endTurnUIManager.SetEndTurnButtonInteractable(false);
         turnManager.BeginTurnTransition();
 
-        if(turnManager.NextRound > turnManager.TotalRounds)
+        if (turnManager.NextRound > turnManager.TotalRounds)
         {
             StartCoroutine(EndGame());
         }
@@ -88,14 +93,14 @@ public class CompetitionModeUIManager : MonoBehaviour {
     private IEnumerator EndGame()
     {
         Constituent.Party winner;
-        
+
         int finalRedScore = turnManager.NextRedScore;
         int finalblueScore = turnManager.NextBlueScore;
-        if(finalRedScore > finalblueScore)
+        if (finalRedScore > finalblueScore)
         {
             winner = Constituent.Party.Red;
         }
-        else if(finalblueScore > finalRedScore)
+        else if (finalblueScore > finalRedScore)
         {
             winner = Constituent.Party.Blue;
         }
@@ -104,11 +109,11 @@ public class CompetitionModeUIManager : MonoBehaviour {
             winner = Constituent.Party.None;
         }
 
-        if(winner != Constituent.Party.None)
+        if (winner != Constituent.Party.None)
         {
             //convert all constituents to the winning party
             var nonWinningConstituents = cityGenerator.Constituents.Where((c) => { return c.party != Constituent.Party.None && c.party != winner; });
-            while(nonWinningConstituents.Count() > 0)
+            while (nonWinningConstituents.Count() > 0)
             {
                 var constituent = Utils.ChooseRandom(nonWinningConstituents.ToList());
 

@@ -2,7 +2,8 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class ImageCycle : MonoBehaviour {
+public class ImageCycle : MonoBehaviour
+{
 
     [SerializeField]
     private List<Image> images;
@@ -15,15 +16,15 @@ public class ImageCycle : MonoBehaviour {
 
     private int currentImage = 0;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start()
     {
         images[currentImage].color = Color.white;
 
         InvokeRepeating("NextImage", cycleTime, cycleTime);
-	}
-	
-	private void NextImage()
+    }
+
+    private void NextImage()
     {
         int previousImage = currentImage;
         currentImage = (currentImage + 1) % images.Count;

@@ -2,7 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class EndGameUIManager : MonoBehaviour {
+public class EndGameUIManager : MonoBehaviour
+{
 
     [SerializeField]
     private Text winnerHeader;

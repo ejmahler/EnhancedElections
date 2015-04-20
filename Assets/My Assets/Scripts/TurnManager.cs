@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 [RequireComponent(typeof(MoveManager))]
-public class TurnManager : MonoBehaviour {
+public class TurnManager : MonoBehaviour
+{
 
     [SerializeField]
     private int lockDuration;
@@ -70,8 +71,9 @@ public class TurnManager : MonoBehaviour {
         }
     }
 
-	// Use this for initialization
-	void Awake () {
+    // Use this for initialization
+    void Awake()
+    {
         moveManager = GetComponent<MoveManager>();
         cityGenerator = GetComponent<CityGenerator>();
 
@@ -81,20 +83,20 @@ public class TurnManager : MonoBehaviour {
 
         CurrentBlueScore = 0;
         CurrentRedScore = 0;
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    }
+
+    // Update is called once per frame
+    void Update()
     {
-	    if(MovesThisTurn >= MovesPerTurn || transitioningTurn)
+        if (MovesThisTurn >= MovesPerTurn || transitioningTurn)
         {
             moveManager.AllowMoves = false;
         }
-        else if(MovesThisTurn < MovesPerTurn && !transitioningTurn)
+        else if (MovesThisTurn < MovesPerTurn && !transitioningTurn)
         {
             moveManager.AllowMoves = true;
         }
-	}
+    }
 
     public void BeginTurnTransition()
     {
@@ -114,7 +116,7 @@ public class TurnManager : MonoBehaviour {
                                                pair => pair.Value);
 
         //add locked constituents from the move manager's move history
-        foreach(var c in moveManager.OriginalDistricts.Keys)
+        foreach (var c in moveManager.OriginalDistricts.Keys)
         {
             lockedConstituents.Add(c, currentTurnIndex + lockDuration);
         }
@@ -127,38 +129,38 @@ public class TurnManager : MonoBehaviour {
         CurrentBlueScore = NextBlueScore;
         CurrentRedScore = NextRedScore;
 
-		ConvertUndecideds ();
+        ConvertUndecideds();
     }
 
-	private void ConvertUndecideds()
-	{
-		float conversion_cutoff_low = 0.65f;
-		float conversion_chance_low = 0.2f;
+    private void ConvertUndecideds()
+    {
+        float conversion_cutoff_low = 0.65f;
+        float conversion_chance_low = 0.2f;
 
-		float conversion_cutoff_high = 0.8f;
-		float conversion_chance_high = 0.4f;
+        float conversion_cutoff_high = 0.8f;
+        float conversion_chance_high = 0.4f;
 
-		foreach (District d in cityGenerator.Districts)
-		{
-			if(d.CurrentMajorityPercent > conversion_cutoff_high)
-			{
-				foreach(Constituent c in d.ConstituentsQuery.Where((c) => c.party == Constituent.Party.Yellow))
-				{
-					if(Utils.Chance(conversion_chance_high))
-						c.party = d.CurrentMajority;
-				}
-			}
-			else if(d.CurrentMajorityPercent > conversion_cutoff_low)
-			{
-				foreach(Constituent c in d.ConstituentsQuery.Where((c) => c.party == Constituent.Party.Yellow))
-				{
-					if(Utils.Chance(conversion_chance_low))
-						c.party = d.CurrentMajority;
-				}
-			}
-			d.UpdateMemberData();
-		}
-	}
+        foreach (District d in cityGenerator.Districts)
+        {
+            if (d.CurrentMajorityPercent > conversion_cutoff_high)
+            {
+                foreach (Constituent c in d.ConstituentsQuery.Where((c) => c.party == Constituent.Party.Yellow))
+                {
+                    if (Utils.Chance(conversion_chance_high))
+                        c.party = d.CurrentMajority;
+                }
+            }
+            else if (d.CurrentMajorityPercent > conversion_cutoff_low)
+            {
+                foreach (Constituent c in d.ConstituentsQuery.Where((c) => c.party == Constituent.Party.Yellow))
+                {
+                    if (Utils.Chance(conversion_chance_low))
+                        c.party = d.CurrentMajority;
+                }
+            }
+            d.UpdateMemberData();
+        }
+    }
 
     public enum Player
     {
