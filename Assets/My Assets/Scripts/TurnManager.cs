@@ -142,7 +142,7 @@ public class TurnManager : MonoBehaviour {
 		{
 			if(d.CurrentMajorityPercent > conversion_cutoff_high)
 			{
-				foreach(Constituent c in d.Constituents.Where((c) => c.party == Constituent.Party.Yellow))
+				foreach(Constituent c in d.ConstituentsQuery.Where((c) => c.party == Constituent.Party.Yellow))
 				{
 					if(Utils.Chance(conversion_chance_high))
 						c.party = d.CurrentMajority;
@@ -150,7 +150,7 @@ public class TurnManager : MonoBehaviour {
 			}
 			else if(d.CurrentMajorityPercent > conversion_cutoff_low)
 			{
-				foreach(Constituent c in d.Constituents.Where((c) => c.party == Constituent.Party.Yellow))
+				foreach(Constituent c in d.ConstituentsQuery.Where((c) => c.party == Constituent.Party.Yellow))
 				{
 					if(Utils.Chance(conversion_chance_low))
 						c.party = d.CurrentMajority;

@@ -19,7 +19,13 @@ public class MoveManager : MonoBehaviour {
                 var old = _currentlySelectedConstituent;
                 _currentlySelectedConstituent = value;
 
-                if(old != null) old.UpdateBackground();
+                if (old != null)
+                {
+                    old.CurrentlySelected = false;
+                    old.UpdateBackground();
+                }
+                value.CurrentlySelected = true;
+
                 value.UpdateBackground();
             }
         }
@@ -69,7 +75,7 @@ public class MoveManager : MonoBehaviour {
                 UpdateValidMoves();
 
                 //update the borders of the currently selected district
-                foreach (var member in CurrentlySelectedDistrict.Constituents)
+                foreach (var member in CurrentlySelectedDistrict.ConstituentsQuery)
                 {
                     member.UpdateBorders();
                 }
@@ -91,6 +97,15 @@ public class MoveManager : MonoBehaviour {
     {
         _AllowMoves = true;
         SelectConstituent(cityGenerator.Constituents[0]);
+    }
+
+    void Update()
+    {
+        //performance hack: ideally this would go in constituent.update(), but that method is expensive to run on every single constituent
+        //at the moment, the constituent's background color is changed by its district, EXCEPT when it is the currently selected constituent
+        //in that case (and only in that case), it has its own background color for a mouseover effect
+        //so we save a ton un update calls here by calling it only on the constituent that needs ot
+        CurrentlySelectedConstituent.UpdateBackground(); 
     }
 
     public void ConstituentDragged(Constituent c)
@@ -203,14 +218,14 @@ public class MoveManager : MonoBehaviour {
             }
             UpdateValidMoves();
 
-            foreach (var member in newDistrict.Constituents)
+            foreach (var member in newDistrict.ConstituentsQuery)
             {
                 member.UpdateBorders();
             }
 
             if (oldDistrict != null)
             {
-                foreach (var member in oldDistrict.Constituents)
+                foreach (var member in oldDistrict.ConstituentsQuery)
                 {
                     member.UpdateBorders();
                 }

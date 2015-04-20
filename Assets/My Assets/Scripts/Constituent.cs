@@ -13,10 +13,9 @@ public class Constituent : MonoBehaviour {
     private Material validBorder, invalidBorder;
 
     [System.NonSerialized]
-    private Material normalBackground;
+    public Material BackgroundMaterial;
 
-    [System.NonSerialized]
-    private Material selectedBackground;
+    private Material SelectedBackgroundMaterial;
 
     [SerializeField]
     private Material lockedBackground;
@@ -39,10 +38,10 @@ public class Constituent : MonoBehaviour {
         set
         {
             _district = value;
-            normalBackground = value.BackgroundMaterial;
-            selectedBackground = value.SelectedBackgroundMaterial;
 			validBorder = value.ValidBorderMaterial;
 			invalidBorder = value.InvalidBorderMaterial;
+
+            BackgroundMaterial = value.BackgroundMaterial;
 
 			UpdateBorders();
             UpdateBackground();
@@ -70,6 +69,43 @@ public class Constituent : MonoBehaviour {
 		}
 	}
 
+    private float selectionEffectPercentage = 1.0f;
+
+    private bool _currentlySelected = false;
+    public bool CurrentlySelected
+    {
+        get
+        {
+            return _currentlySelected;
+        }
+        set
+        {
+            if (value != _currentlySelected)
+            {
+                _currentlySelected = value;
+
+                //update the "select effect" percentage - if we are the currently selected constituent, we want no effect, otherwise full effect
+                System.Action<float> glazeUpdate = (percent) =>
+                {
+                    selectionEffectPercentage = percent;
+                    SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(district.CurrentPartyColor, BackgroundMaterial.GetColor("_Color"), selectionEffectPercentage));
+                };
+
+                if (value) //if we are selected, transition from the glaze color back to the normal color
+                {
+                    LeanTween.cancel(gameObject);
+                    glazeUpdate(0.0f);
+                }
+                else //if we are unselected, transition from the normal color back to the glaze color
+                {
+                    LeanTween.value(gameObject, 0.0f, 1.0f, 0.5f).setOnUpdate(glazeUpdate).setOnComplete(() => {
+                        _backgroundMesh.material = BackgroundMaterial;  
+                    });
+                }
+            }
+        }
+    }
+
 	void Awake () {
         _backgroundMesh = transform.Find("Background").GetComponent<MeshRenderer>();
 
@@ -83,6 +119,8 @@ public class Constituent : MonoBehaviour {
         _borderRight = transform.Find("Border Right").GetComponent<MeshRenderer>();
 
         moveManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MoveManager>();
+
+        SelectedBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
 	}
 
 	public void UpdateBorders()
@@ -127,13 +165,14 @@ public class Constituent : MonoBehaviour {
         {
             _backgroundMesh.material = lockedBackground;
         }
-        else if(moveManager.CurrentlySelectedConstituent == this)
+        else if(CurrentlySelected || selectionEffectPercentage < 1.0f)
         {
-            _backgroundMesh.material = selectedBackground;
+            SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(district.CurrentPartyColor, BackgroundMaterial.color, selectionEffectPercentage));
+            _backgroundMesh.material = SelectedBackgroundMaterial;
         }
         else
         {
-            _backgroundMesh.material = normalBackground;
+            _backgroundMesh.material = BackgroundMaterial;
         }
     }
 }

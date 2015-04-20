@@ -15,8 +15,8 @@ public class District : MonoBehaviour {
 
 	public Material ValidBorderMaterial { get; private set; }
 	public Material InvalidBorderMaterial { get; private set; }
+
     public Material BackgroundMaterial { get; private set; }
-    public Material SelectedBackgroundMaterial { get; private set; }
 
 	//set of constituents that would split this vertex in two if removed
 	public HashSet<Constituent> ArticulationPoints { get; private set; }
@@ -32,7 +32,16 @@ public class District : MonoBehaviour {
     [SerializeField] private Color blueBackgroundColor;
     [SerializeField] private Color evenBackgroundColor;
 
+    public Color CurrentPartyColor { get; private set; }
+
     private CityGenerator cityGenerator;
+
+    private float _selectedGlazePercent = 0.0f;
+    public float SelectedGlazePercent
+    {
+        get { return _selectedGlazePercent; }
+        private set { _selectedGlazePercent = value; }
+    }
 
     private bool _currentlySelected;
     public bool CurrentlySelected
@@ -61,11 +70,28 @@ public class District : MonoBehaviour {
 				                                                                        {
 					InvalidBorderMaterial.SetColor("_Color", currentColor);
 				});
+
+                //update the "glaze percentage" so that the entire district's background is lighter in color
+                float maxglaze = 0.5f;
+                System.Action<float> glazeUpdate = (percent) =>
+                {
+                    SelectedGlazePercent = percent;
+                    BackgroundMaterial.SetColor("_Color", Color.Lerp(CurrentPartyColor, Color.white, SelectedGlazePercent));
+                };
+
+                if(value)
+                {
+                    LeanTween.value(gameObject, 0.0f, maxglaze, 0.25f).setOnUpdate(glazeUpdate);
+                }
+                else
+                {
+                    LeanTween.value(gameObject, maxglaze, 0.0f, 0.25f).setOnUpdate(glazeUpdate);
+                }
             }
         }
     }
 
-    public IEnumerable<Constituent> Constituents
+    public IEnumerable<Constituent> ConstituentsQuery
     {
         get
         {
@@ -73,7 +99,7 @@ public class District : MonoBehaviour {
         }
     }
 
-    public IEnumerable<Constituent> VotingConstituents
+    public IEnumerable<Constituent> VotingConstituentsQuery
     {
         get
         {
@@ -85,14 +111,13 @@ public class District : MonoBehaviour {
     {
         cityGenerator = GameObject.FindGameObjectWithTag("GameController").GetComponent<CityGenerator>();
 
-        //be sure to copy the materials rather than just using them directly - that way we can mess with the colors without screwing up other districts 
-        BackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
-        SelectedBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
 		ValidBorderMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Border"));
-		InvalidBorderMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Border"));
+        InvalidBorderMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Border"));
+        BackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
 
-        BackgroundMaterial.SetColor("_Color", evenBackgroundColor);
-        SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(evenBackgroundColor, Color.white, 0.75f));
+        CurrentPartyColor = evenBackgroundColor;
+        BackgroundMaterial.SetColor("_Color", CurrentPartyColor);
+
 		ValidBorderMaterial.SetColor("_Color", normalBorderColor);
 		InvalidBorderMaterial.SetColor("_Color", normalBorderColor);
 		
@@ -101,15 +126,18 @@ public class District : MonoBehaviour {
 
     public void UpdateMemberData()
     {
-		HashSet<Constituent> members = new HashSet<Constituent> (Constituents);
+		HashSet<Constituent> members = new HashSet<Constituent> (ConstituentsQuery);
         MemberCount = members.Count();
-        VotingMemberCount = VotingConstituents.Count();
+        VotingMemberCount = VotingConstituentsQuery.Count();
 
-		//update the set of articulation points
-		ArticulationPoints = Utils.FindArticulationPoints<Constituent>(members.First(), (c) =>
+        //create a function to get the neighbors of a constituent
+        System.Func<Constituent, IEnumerable<Constituent>> neighborFunction = (c) =>
 		{
 			return c.Neighbors.Where ((n) => { return members.Contains (n); });
-		});
+		};
+
+		//update the set of articulation points. we pass in a neighbor function for a depth first search
+        ArticulationPoints = Utils.FindArticulationPoints<Constituent>(members.First(), neighborFunction);
 
 		//update the set of neighbors - find all constituents that share a n edge with a member of this district
 		NeighborConstituents = new HashSet<Constituent>(members.SelectMany ((member) => { 
@@ -155,8 +183,8 @@ public class District : MonoBehaviour {
             Color newColor = GetBackgroundColor(majority);
             Color oldColor = GetBackgroundColor(CurrentMajority);
             LeanTween.value(gameObject, oldColor, newColor, 0.25f).setOnUpdateColor((currentColor) => {
-                BackgroundMaterial.SetColor("_Color", currentColor);
-                SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(currentColor, Color.white, 0.75f));
+                CurrentPartyColor = currentColor;
+                BackgroundMaterial.SetColor("_Color", Color.Lerp(CurrentPartyColor, Color.white, SelectedGlazePercent));
             });
 
             CurrentMajority = majority;

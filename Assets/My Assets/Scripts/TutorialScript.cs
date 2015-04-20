@@ -58,7 +58,7 @@ public class TutorialScript : MonoBehaviour {
     void Update()
     {
         moveManager.CurrentValidMoves.IntersectWith(allowedMoves);
-        foreach (var member in moveManager.CurrentlySelectedDistrict.Constituents)
+        foreach (var member in moveManager.CurrentlySelectedDistrict.ConstituentsQuery)
         {
             member.UpdateBorders();
         }
