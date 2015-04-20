@@ -39,12 +39,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40d7c10542b831e4d8015adee236afaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedBorderColor: {r: 0, g: .507352948, b: .234431967, a: 1}
+  selectedBorderColor: {r: .33088237, g: .33088237, b: .33088237, a: 1}
   normalBorderColor: {r: 0, g: 0, b: 0, a: 1}
   invalidBorderColor: {r: .683823526, g: 0, b: 0, a: 1}
-  redBackgroundColor: {r: 1, g: .764705896, b: .764705896, a: 1}
-  blueBackgroundColor: {r: .79411763, g: .872210979, b: 1, a: 1}
-  evenBackgroundColor: {r: .944440842, g: .948529422, b: .829963267, a: 1}
+  redBackgroundColor: {r: 1, g: .75, b: .75, a: 1}
+  blueBackgroundColor: {r: .727941155, g: .831135988, b: 1, a: 1}
+  evenBackgroundColor: {r: .849442184, g: .875, b: .411764681, a: 1}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
