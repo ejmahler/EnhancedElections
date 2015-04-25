@@ -51,6 +51,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &118166
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 22441972}
+  - 222: {fileID: 22204140}
+  - 114: {fileID: 11425002}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &132100
 GameObject:
   m_ObjectHideFlags: 0
@@ -82,7 +99,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 4b268dcd47c7446beaf8adafa129d901, type: 3}
     m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
@@ -108,7 +125,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 4b268dcd47c7446beaf8adafa129d901, type: 3}
     m_FontSize: 16
     m_FontStyle: 0
     m_BestFit: 0
@@ -134,7 +151,33 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 4b268dcd47c7446beaf8adafa129d901, type: 3}
+    m_FontSize: 11
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 'UI Font: Roboto-Regular.ttf: Copyright 2011 Google Inc. All Rights Reserved.'
+--- !u!114 &11425002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 118166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 4b268dcd47c7446beaf8adafa129d901, type: 3}
     m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 0
@@ -169,6 +212,12 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!222 &22204140
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 118166}
 --- !u!222 &22208844
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -238,10 +287,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 22432100}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_AnchorMin: {x: .5, y: 0}
   m_AnchorMax: {x: .5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 80}
+  m_AnchoredPosition: {x: 0, y: 91}
   m_SizeDelta: {x: 720, y: 40}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22432100
@@ -256,6 +305,7 @@ RectTransform:
   m_Children:
   - {fileID: 22408844}
   - {fileID: 22408846}
+  - {fileID: 22441972}
   - {fileID: 22408854}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -263,6 +313,23 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -45}
   m_SizeDelta: {x: -20, y: -110}
+  m_Pivot: {x: .5, y: .5}
+--- !u!224 &22441972
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 118166}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 22432100}
+  m_RootOrder: 2
+  m_AnchorMin: {x: .5, y: 0}
+  m_AnchorMax: {x: .5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 140}
+  m_SizeDelta: {x: 720, y: 40}
   m_Pivot: {x: .5, y: .5}
 --- !u!1001 &100100000
 Prefab:
