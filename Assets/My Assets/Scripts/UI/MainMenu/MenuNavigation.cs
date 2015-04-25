@@ -5,6 +5,12 @@ public class MenuNavigation : MonoBehaviour
 {
     private AudioManager audioManager;
 
+	[SerializeField]
+	private GameObject canvas;
+
+	[SerializeField]
+	private GameObject aboutCard;
+
     void Start()
     {
         audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
@@ -39,4 +45,26 @@ public class MenuNavigation : MonoBehaviour
         audioManager.PlayGavel();
         Application.LoadLevel("SandboxModeLarge");
     }
+
+	public void AboutClicked()
+	{
+		StartCoroutine (ShowCard (aboutCard));
+	}
+
+	private IEnumerator ShowCard(GameObject prefab)
+	{
+		//show the desired card
+		var card = (GameObject)Instantiate(prefab);
+		card.transform.SetParent(canvas.transform, false);
+		
+		//wait one frame before checking for input
+		yield return null;
+		
+		//wait for the user to click through, then destroy the card
+		while (!Input.anyKeyDown)
+		{
+			yield return null;
+		}
+		Destroy(card);
+	}
 }
