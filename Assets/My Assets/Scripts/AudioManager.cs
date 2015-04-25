@@ -9,6 +9,14 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     private List<AudioClip> scrapeSounds;
 
+    [SerializeField]
+    private AudioClip gavelSound;
+
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
     // Use this for initialization
     void Start()
     {
@@ -19,9 +27,14 @@ public class AudioManager : MonoBehaviour
     {
         var shuffledSounds = Utils.RandomShuffle(scrapeSounds);
 
-        for(int i = 0; i < sources.Length; i++)
+        for (int i = 0; i < sources.Length; i++)
         {
             sources[i].PlayOneShot(shuffledSounds[i]);
         }
+    }
+
+    public void PlayGavel()
+    {
+        sources[0].PlayOneShot(gavelSound);
     }
 }

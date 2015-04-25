@@ -341,6 +341,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 132c5fa695c4d6441b8bd9b2f23257e5, type: 3}
   - {fileID: 8300000, guid: e2307029d0fa0f346ab184ad9985876b, type: 3}
   - {fileID: 8300000, guid: 74be6440cdf94e34ebd0dab472e228a6, type: 3}
+  gavelSound: {fileID: 8300000, guid: efafa7b4e6acf1347a2b74fd93be1e33, type: 3}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
