@@ -22,6 +22,24 @@ public class Utils : MonoBehaviour
         return items[index];
     }
 
+    public static List<T> RandomShuffle<T>(List<T> items)
+    {
+        var result = new List<T>(items);
+
+        for (int i = 0; i < result.Count; i++)
+        {
+            //get a random indesx between here and the end of the array
+            int swapIndex = Random.Range(i, result.Count);
+
+            //swap the element at i with the element at swapIndex
+            T temp = result[i];
+            result[i] = result[swapIndex];
+            result[swapIndex] = temp;
+        }
+
+        return result;
+    }
+
     public static T ParseEnumString<T>(string enumString)
     {
         return (T)System.Enum.Parse(typeof(T), enumString);

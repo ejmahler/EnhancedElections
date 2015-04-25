@@ -5,9 +5,6 @@ using System.Linq;
 [RequireComponent(typeof(MoveManager))]
 public class InputManager : MonoBehaviour
 {
-
-    private District currentDistrict = null;
-
     private Camera mainCamera;
     private MoveManager moveManager;
 
@@ -31,6 +28,7 @@ public class InputManager : MonoBehaviour
             if (constituent != null)
             {
                 moveManager.ConstituentDragged(constituent);
+                
             }
         }
         else if (SelectionEnabled)
@@ -39,7 +37,6 @@ public class InputManager : MonoBehaviour
             if (constituent != null)
             {
                 moveManager.SelectConstituent(constituent);
-                currentDistrict = constituent.District;
             }
         }
 

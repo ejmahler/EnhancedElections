@@ -1,20 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class AudioManager : MonoBehaviour
 {
+    private AudioSource[] sources;
 
-    private AudioSource mainCameraSource;
+    [SerializeField]
+    private List<AudioClip> scrapeSounds;
 
     // Use this for initialization
     void Start()
     {
-        mainCameraSource = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<AudioSource>();
+        sources = GetComponentsInChildren<AudioSource>();
     }
 
-    public void PlayEffect(string name)
+    public void PlayScrape()
     {
-        AudioClip clip = Resources.Load<AudioClip>("Audio/" + name);
-        mainCameraSource.PlayOneShot(clip);
+        var shuffledSounds = Utils.RandomShuffle(scrapeSounds);
+
+        for(int i = 0; i < sources.Length; i++)
+        {
+            sources[i].PlayOneShot(shuffledSounds[i]);
+        }
     }
 }

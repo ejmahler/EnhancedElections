@@ -123,7 +123,8 @@ public class Constituent : MonoBehaviour
                 System.Action<float> glazeUpdate = (percent) =>
                 {
                     selectionEffectPercentage = percent;
-                    SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(District.CurrentPartyColor, BackgroundMaterial.GetColor("_Color"), selectionEffectPercentage));
+                    Color resultingColor = Color.Lerp(District.CurrentPartyColor, BackgroundMaterial.GetColor("_Color"), selectionEffectPercentage);
+                    SelectedBackgroundMaterial.SetColor("_Color", resultingColor);
                 };
 
                 if (value) //if we are selected, transition from the glaze color back to the normal color

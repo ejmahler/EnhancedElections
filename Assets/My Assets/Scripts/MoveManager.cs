@@ -89,7 +89,7 @@ public class MoveManager : MonoBehaviour
     {
         _lockedConstituents = new HashSet<Constituent>();
         cityGenerator = GetComponent<CityGenerator>();
-        audioManager = GetComponent<AudioManager>();
+        audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
         UndoStack = new Stack<Move>();
         OriginalDistricts = new Dictionary<Constituent, District>();
     }
@@ -118,6 +118,8 @@ public class MoveManager : MonoBehaviour
             MoveConstituents(new Dictionary<Constituent, District> { { c, CurrentlySelectedDistrict } });
 
             CurrentlySelectedConstituent = c;
+
+            audioManager.PlayScrape();
         }
         else if (c.District == CurrentlySelectedDistrict)
         {
