@@ -40,6 +40,14 @@ public class Utils : MonoBehaviour
         return result;
     }
 
+    public static List<T> ChooseKRandom<T>(List<T> items, int k)
+    {
+        List<T> result = RandomShuffle(items);
+
+
+        return result.Take(k).ToList();
+    }
+
     public static T ParseEnumString<T>(string enumString)
     {
         return (T)System.Enum.Parse(typeof(T), enumString);

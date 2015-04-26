@@ -61,25 +61,36 @@ public class CityGenerator : MonoBehaviour
         if (setupString.Length > 0)
         {
             ParseCity(setupString);
+
+            foreach (District d in Districts)
+            {
+                d.UpdateMemberData();
+            }
         }
         else
         {
             PartitionCity(Constituents);
-        }
 
-        foreach (District d in Districts)
-        {
-            d.UpdateMemberData();
-        }
+            foreach (District d in Districts)
+            {
+                d.UpdateMemberData();
+            }
 
-        foreach (Constituent c in Constituents)
-        {
-            c.UpdateBorders();
+            //balance pass: make sure there are an equal number of red and blue constituents
+            BalanceConstituentCounts();
+
+            //balance pass: make sure there are an equal number of red and blue districts
+            BalanceDistrictCounts();
         }
 
         float averageDistrictSize = (float)Constituents.Count((c) => { return c.party != Constituent.Party.None; }) / numDistricts;
         minDistrictSize = (int)System.Math.Round(averageDistrictSize * 0.75f);
         maxDistrictSize = (int)System.Math.Round(averageDistrictSize * 1.25f);
+
+        foreach (Constituent c in Constituents)
+        {
+            c.UpdateBorders();
+        }
     }
 
     void Update()
@@ -203,6 +214,133 @@ public class CityGenerator : MonoBehaviour
         district.name = name;
 
         return district;
+    }
+
+    private void BalanceConstituentCounts()
+    {
+        var RedConstituents = Constituents.Where((c) => c.party == Constituent.Party.Red);
+        var BlueConstituents = Constituents.Where((c) => c.party == Constituent.Party.Blue);
+
+        var RedCount = RedConstituents.Count();
+        var BlueCount = BlueConstituents.Count();
+
+        HashSet<District> changedDistricts = new HashSet<District>();
+        if (RedCount > BlueConstituents.Count())
+        {
+            //find the disparity, and convert half that many to blue
+            int diff = RedCount - BlueCount;
+
+            //if diff is odd, convert one red to brown
+            if((diff % 2) == 1)
+            {
+                Constituent c = Utils.ChooseRandom(RedConstituents.ToList());
+                c.party = Constituent.Party.Yellow;
+                changedDistricts.Add(c.District);
+            }
+
+            //choose enough constituents randomly to even things out, and convert them to the other party
+            foreach (Constituent c in Utils.ChooseKRandom(RedConstituents.ToList(), diff / 2))
+            {
+                c.party = Constituent.Party.Blue;
+                changedDistricts.Add(c.District);
+            }
+        }
+        else if (RedCount < BlueCount)
+        {
+            //find the disparity, and convert half that many to red
+            int diff = BlueCount - RedCount;
+
+            //if diff is odd, convert one red to brown
+            if ((diff % 2) == 1)
+            {
+                Constituent c = Utils.ChooseRandom(RedConstituents.ToList());
+                c.party = Constituent.Party.Yellow;
+                changedDistricts.Add(c.District);
+            }
+
+            //choose enough constituents randomly to even things out, and convert them to the other party
+
+            foreach (Constituent c in Utils.ChooseKRandom(BlueConstituents.ToList(), diff / 2))
+            {
+                c.party = Constituent.Party.Red;
+                changedDistricts.Add(c.District);
+            }
+        }
+
+        //update the member counts of every district we changed
+        foreach (District d in changedDistricts)
+        {
+            d.UpdateMemberData();
+        }
+    }
+
+    private void BalanceDistrictCounts()
+    {
+        var redDistricts = Districts.Where((c) => { return c.CurrentMajority == Constituent.Party.Red; });
+        var blueDistricts = Districts.Where((c) => { return c.CurrentMajority == Constituent.Party.Blue; });
+
+        int redCount = redDistricts.Count();
+        int blueCount = blueDistricts.Count();
+
+        while (redCount != blueCount)
+        {
+            //find out which one we want to switch
+            District districtToFlip;
+            Constituent.Party originalParty, targetParty;
+
+            //how many votes we need to sway in the other party's favor
+            int amountToFlip;
+
+            if(redCount > blueCount)
+            {
+                originalParty = Constituent.Party.Red;
+                targetParty = Constituent.Party.Blue;
+                districtToFlip = Utils.ChooseRandom(redDistricts.ToList());
+
+                //enough votes to make it even, plus enough votes to give blue a small margin
+                amountToFlip = (districtToFlip.VotesRed - districtToFlip.VotesBlue)/2 + Random.Range(1, 4);
+            }
+            else
+            {
+                originalParty = Constituent.Party.Blue;
+                targetParty = Constituent.Party.Red;
+                districtToFlip = Utils.ChooseRandom(blueDistricts.ToList());
+
+                //enough votes to make it even, plus enough votes to give red  a small margin
+                amountToFlip = (districtToFlip.VotesBlue - districtToFlip.VotesRed)/2 + Random.Range(1, 4);
+            }
+
+            //swap random consitutents in this district until it flips
+            int numFlipped = 0;
+            while(numFlipped < amountToFlip)
+            {
+                Constituent districtConstituent = districtToFlip.ConstituentsQuery.First((c) => c.party == originalParty);
+
+                //select a random district from ALL other districts, and choose a random constituent in the target party
+                District otherDistrict = Utils.ChooseRandom(Districts);
+                if (otherDistrict == districtToFlip)
+                    continue;
+                Constituent otherConstituent = otherDistrict.ConstituentsQuery.FirstOrDefault((c) => c.party == targetParty);
+                if (otherConstituent == null)
+                    continue;
+
+                //swap their parties
+                districtConstituent.party = targetParty;
+                otherConstituent.party = originalParty;
+
+                //update the other district's member data
+                otherDistrict.UpdateMemberData();
+
+                numFlipped++;
+            }
+
+            //update district member data
+            districtToFlip.UpdateMemberData();
+
+            //update the counts after the change
+            redCount = redDistricts.Count();
+            blueCount = blueDistricts.Count();
+        }
     }
 
     private static List<List<Constituent>> PartitionConstituents(List<Constituent> constituents, int numPartitions)
