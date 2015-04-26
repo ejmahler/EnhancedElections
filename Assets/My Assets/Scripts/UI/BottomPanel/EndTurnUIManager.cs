@@ -37,7 +37,7 @@ public class EndTurnUIManager : MonoBehaviour
         else if (turnManager.MovesThisTurn <= 0)
         {
             endTurnButton.image.color = doneButtonNormalColor;
-            currentMovesTextbox.text = string.Format("{0} Moves Left", turnManager.MovesPerTurn - turnManager.MovesThisTurn);
+            currentMovesTextbox.text = string.Format("{0} Moves Remaining", turnManager.MovesPerTurn - turnManager.MovesThisTurn);
         }
         else
         {
@@ -46,17 +46,17 @@ public class EndTurnUIManager : MonoBehaviour
             if (movesLeft <= 0)
             {
                 endTurnButton.image.color = doneButtonHighlightColor;
-                currentMovesTextbox.text = "No Moves Left";
+                currentMovesTextbox.text = "No Moves Remaining";
             }
             else if (movesLeft == 1)
             {
                 endTurnButton.image.color = doneButtonNormalColor;
-                currentMovesTextbox.text = "1 Move Left";
+                currentMovesTextbox.text = "1 Move Remaining";
             }
             else
             {
                 endTurnButton.image.color = doneButtonNormalColor;
-                currentMovesTextbox.text = string.Format("{0} Moves Left", turnManager.MovesPerTurn - turnManager.MovesThisTurn);
+                currentMovesTextbox.text = string.Format("{0} Moves Remaining", turnManager.MovesPerTurn - turnManager.MovesThisTurn);
             }
         }
     }

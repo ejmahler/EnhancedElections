@@ -266,7 +266,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Elections
+  m_Text: Seats
 --- !u!222 &22291492
 CanvasRenderer:
   m_ObjectHideFlags: 1

@@ -19,7 +19,6 @@ public class CompetitionModeUIManager : MonoBehaviour
     private GameObject endScreenPrefab;
 
     private CurrentTurnUIManager currentTurnUIManager;
-    private ScoreUIManager scoreUIManager;
     private EndTurnUIManager endTurnUIManager;
 
     private AudioManager audioManager;
@@ -33,7 +32,6 @@ public class CompetitionModeUIManager : MonoBehaviour
         turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
         cityGenerator = GameObject.FindGameObjectWithTag("GameController").GetComponent<CityGenerator>();
         currentTurnUIManager = GetComponentInChildren<CurrentTurnUIManager>();
-        scoreUIManager = GetComponentInChildren<ScoreUIManager>();
         endTurnUIManager = GetComponentInChildren<EndTurnUIManager>();
 
         audioManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<AudioManager>();
@@ -68,7 +66,6 @@ public class CompetitionModeUIManager : MonoBehaviour
 
             //alert child ui managers to update their information
             currentTurnUIManager.UpdateTurnDisplay(transitionDuration);
-            scoreUIManager.UpdateScoreDisplay(transitionDuration);
 
             //update the background colors of the UI panels
             var nextPlayer = turnManager.NextPlayer;
@@ -94,8 +91,8 @@ public class CompetitionModeUIManager : MonoBehaviour
     {
         Constituent.Party winner;
 
-        int finalRedScore = turnManager.NextRedScore;
-        int finalblueScore = turnManager.NextBlueScore;
+        int finalRedScore = cityGenerator.Districts.Count((c) => c.CurrentMajority == Constituent.Party.Red);
+        int finalblueScore = cityGenerator.Districts.Count((c) => c.CurrentMajority == Constituent.Party.Blue);
         if (finalRedScore > finalblueScore)
         {
             winner = Constituent.Party.Red;

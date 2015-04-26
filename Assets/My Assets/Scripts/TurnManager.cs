@@ -29,18 +29,6 @@ public class TurnManager : MonoBehaviour
 
     private bool transitioningTurn = false;
 
-    public int CurrentBlueScore { get; private set; }
-    public int CurrentRedScore { get; private set; }
-
-    public int NextBlueScore
-    {
-        get { return CurrentBlueScore + cityGenerator.Districts.Count((c) => { return c.CurrentMajority == Constituent.Party.Blue; }); }
-    }
-    public int NextRedScore
-    {
-        get { return CurrentRedScore + cityGenerator.Districts.Count((c) => { return c.CurrentMajority == Constituent.Party.Red; }); }
-    }
-
     //code to deterime which player is currently playing, and which player is up next
     public Player CurrentPlayer
     {
@@ -80,9 +68,6 @@ public class TurnManager : MonoBehaviour
         lockedConstituents = new Dictionary<Constituent, int>();
 
         firstPlayer = Utils.ChooseRandom(new List<Player> { Player.Red, Player.Blue });
-
-        CurrentBlueScore = 0;
-        CurrentRedScore = 0;
     }
 
     // Update is called once per frame
@@ -125,9 +110,6 @@ public class TurnManager : MonoBehaviour
 
         moveManager.OriginalDistricts.Clear();
         moveManager.UndoStack.Clear();
-
-        CurrentBlueScore = NextBlueScore;
-        CurrentRedScore = NextRedScore;
 
         ConvertUndecideds();
     }
