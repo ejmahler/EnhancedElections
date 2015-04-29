@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Audio;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,6 +13,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     private AudioClip gavelSound;
 
+    [SerializeField]
+    private AudioMixer audioMixer;
+
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -21,6 +25,9 @@ public class AudioManager : MonoBehaviour
     void Start()
     {
         sources = GetComponentsInChildren<AudioSource>();
+
+        SetMusicLevel(PlayerPrefs.GetFloat("MusicVolume", 1.0f));
+        SetSFXLevel(PlayerPrefs.GetFloat("SFXVolume", 1.0f));
     }
 
     public void PlayScrape()
@@ -36,5 +43,24 @@ public class AudioManager : MonoBehaviour
     public void PlayGavel()
     {
         sources[0].PlayOneShot(gavelSound);
+    }
+
+    public void SetMusicLevel(float level)
+    {
+        audioMixer.SetFloat("MusicVolume", convertLevelToDb(level));
+    }
+
+    public void SetSFXLevel(float level)
+    {
+
+        audioMixer.SetFloat("SFXVolume", convertLevelToDb(level));
+    }
+
+    private float convertLevelToDb(float level)
+    {
+        if (level <= 0.0f)
+            return -80.0f;
+        else
+            return Mathf.Log10(level) * 20.0f;
     }
 }

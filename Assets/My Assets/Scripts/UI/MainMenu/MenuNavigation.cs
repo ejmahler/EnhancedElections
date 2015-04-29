@@ -8,8 +8,11 @@ public class MenuNavigation : MonoBehaviour
 	[SerializeField]
 	private GameObject canvas;
 
-	[SerializeField]
-	private GameObject aboutCard;
+    [SerializeField]
+    private GameObject aboutCard;
+
+    [SerializeField]
+    private GameObject settingsCard;
 
     void Start()
     {
@@ -46,10 +49,15 @@ public class MenuNavigation : MonoBehaviour
         Application.LoadLevel("SandboxModeLarge");
     }
 
-	public void AboutClicked()
-	{
-		StartCoroutine (ShowCard (aboutCard));
-	}
+    public void AboutClicked()
+    {
+        StartCoroutine(ShowCard(aboutCard));
+    }
+
+    public void SettingsClicked()
+    {
+        StartCoroutine(ShowCard(settingsCard));
+    }
 
 	private IEnumerator ShowCard(GameObject prefab)
 	{
@@ -61,7 +69,7 @@ public class MenuNavigation : MonoBehaviour
 		yield return null;
 		
 		//wait for the user to click through, then destroy the card
-		while (!Input.anyKeyDown)
+		while (!Input.GetKeyDown(KeyCode.Space))
 		{
 			yield return null;
 		}
