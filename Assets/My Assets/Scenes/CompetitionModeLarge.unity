@@ -712,6 +712,10 @@ Prefab:
       value: .5
       objectReference: {fileID: 0}
     - target: {fileID: 11494666, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
+      propertyPath: backgroundPanels.Array.data[2]
+      value: 
+      objectReference: {fileID: 434810010}
+    - target: {fileID: 11494666, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
       propertyPath: backgroundPanels.Array.data[3]
       value: 
       objectReference: {fileID: 281660156}
@@ -719,10 +723,6 @@ Prefab:
       propertyPath: backgroundPanels.Array.data[4]
       value: 
       objectReference: {fileID: 1339541293}
-    - target: {fileID: 11494666, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
-      propertyPath: backgroundPanels.Array.data[5]
-      value: 
-      objectReference: {fileID: 434810010}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
   m_IsPrefabParent: 0

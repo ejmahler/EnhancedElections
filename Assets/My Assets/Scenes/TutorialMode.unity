@@ -228,15 +228,15 @@ Prefab:
       value: .5
       objectReference: {fileID: 0}
     - target: {fileID: 11494666, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
+      propertyPath: backgroundPanels.Array.data[2]
+      value: 
+      objectReference: {fileID: 158098723}
+    - target: {fileID: 11494666, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
       propertyPath: backgroundPanels.Array.data[3]
       value: 
       objectReference: {fileID: 1122753048}
     - target: {fileID: 11494666, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
       propertyPath: backgroundPanels.Array.data[4]
-      value: 
-      objectReference: {fileID: 158098723}
-    - target: {fileID: 11494666, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
-      propertyPath: backgroundPanels.Array.data[5]
       value: 
       objectReference: {fileID: 49092083}
     m_RemovedComponents: []
