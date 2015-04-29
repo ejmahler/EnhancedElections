@@ -128,7 +128,7 @@ public class TutorialScript : MonoBehaviour
             }
             else
             {
-                instructionText.text = "Now, drag the cursor over the constituents you want to add to this district.\n\nNotice how the border is green if you can move in that direction, and red if you can't.";
+                instructionText.text = "Now, drag the cursor over the constituents you want to add to this district.\n\nNotice that the border is gray if you can move in that direction, and red if you can't.";
             }
 
             yield return null;
@@ -180,21 +180,10 @@ public class TutorialScript : MonoBehaviour
             yield return null;
         }
 
-        //wait one frame before the next item
-        yield return null;
-
-        //inform the player about the score
-        instructionText.text = "The score at the bottom has changed! Whenever a player presses \"End Turn\", both players get one point for every district they control.\n\nPress any key to continue.";
-        while (!Input.anyKeyDown)
-        {
-            yield return null;
-        }
-        instructionText.text = "";
-
         //show the conclusion screen
         yield return StartCoroutine(ShowCard(conclusionPrefab));
 
-        instructionText.text = "Feel free to keep playing. Click the \"Main Menu\" button when you're ready to play an actual game.";
+        instructionText.text = "Feel free to keep playing. Click the \"Main Menu\" button when you're ready to play a full game.";
 
         //allow all moves, so that the player can keep messing around
         endTurnButton.interactable = true;

@@ -689,7 +689,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lockDuration: 8
   _MovesPerTurn: 5
-  _totalRounds: 0
+  _totalRounds: 3
   firstPlayer: 0
 --- !u!114 &1467050357
 MonoBehaviour:

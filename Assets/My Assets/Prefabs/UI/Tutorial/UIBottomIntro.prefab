@@ -153,7 +153,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: This section shows the total score for each player.
+  m_Text: This section says whose turn it is.
 --- !u!114 &11408848
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -321,7 +321,7 @@ RectTransform:
   m_RootOrder: 4
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -9, y: -179}
+  m_AnchoredPosition: {x: -216, y: -179}
   m_SizeDelta: {x: 275.600006, y: 62}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22408848
@@ -338,7 +338,7 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -9, y: -227}
+  m_AnchoredPosition: {x: -216, y: -227}
   m_SizeDelta: {x: 50, y: 40}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22432100
@@ -408,4 +408,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 132100}
   m_IsPrefabParent: 1
-  m_IsExploded: 1
