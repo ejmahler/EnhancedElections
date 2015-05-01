@@ -12,11 +12,9 @@ public class Constituent : MonoBehaviour
 
     private LTDescr activeShapeSizeTween = null;
 
-    [System.NonSerialized]
-    private Material validBorder, invalidBorder;
-
-    [System.NonSerialized]
-    public Material BackgroundMaterial;
+	private Material validBorder { get { return District.ValidBorderMaterial; } }
+	private Material invalidBorder { get { return District.ValidBorderMaterial; } }
+	private Material BackgroundMaterial { get { return District.BackgroundMaterial; } }
 
     private Material SelectedBackgroundMaterial;
 
@@ -43,10 +41,6 @@ public class Constituent : MonoBehaviour
         set
         {
             _district = value;
-            validBorder = value.ValidBorderMaterial;
-            invalidBorder = value.InvalidBorderMaterial;
-
-            BackgroundMaterial = value.BackgroundMaterial;
 
             UpdateBorders();
             UpdateBackground();
@@ -123,7 +117,7 @@ public class Constituent : MonoBehaviour
                 System.Action<float> glazeUpdate = (percent) =>
                 {
                     selectionEffectPercentage = percent;
-                    Color resultingColor = Color.Lerp(District.CurrentPartyColor, BackgroundMaterial.GetColor("_Color"), selectionEffectPercentage);
+					Color resultingColor = Color.Lerp(District.PartyColor, District.CurrentColor, selectionEffectPercentage);
                     SelectedBackgroundMaterial.SetColor("_Color", resultingColor);
                 };
 
@@ -136,7 +130,7 @@ public class Constituent : MonoBehaviour
                 {
                     LeanTween.value(gameObject, 0.0f, 1.0f, 0.5f).setOnUpdate(glazeUpdate).setOnComplete(() =>
                     {
-                        _backgroundMesh.material = BackgroundMaterial;
+						UpdateBackground();
                     });
                 }
             }
@@ -205,7 +199,7 @@ public class Constituent : MonoBehaviour
         }
         else if (CurrentlySelected || selectionEffectPercentage < 1.0f)
         {
-            SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(District.CurrentPartyColor, BackgroundMaterial.color, selectionEffectPercentage));
+			SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(District.PartyColor, District.CurrentColor, selectionEffectPercentage));
             _backgroundMesh.material = SelectedBackgroundMaterial;
         }
         else

@@ -26,7 +26,7 @@ public class CityGenerator : MonoBehaviour
     public List<District> Districts { get; private set; }
     public List<Constituent> Constituents { get; private set; }
 
-    private int minDistrictSize, maxDistrictSize;
+	public int MinDistrictSize { get; private set; }
 
     void Awake()
     {
@@ -84,8 +84,7 @@ public class CityGenerator : MonoBehaviour
         }
 
         float averageDistrictSize = (float)Constituents.Count((c) => { return c.party != Constituent.Party.None; }) / numDistricts;
-        minDistrictSize = (int)System.Math.Round(averageDistrictSize * 0.75f);
-        maxDistrictSize = (int)System.Math.Round(averageDistrictSize * 1.25f);
+        MinDistrictSize = (int)System.Math.Round(averageDistrictSize * 0.75f);
 
         foreach (Constituent c in Constituents)
         {
@@ -426,13 +425,7 @@ public class CityGenerator : MonoBehaviour
         if (constituent.party != Constituent.Party.None)
         {
             //make sure the size of the old district will be within size constraints
-            if (constituent.District.VotingMemberCount - 1 < minDistrictSize)
-            {
-                return false;
-            }
-
-            //make sure the size of the new district will be within constraints
-            if (newDistrict.VotingMemberCount + 1 > maxDistrictSize)
+            if (constituent.District.VotingMemberCount - 1 < MinDistrictSize)
             {
                 return false;
             }

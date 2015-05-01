@@ -2,6 +2,7 @@
 using UnityEngine.Audio;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class AudioManager : MonoBehaviour
 {
@@ -24,7 +25,11 @@ public class AudioManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        sources = GetComponentsInChildren<AudioSource>();
+        sources = new AudioSource[] { 
+			transform.FindChild ("Audio Source 1").GetComponent<AudioSource>(),
+			transform.FindChild ("Audio Source 2").GetComponent<AudioSource>(),
+			transform.FindChild ("Audio Source 3").GetComponent<AudioSource>(),
+		};
 
         SetMusicLevel(PlayerPrefs.GetFloat("MusicVolume", 1.0f));
         SetSFXLevel(PlayerPrefs.GetFloat("SFXVolume", 1.0f));

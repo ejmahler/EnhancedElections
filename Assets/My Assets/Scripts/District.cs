@@ -4,6 +4,28 @@ using System.Collections.Generic;
 
 public class District : MonoBehaviour
 {
+	public Color PartyColor { get; private set; }
+	public Color GlazeColor {
+		get
+		{
+			return Color.Lerp(PartyColor, Color.white, maxGlazePercent);
+		}
+	}
+	private float maxGlazePercent = 0.5f;
+
+	public Color CurrentColor {
+		get
+		{
+			return Color.Lerp(PartyColor, GlazeColor, selectedGlazePercent);
+		}
+	}
+	private float selectedGlazePercent = 0.0f;
+	
+	//set of constituents that would split this vertex in two if removed
+	public HashSet<Constituent> ArticulationPoints { get; private set; }
+	
+	//set of consistituents that are adjacent, but not members of, this district
+	public HashSet<Constituent> NeighborConstituents { get; private set; }
 
     public int MemberCount { get; private set; }
     public int VotingMemberCount { get; private set; }
@@ -17,13 +39,27 @@ public class District : MonoBehaviour
     public Material ValidBorderMaterial { get; private set; }
     public Material InvalidBorderMaterial { get; private set; }
 
-    public Material BackgroundMaterial { get; private set; }
+	private Material _currentBackgroundMaterial;
+	public Material BackgroundMaterial {
+		get { return _currentBackgroundMaterial; }
+		private set
+		{
+			if(value != _currentBackgroundMaterial)
+			{
+				_currentBackgroundMaterial = value;
+				foreach(Constituent c in ConstituentsQuery)
+				{
+					c.UpdateBackground();
+				}
+			}
+		}
+	}
 
-    //set of constituents that would split this vertex in two if removed
-    public HashSet<Constituent> ArticulationPoints { get; private set; }
+	[SerializeField]
+	private Material normalBackgroundMaterial;
 
-    //set of consistituents that are adjacent, but not members of, this district
-    public HashSet<Constituent> NeighborConstituents { get; private set; }
+	[SerializeField]
+	private Material minimumBackgroundMaterial;
 
     [SerializeField]
     private Color selectedBorderColor;
@@ -39,16 +75,7 @@ public class District : MonoBehaviour
     [SerializeField]
     private Color evenBackgroundColor;
 
-    public Color CurrentPartyColor { get; private set; }
-
-    private CityGenerator cityGenerator;
-
-    private float _selectedGlazePercent = 0.0f;
-    public float SelectedGlazePercent
-    {
-        get { return _selectedGlazePercent; }
-        private set { _selectedGlazePercent = value; }
-    }
+	private CityGenerator cityGenerator;
 
     private bool _currentlySelected;
     public bool CurrentlySelected
@@ -74,25 +101,24 @@ public class District : MonoBehaviour
                 Color newInvalidColor = GetInvalidBorderColor(value);
                 Color oldInvalidColor = GetInvalidBorderColor(_currentlySelected);
                 LeanTween.value(gameObject, oldInvalidColor, newInvalidColor, 0.25f).setOnUpdateColor((currentColor) =>
-                                                                                        {
-                                                                                            InvalidBorderMaterial.SetColor("_Color", currentColor);
-                                                                                        });
+                {
+                    InvalidBorderMaterial.SetColor("_Color", currentColor);
+                });
 
                 //update the "glaze percentage" so that the entire district's background is lighter in color
-                float maxglaze = 0.5f;
                 System.Action<float> glazeUpdate = (percent) =>
                 {
-                    SelectedGlazePercent = percent;
-                    BackgroundMaterial.SetColor("_Color", Color.Lerp(CurrentPartyColor, Color.white, SelectedGlazePercent));
+					selectedGlazePercent = percent;
+                    BackgroundMaterial.SetColor("_Color", CurrentColor);
                 };
 
                 if (value)
                 {
-                    LeanTween.value(gameObject, 0.0f, maxglaze, 0.25f).setOnUpdate(glazeUpdate);
+					LeanTween.value(gameObject, 0.0f, 1.0f, 0.25f).setOnUpdate(glazeUpdate);
                 }
                 else
                 {
-                    LeanTween.value(gameObject, maxglaze, 0.0f, 0.25f).setOnUpdate(glazeUpdate);
+					LeanTween.value(gameObject, 1.0f, 0.0f, 0.25f).setOnUpdate(glazeUpdate);
                 }
             }
         }
@@ -120,10 +146,13 @@ public class District : MonoBehaviour
 
         ValidBorderMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Border"));
         InvalidBorderMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Border"));
-        BackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
 
-        CurrentPartyColor = evenBackgroundColor;
-        BackgroundMaterial.SetColor("_Color", CurrentPartyColor);
+		normalBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
+		minimumBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
+		BackgroundMaterial = normalBackgroundMaterial;
+
+		PartyColor = evenBackgroundColor;
+		normalBackgroundMaterial.SetColor("_Color", CurrentColor);
 
         ValidBorderMaterial.SetColor("_Color", normalBorderColor);
         InvalidBorderMaterial.SetColor("_Color", normalBorderColor);
@@ -192,12 +221,23 @@ public class District : MonoBehaviour
             Color oldColor = GetBackgroundColor(CurrentMajority);
             LeanTween.value(gameObject, oldColor, newColor, 0.25f).setOnUpdateColor((currentColor) =>
             {
-                CurrentPartyColor = currentColor;
-                BackgroundMaterial.SetColor("_Color", Color.Lerp(CurrentPartyColor, Color.white, SelectedGlazePercent));
+                PartyColor = currentColor;
+				var interpolatedColor = CurrentColor;
+
+				normalBackgroundMaterial.SetColor("_Color", interpolatedColor);
             });
 
             CurrentMajority = majority;
         }
+
+		if (VotingMemberCount <= cityGenerator.MinDistrictSize)
+		{
+			BackgroundMaterial = minimumBackgroundMaterial;
+		}
+		else
+		{
+			BackgroundMaterial = normalBackgroundMaterial;
+		}
     }
 
     private Color GetBackgroundColor(Constituent.Party party)

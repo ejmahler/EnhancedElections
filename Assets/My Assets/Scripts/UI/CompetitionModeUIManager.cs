@@ -34,7 +34,7 @@ public class CompetitionModeUIManager : MonoBehaviour
         currentTurnUIManager = GetComponentInChildren<CurrentTurnUIManager>();
         endTurnUIManager = GetComponentInChildren<EndTurnUIManager>();
 
-        audioManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<AudioManager>();
+        audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
 
         //color the text based on whose turn it is
         var currentBackgroundColor = GetBackgroundColorForPlayer(turnManager.CurrentPlayer);
@@ -52,6 +52,8 @@ public class CompetitionModeUIManager : MonoBehaviour
 
     public void AdvanceTurn()
     {
+		audioManager.PlayGavel ();
+
         //prevent the player from triggering this stuff again or undoing any of their actions
         endTurnUIManager.SetEndTurnButtonInteractable(false);
         turnManager.BeginTurnTransition();
