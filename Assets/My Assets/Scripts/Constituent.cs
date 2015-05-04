@@ -113,24 +113,30 @@ public class Constituent : MonoBehaviour
             {
                 _currentlySelected = value;
 
-                //update the "select effect" percentage - if we are the currently selected constituent, we want no effect, otherwise full effect
-                System.Action<float> glazeUpdate = (percent) =>
-                {
-                    selectionEffectPercentage = percent;
-					Color resultingColor = Color.Lerp(District.PartyColor, District.CurrentColor, selectionEffectPercentage);
-                    SelectedBackgroundMaterial.SetColor("_Color", resultingColor);
-                };
-
                 if (value) //if we are selected, transition from the glaze color back to the normal color
                 {
-                    LeanTween.cancel(gameObject);
-                    glazeUpdate(0.0f);
+                    LeanTween.cancel(_backgroundMesh.gameObject);
+                    SelectedBackgroundMaterial.SetColor("_Color", District.PartyColor);
+                    selectionEffectPercentage = 0.0f;
                 }
                 else //if we are unselected, transition from the normal color back to the glaze color
                 {
-                    LeanTween.value(gameObject, 0.0f, 1.0f, 0.5f).setOnUpdate(glazeUpdate).setOnComplete(() =>
+                    LeanTween.value(_backgroundMesh.gameObject, 0.0f, 1.0f, 0.5f).setOnComplete(() => UpdateBackground())
+                        .setOnUpdate((percent) =>
                     {
-						UpdateBackground();
+                        //if our district is not selected and the district is at the minimum size, cancel any selection fade effect running
+                        if (!District.CurrentlySelected && District.BackgroundMaterial == District.MinimumBackgroundMaterial)
+                        {
+                            LeanTween.cancel(_backgroundMesh.gameObject);
+                            selectionEffectPercentage = 1.0f;
+                            UpdateBackground();
+                        }
+                        else
+                        {
+                            selectionEffectPercentage = percent;
+                            Color resultingColor = Color.Lerp(District.PartyColor, District.CurrentColor, selectionEffectPercentage);
+                            SelectedBackgroundMaterial.SetColor("_Color", resultingColor);
+                        }
                     });
                 }
             }

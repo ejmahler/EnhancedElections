@@ -55,11 +55,8 @@ public class District : MonoBehaviour
 		}
 	}
 
-	[SerializeField]
-	private Material normalBackgroundMaterial;
-
-	[SerializeField]
-	private Material minimumBackgroundMaterial;
+	public Material NormalBackgroundMaterial { get; private set; }
+    public Material MinimumBackgroundMaterial { get; private set; }
 
     [SerializeField]
     private Color selectedBorderColor;
@@ -109,7 +106,8 @@ public class District : MonoBehaviour
                 System.Action<float> glazeUpdate = (percent) =>
                 {
 					selectedGlazePercent = percent;
-                    BackgroundMaterial.SetColor("_Color", CurrentColor);
+                    NormalBackgroundMaterial.SetColor("_Color", CurrentColor);
+                    MinimumBackgroundMaterial.SetColor("_StripeColor", CurrentColor);
                 };
 
                 if (value)
@@ -147,12 +145,17 @@ public class District : MonoBehaviour
         ValidBorderMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Border"));
         InvalidBorderMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Border"));
 
-		normalBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
-		minimumBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
-		BackgroundMaterial = normalBackgroundMaterial;
+
+        NormalBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
+        MinimumBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/Striped District Background"));
+
+		BackgroundMaterial = MinimumBackgroundMaterial;
 
 		PartyColor = evenBackgroundColor;
-		normalBackgroundMaterial.SetColor("_Color", CurrentColor);
+		NormalBackgroundMaterial.SetColor("_Color", CurrentColor);
+
+        MinimumBackgroundMaterial.SetColor("_StripeColor", CurrentColor);
+        MinimumBackgroundMaterial.SetColor("_NonStripeColor", GlazeColor);
 
         ValidBorderMaterial.SetColor("_Color", normalBorderColor);
         InvalidBorderMaterial.SetColor("_Color", normalBorderColor);
@@ -224,7 +227,9 @@ public class District : MonoBehaviour
                 PartyColor = currentColor;
 				var interpolatedColor = CurrentColor;
 
-				normalBackgroundMaterial.SetColor("_Color", interpolatedColor);
+				NormalBackgroundMaterial.SetColor("_Color", interpolatedColor);
+                MinimumBackgroundMaterial.SetColor("_StripeColor", interpolatedColor);
+                MinimumBackgroundMaterial.SetColor("_NonStripeColor", GlazeColor);
             });
 
             CurrentMajority = majority;
@@ -232,11 +237,11 @@ public class District : MonoBehaviour
 
 		if (VotingMemberCount <= cityGenerator.MinDistrictSize)
 		{
-			BackgroundMaterial = minimumBackgroundMaterial;
+			BackgroundMaterial = MinimumBackgroundMaterial;
 		}
 		else
 		{
-			BackgroundMaterial = normalBackgroundMaterial;
+			BackgroundMaterial = NormalBackgroundMaterial;
 		}
     }
 
