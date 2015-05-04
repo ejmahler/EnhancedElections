@@ -28,7 +28,6 @@ public class InputManager : MonoBehaviour
             if (constituent != null)
             {
                 moveManager.ConstituentDragged(constituent);
-                
             }
         }
         else if (SelectionEnabled)

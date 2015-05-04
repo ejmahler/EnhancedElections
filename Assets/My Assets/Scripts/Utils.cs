@@ -44,19 +44,11 @@ public class Utils : MonoBehaviour
     {
         List<T> result = RandomShuffle(items);
 
-
         return result.Take(k).ToList();
     }
 
-    public static T ParseEnumString<T>(string enumString)
-    {
-        return (T)System.Enum.Parse(typeof(T), enumString);
-    }
-
-
     public static T ChooseWeightedRandom<T>(SortedList<T, float> items)
     {
-
         List<float> cumulativeWeights = new List<float>();
         foreach (var item in items)
         {
@@ -71,6 +63,8 @@ public class Utils : MonoBehaviour
 
         return items.Keys[index];
     }
+
+
 
     public static List<HashSet<T>> ConnectedComponents<T>(IEnumerable<T> items, System.Func<T, IEnumerable<T>> neighborFunc)
     {
@@ -167,7 +161,8 @@ public class Utils : MonoBehaviour
         //run the algorithm to find all articulation points, starting with the provided root
         FindArticulationPoints(rootVertex, null);
 
-        //"results" now contains all articulation points with one exception - it contains the root
+        //"results" now contains all articulation points
+        //unfortunately it's also guaranteed to contain the root node, which may be a false positive
         //we need to check if the root has only one child. if it does, it's not an articulation point
 
         //we're not using linq here because of a mono bug
@@ -182,5 +177,11 @@ public class Utils : MonoBehaviour
             results.Remove(rootVertex);
 
         return results;
+    }
+
+
+    public static T ParseEnumString<T>(string enumString)
+    {
+        return (T)System.Enum.Parse(typeof(T), enumString);
     }
 }

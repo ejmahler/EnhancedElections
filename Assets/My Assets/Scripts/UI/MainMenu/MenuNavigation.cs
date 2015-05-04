@@ -5,8 +5,8 @@ public class MenuNavigation : MonoBehaviour
 {
     private AudioManager audioManager;
 
-	[SerializeField]
-	private GameObject canvas;
+    [SerializeField]
+    private GameObject canvas;
 
     [SerializeField]
     private GameObject aboutCard;
@@ -59,20 +59,20 @@ public class MenuNavigation : MonoBehaviour
         StartCoroutine(ShowCard(settingsCard));
     }
 
-	private IEnumerator ShowCard(GameObject prefab)
-	{
-		//show the desired card
-		var card = (GameObject)Instantiate(prefab);
-		card.transform.SetParent(canvas.transform, false);
-		
-		//wait one frame before checking for input
-		yield return null;
-		
-		//wait for the user to click through, then destroy the card
-		while (!Input.GetKeyDown(KeyCode.Space))
-		{
-			yield return null;
-		}
-		Destroy(card);
-	}
+    private IEnumerator ShowCard(GameObject prefab)
+    {
+        //show the desired card
+        var card = (GameObject)Instantiate(prefab);
+        card.transform.SetParent(canvas.transform, false);
+
+        //wait one frame before checking for input
+        yield return null;
+
+        //wait for the user to click through, then destroy the card
+        while (!Input.GetKeyDown(KeyCode.Space))
+        {
+            yield return null;
+        }
+        Destroy(card);
+    }
 }

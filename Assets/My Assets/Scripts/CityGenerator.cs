@@ -26,7 +26,7 @@ public class CityGenerator : MonoBehaviour
     public List<District> Districts { get; private set; }
     public List<Constituent> Constituents { get; private set; }
 
-	public int MinDistrictSize { get; private set; }
+    public int MinDistrictSize { get; private set; }
 
     void Awake()
     {
@@ -230,7 +230,7 @@ public class CityGenerator : MonoBehaviour
             int diff = RedCount - BlueCount;
 
             //if diff is odd, convert one red to brown
-            if((diff % 2) == 1)
+            if ((diff % 2) == 1)
             {
                 Constituent c = Utils.ChooseRandom(RedConstituents.ToList());
                 c.party = Constituent.Party.Yellow;
@@ -290,14 +290,14 @@ public class CityGenerator : MonoBehaviour
             //how many votes we need to sway in the other party's favor
             int amountToFlip;
 
-            if(redCount > blueCount)
+            if (redCount > blueCount)
             {
                 originalParty = Constituent.Party.Red;
                 targetParty = Constituent.Party.Blue;
                 districtToFlip = Utils.ChooseRandom(redDistricts.ToList());
 
                 //enough votes to make it even, plus enough votes to give blue a small margin
-                amountToFlip = (districtToFlip.VotesRed - districtToFlip.VotesBlue)/2 + Random.Range(1, 4);
+                amountToFlip = (districtToFlip.VotesRed - districtToFlip.VotesBlue) / 2 + Random.Range(1, 4);
             }
             else
             {
@@ -306,12 +306,12 @@ public class CityGenerator : MonoBehaviour
                 districtToFlip = Utils.ChooseRandom(blueDistricts.ToList());
 
                 //enough votes to make it even, plus enough votes to give red  a small margin
-                amountToFlip = (districtToFlip.VotesBlue - districtToFlip.VotesRed)/2 + Random.Range(1, 4);
+                amountToFlip = (districtToFlip.VotesBlue - districtToFlip.VotesRed) / 2 + Random.Range(1, 4);
             }
 
             //swap random consitutents in this district until it flips
             int numFlipped = 0;
-            while(numFlipped < amountToFlip)
+            while (numFlipped < amountToFlip)
             {
                 Constituent districtConstituent = districtToFlip.ConstituentsQuery.First((c) => c.party == originalParty);
 

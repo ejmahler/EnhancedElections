@@ -52,7 +52,7 @@ public class CompetitionModeUIManager : MonoBehaviour
 
     public void AdvanceTurn()
     {
-		audioManager.PlayGavel ();
+        audioManager.PlayGavel();
 
         //prevent the player from triggering this stuff again or undoing any of their actions
         endTurnUIManager.SetEndTurnButtonInteractable(false);

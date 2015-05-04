@@ -12,9 +12,9 @@ public class Constituent : MonoBehaviour
 
     private LTDescr activeShapeSizeTween = null;
 
-	private Material validBorder { get { return District.ValidBorderMaterial; } }
-	private Material invalidBorder { get { return District.InvalidBorderMaterial; } }
-	private Material BackgroundMaterial { get { return District.BackgroundMaterial; } }
+    private Material validBorder { get { return District.ValidBorderMaterial; } }
+    private Material invalidBorder { get { return District.InvalidBorderMaterial; } }
+    private Material BackgroundMaterial { get { return District.BackgroundMaterial; } }
 
     private Material SelectedBackgroundMaterial;
 
@@ -205,7 +205,7 @@ public class Constituent : MonoBehaviour
         }
         else if (CurrentlySelected || selectionEffectPercentage < 1.0f)
         {
-			SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(District.PartyColor, District.CurrentColor, selectionEffectPercentage));
+            SelectedBackgroundMaterial.SetColor("_Color", Color.Lerp(District.PartyColor, District.CurrentColor, selectionEffectPercentage));
             _backgroundMesh.material = SelectedBackgroundMaterial;
         }
         else

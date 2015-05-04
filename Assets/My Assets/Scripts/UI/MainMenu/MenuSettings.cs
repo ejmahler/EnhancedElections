@@ -2,7 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class MenuSettings : MonoBehaviour {
+public class MenuSettings : MonoBehaviour
+{
 
     [SerializeField]
     private Slider musicVolumeSlider;
@@ -12,13 +13,14 @@ public class MenuSettings : MonoBehaviour {
 
     private AudioManager audioManager;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
 
         musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1.0f);
         sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1.0f);
-	}
+    }
 
     public void OnMusicVolumeChanged()
     {
