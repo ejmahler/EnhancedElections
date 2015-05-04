@@ -13,7 +13,7 @@ public class Constituent : MonoBehaviour
     private LTDescr activeShapeSizeTween = null;
 
 	private Material validBorder { get { return District.ValidBorderMaterial; } }
-	private Material invalidBorder { get { return District.ValidBorderMaterial; } }
+	private Material invalidBorder { get { return District.InvalidBorderMaterial; } }
 	private Material BackgroundMaterial { get { return District.BackgroundMaterial; } }
 
     private Material SelectedBackgroundMaterial;
