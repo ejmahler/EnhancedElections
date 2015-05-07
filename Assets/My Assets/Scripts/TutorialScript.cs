@@ -128,7 +128,7 @@ public class TutorialScript : MonoBehaviour
             }
             else
             {
-                instructionText.text = "Now, drag the cursor over the constituents you want to add to this district.\n\nNotice that the border is gray if you can move in that direction, and red if you can't.";
+                instructionText.text = "Now, move the two blue constituents in the neighboring district into this one by dragging the cursor over them. \n\nNotice that the border is gray if you can move in that direction, and red if you can't.";
             }
 
             yield return null;

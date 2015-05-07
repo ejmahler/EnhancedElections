@@ -18,7 +18,8 @@ public class MenuSettings : MonoBehaviour
     {
         audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
 
-        musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1.0f);
+        //musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1.0f);
+        audioManager.SetMusicLevel(0.0f);
         sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1.0f);
     }
 
