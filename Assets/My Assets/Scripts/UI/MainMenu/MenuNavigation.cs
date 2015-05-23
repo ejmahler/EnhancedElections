@@ -31,6 +31,12 @@ public class MenuNavigation : MonoBehaviour
         Application.LoadLevel("CompetitionMode");
     }
 
+    public void NormalAIClicked()
+    {
+        audioManager.PlayGavel();
+        Application.LoadLevel("AIMode");
+    }
+
     public void NormalSandboxClicked()
     {
         audioManager.PlayGavel();
@@ -41,6 +47,12 @@ public class MenuNavigation : MonoBehaviour
     {
         audioManager.PlayGavel();
         Application.LoadLevel("CompetitionModeLarge");
+    }
+
+    public void LargeAIClicked()
+    {
+        audioManager.PlayGavel();
+        Application.LoadLevel("AIModeLarge");
     }
 
     public void LargeSandboxClicked()

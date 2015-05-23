@@ -157,6 +157,14 @@ public class MoveManager : MonoBehaviour
         UndoStack.Clear();
     }
 
+    public void MoveConstituent(Constituent c, District newDistrict)
+    {
+        if(IsValidMove(c, newDistrict))
+        {
+            MoveConstituents(new Dictionary<Constituent, District> { { c, newDistrict } });
+        }
+    }
+
     private void MoveConstituents(Dictionary<Constituent, District> moves)
     {
         HashSet<District> modifiedDistricts = new HashSet<District>();
@@ -239,20 +247,53 @@ public class MoveManager : MonoBehaviour
 
     private void UpdateValidMoves()
     {
-        CurrentValidMoves = new HashSet<Constituent>();
-
-        //if moves aren't allowed, leave it as an empty set
-        if (AllowMoves)
+        if(AllowMoves)
         {
-            foreach (Constituent districtNeighbor in CurrentlySelectedDistrict.NeighborConstituents)
-            {
-                if (!LockedConstituents.Contains(districtNeighbor) && cityGenerator.IsValidMove(districtNeighbor, CurrentlySelectedDistrict))
-                {
-                    CurrentValidMoves.Add(districtNeighbor);
-                }
-            }
+            CurrentValidMoves = GetValidMovesForDistrict(CurrentlySelectedDistrict);
+        }
+        else
+        {
+            CurrentValidMoves = new HashSet<Constituent>();
         }
     }
+
+    public HashSet<Constituent> GetValidMovesForDistrict(District d)
+    {
+        return new HashSet<Constituent>(d.NeighborConstituents.Where((neighbor) => IsValidMove(neighbor, d)).ToArray());
+    }
+
+    private bool IsValidMove(Constituent constituent, District newDistrict)
+    {
+        //make sure this constituent isn't locked
+        if(LockedConstituents.Contains(constituent))
+        {
+            return false;
+        }
+
+        if (constituent.party != Constituent.Party.None)
+        {
+            //make sure the size of the old district will be within size constraints
+            if (constituent.District.VotingMemberCount - 1 < cityGenerator.MinDistrictSize)
+            {
+                return false;
+            }
+        }
+
+        //check if this constituent is a cut vertex for the old district. if it is, return false
+        if (constituent.District.ArticulationPoints.Contains(constituent))
+        {
+            return false;
+        }
+
+        //verify that this constituent is actually adjacent to the new district
+        if (!newDistrict.NeighborConstituents.Contains(constituent))
+        {
+            return false;
+        }
+
+        //return true
+        return true;
+    }    
 
     public struct Move
     {

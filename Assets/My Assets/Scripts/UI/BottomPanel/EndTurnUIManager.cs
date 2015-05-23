@@ -29,7 +29,12 @@ public class EndTurnUIManager : MonoBehaviour
     {
 
         //update the "x moves left" textbox
-        if (turnManager.MovesPerTurn <= 0)
+        if( turnManager.Mode == TurnManager.GameMode.AI && turnManager.CurrentPlayer == turnManager.firstPlayer)
+        {
+            endTurnButton.image.color = doneButtonNormalColor;
+            currentMovesTextbox.text = "Opponent's Turn";
+        }
+        else if (turnManager.MovesPerTurn <= 0)
         {
             endTurnButton.image.color = doneButtonNormalColor;
             currentMovesTextbox.text = "";

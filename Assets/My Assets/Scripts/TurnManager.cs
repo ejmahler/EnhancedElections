@@ -1,10 +1,22 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 [RequireComponent(typeof(MoveManager))]
 public class TurnManager : MonoBehaviour
 {
+    public enum GameMode { AI, TwoPlayer }
+
+    [SerializeField]
+    private GameMode _mode;
+    public GameMode Mode
+    {
+        get
+        {
+            return _mode;
+        }
+    }
 
     [SerializeField]
     private int lockDuration;
@@ -18,7 +30,7 @@ public class TurnManager : MonoBehaviour
     public int TotalRounds { get { return _totalRounds; } }
 
     private int currentTurnIndex = 0;
-    public Player firstPlayer;
+    public Player firstPlayer { get; set; }
 
 
     private MoveManager moveManager;
@@ -73,11 +85,15 @@ public class TurnManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (MovesThisTurn >= MovesPerTurn || transitioningTurn)
+        if (MovesThisTurn >= MovesPerTurn || transitioningTurn )
         {
             moveManager.AllowMoves = false;
         }
-        else if (MovesThisTurn < MovesPerTurn && !transitioningTurn)
+        else if(Mode == GameMode.AI && CurrentPlayer == firstPlayer)
+        {
+            moveManager.AllowMoves = false;
+        }
+        else
         {
             moveManager.AllowMoves = true;
         }
@@ -147,5 +163,18 @@ public class TurnManager : MonoBehaviour
     public enum Player
     {
         Red = 1, Blue = 0,
+    }
+
+    public Constituent.Party GetPartyforPlayer(Player p)
+    {
+        switch(p)
+        {
+            case Player.Blue:
+                return Constituent.Party.Blue;
+            case Player.Red:
+                return Constituent.Party.Red;
+            default:
+                return Constituent.Party.None;
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class CompetitionModeUIManager : MonoBehaviour
+public class AIModeUIManager : MonoBehaviour
 {
 
     [SerializeField]
@@ -22,6 +22,7 @@ public class CompetitionModeUIManager : MonoBehaviour
     private EndTurnUIManager endTurnUIManager;
 
     private AudioManager audioManager;
+    private AIManager aiManager;
 
     private TurnManager turnManager;
     private CityGenerator cityGenerator;
@@ -31,26 +32,35 @@ public class CompetitionModeUIManager : MonoBehaviour
     {
         turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
         cityGenerator = GameObject.FindGameObjectWithTag("GameController").GetComponent<CityGenerator>();
+        aiManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<AIManager>();
         currentTurnUIManager = GetComponentInChildren<CurrentTurnUIManager>();
         endTurnUIManager = GetComponentInChildren<EndTurnUIManager>();
 
         audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
 
-        //color the text based on whose turn it is
-        var currentBackgroundColor = GetBackgroundColorForPlayer(turnManager.CurrentPlayer);
+        //color the background based on the human player
+        var currentBackgroundColor = GetBackgroundColorForPlayer(turnManager.NextPlayer);
         foreach (var panel in backgroundPanels)
         {
             panel.color = currentBackgroundColor;
         }
+
+        endTurnUIManager.SetEndTurnButtonInteractable(false);
+
+        StartCoroutine(AITurn());
     }
 
     public void AdvanceTurn()
     {
         audioManager.PlayGavel();
 
+        float transitionDuration = 1.0f;
+
+        //alert child ui managers to update their information
+        currentTurnUIManager.UpdateTurnDisplay(transitionDuration);
+
         //prevent the player from triggering this stuff again or undoing any of their actions
         endTurnUIManager.SetEndTurnButtonInteractable(false);
-        turnManager.BeginTurnTransition();
 
         if (turnManager.NextRound > turnManager.TotalRounds)
         {
@@ -58,29 +68,24 @@ public class CompetitionModeUIManager : MonoBehaviour
         }
         else
         {
-            float transitionDuration = 1.0f;
+            turnManager.AdvanceTurn();
 
-            //alert child ui managers to update their information
-            currentTurnUIManager.UpdateTurnDisplay(transitionDuration);
-
-            //update the background colors of the UI panels
-            var nextPlayer = turnManager.NextPlayer;
-            var targetBackgroundColor = GetBackgroundColorForPlayer(nextPlayer);
-
-            foreach (var panel in backgroundPanels)
+            if(turnManager.CurrentPlayer == turnManager.firstPlayer)
             {
-                LeanTween.color(panel.rectTransform, targetBackgroundColor, transitionDuration);
+                StartCoroutine(AITurn());
             }
-
-            //after the transition duration, actually go through with ending the turn
-            Invoke("TurnTransitionsFinished", transitionDuration);
+            else
+            {
+                endTurnUIManager.SetEndTurnButtonInteractable(true);
+            }
         }
     }
 
-    private void TurnTransitionsFinished()
+    public IEnumerator AITurn()
     {
-        endTurnUIManager.SetEndTurnButtonInteractable(true);
-        turnManager.AdvanceTurn();
+        yield return StartCoroutine(aiManager.AITurn());
+
+        AdvanceTurn();
     }
 
     private IEnumerator EndGame()

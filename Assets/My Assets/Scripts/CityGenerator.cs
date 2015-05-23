@@ -420,33 +420,6 @@ public class CityGenerator : MonoBehaviour
         return result;
     }
 
-    public bool IsValidMove(Constituent constituent, District newDistrict)
-    {
-        if (constituent.party != Constituent.Party.None)
-        {
-            //make sure the size of the old district will be within size constraints
-            if (constituent.District.VotingMemberCount - 1 < MinDistrictSize)
-            {
-                return false;
-            }
-        }
-
-        //check if this constituent is a cut vertex for the old district. if it is, return false
-        if (constituent.District.ArticulationPoints.Contains(constituent))
-        {
-            return false;
-        }
-
-        //verify that this constituent is actually adjacent to the new district
-        if (!newDistrict.NeighborConstituents.Contains(constituent))
-        {
-            return false;
-        }
-
-        //return true
-        return true;
-    }
-
     private struct Point
     {
         public int x, y;
