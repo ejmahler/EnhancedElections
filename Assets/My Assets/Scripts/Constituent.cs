@@ -12,10 +12,6 @@ public class Constituent : MonoBehaviour
 
     private LTDescr activeShapeSizeTween = null;
 
-    private Material validBorder { get { return District.ValidBorderMaterial; } }
-    private Material invalidBorder { get { return District.InvalidBorderMaterial; } }
-    private Material BackgroundMaterial { get { return District.BackgroundMaterial; } }
-
     private Material SelectedBackgroundMaterial;
 
     [SerializeField]
@@ -25,14 +21,10 @@ public class Constituent : MonoBehaviour
 
     private Renderer _backgroundMesh;
 
-    private Renderer _borderTop, _borderBottom, _borderLeft, _borderRight;
-    private Renderer[] NeighborBorders
-    {
-        get
-        {
-            return new Renderer[] { _borderTop, _borderBottom, _borderLeft, _borderRight };
-        }
-    }
+    private Renderer[] NeighborBorders;
+
+    private Constituent[] _neighbors;
+    public Constituent[] Neighbors { get { return _neighbors; } } 
 
     private District _district;
     public District District
@@ -72,16 +64,6 @@ public class Constituent : MonoBehaviour
                     tweenSize();
                 }
             }
-        }
-    }
-
-    [System.NonSerialized]
-    public Constituent neighborTop, neighborBottom, neighborLeft, neighborRight;
-    public Constituent[] Neighbors
-    {
-        get
-        {
-            return new Constituent[] { neighborTop, neighborBottom, neighborLeft, neighborRight };
         }
     }
 
@@ -151,14 +133,21 @@ public class Constituent : MonoBehaviour
         _partyBlueShape = transform.Find("BlueShape").gameObject;
         _partyOtherShape = transform.Find("OtherShape").gameObject;
 
-        _borderTop = transform.Find("Border Top").GetComponent<MeshRenderer>();
-        _borderBottom = transform.Find("Border Bottom").GetComponent<MeshRenderer>();
-        _borderLeft = transform.Find("Border Left").GetComponent<MeshRenderer>();
-        _borderRight = transform.Find("Border Right").GetComponent<MeshRenderer>();
+        NeighborBorders = new Renderer[] {
+            transform.Find("Border Top").GetComponent<MeshRenderer>(),
+            transform.Find("Border Bottom").GetComponent<MeshRenderer>(),
+            transform.Find("Border Left").GetComponent<MeshRenderer>(),
+            transform.Find("Border Right").GetComponent<MeshRenderer>()
+        };
 
         moveManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MoveManager>();
 
         SelectedBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
+    }
+
+    public void SetNeighbors(Constituent top, Constituent bottom, Constituent left, Constituent right)
+    {
+        _neighbors = new Constituent[] { top, bottom, left, right };
     }
 
     public void UpdateBorders()
@@ -172,11 +161,11 @@ public class Constituent : MonoBehaviour
 
             if (moveManager.CurrentValidMoves == null || moveManager.CurrentValidMoves.Contains(neighbors[i]))
             {
-                borders[i].GetComponent<Renderer>().material = validBorder;
+                borders[i].GetComponent<Renderer>().material = District.ValidBorderMaterial;
             }
             else
             {
-                borders[i].GetComponent<Renderer>().material = invalidBorder;
+                borders[i].GetComponent<Renderer>().material = District.InvalidBorderMaterial;
             }
         }
 
@@ -201,7 +190,7 @@ public class Constituent : MonoBehaviour
     {
         if (moveManager.LockedConstituents.Contains(this))
         {
-            _backgroundMesh.material = lockedBackground;
+            _backgroundMesh.material = District.LockedBackgroundMaterial;
         }
         else if (CurrentlySelected || selectionEffectPercentage < 1.0f)
         {
@@ -210,7 +199,7 @@ public class Constituent : MonoBehaviour
         }
         else
         {
-            _backgroundMesh.material = BackgroundMaterial;
+            _backgroundMesh.material = District.BackgroundMaterial;
         }
     }
 

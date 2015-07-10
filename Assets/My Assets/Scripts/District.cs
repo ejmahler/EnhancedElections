@@ -23,6 +23,14 @@ public class District : MonoBehaviour
     }
     private float selectedGlazePercent = 0.0f;
 
+    public Color CurrentLockedColor
+    {
+        get
+        {
+            return Color.Lerp(CurrentColor, Color.gray, 0.5f);
+        }
+    }
+
     //set of constituents that would split this vertex in two if removed
     public HashSet<Constituent> ArticulationPoints { get; private set; }
 
@@ -41,6 +49,15 @@ public class District : MonoBehaviour
     public Material ValidBorderMaterial { get; private set; }
     public Material InvalidBorderMaterial { get; private set; }
 
+    private Material _lockedBackgroundMaterial;
+    public Material LockedBackgroundMaterial
+    {
+        get
+        {
+            return _lockedBackgroundMaterial;
+        }
+    }
+
     private Material _currentBackgroundMaterial;
     public Material BackgroundMaterial
     {
@@ -57,6 +74,8 @@ public class District : MonoBehaviour
             }
         }
     }
+
+   
 
     public Material NormalBackgroundMaterial { get; private set; }
     public Material MinimumBackgroundMaterial { get; private set; }
@@ -109,8 +128,12 @@ public class District : MonoBehaviour
                 System.Action<float> glazeUpdate = (percent) =>
                 {
                     selectedGlazePercent = percent;
-                    NormalBackgroundMaterial.SetColor("_Color", CurrentColor);
-                    MinimumBackgroundMaterial.SetColor("_StripeColor", CurrentColor);
+
+                    var currentColor = CurrentColor;
+
+                    NormalBackgroundMaterial.SetColor("_Color", currentColor);
+                    MinimumBackgroundMaterial.SetColor("_StripeColor", currentColor);
+                    LockedBackgroundMaterial.SetColor("_Color", CurrentLockedColor);
                 };
 
                 if (value)
@@ -151,6 +174,7 @@ public class District : MonoBehaviour
 
         NormalBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
         MinimumBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/Striped District Background"));
+        _lockedBackgroundMaterial = (Material)Object.Instantiate(Resources.Load("Materials/District Background"));
 
         BackgroundMaterial = MinimumBackgroundMaterial;
 
@@ -159,6 +183,8 @@ public class District : MonoBehaviour
 
         MinimumBackgroundMaterial.SetColor("_StripeColor", CurrentColor);
         MinimumBackgroundMaterial.SetColor("_NonStripeColor", GlazeColor);
+
+        LockedBackgroundMaterial.SetColor("_Color", CurrentLockedColor);
 
         ValidBorderMaterial.SetColor("_Color", normalBorderColor);
         InvalidBorderMaterial.SetColor("_Color", normalBorderColor);
@@ -233,6 +259,8 @@ public class District : MonoBehaviour
                 NormalBackgroundMaterial.SetColor("_Color", interpolatedColor);
                 MinimumBackgroundMaterial.SetColor("_StripeColor", interpolatedColor);
                 MinimumBackgroundMaterial.SetColor("_NonStripeColor", GlazeColor);
+
+                LockedBackgroundMaterial.SetColor("_Color", CurrentLockedColor);
             });
 
             CurrentMajority = majority;

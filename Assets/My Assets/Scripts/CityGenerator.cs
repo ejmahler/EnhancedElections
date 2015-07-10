@@ -52,10 +52,13 @@ public class CityGenerator : MonoBehaviour
         foreach (Point p in locationDict.Keys)
         {
             Constituent c = locationDict[p];
-            locationDict.TryGetValue(p + new Point(0, 1), out c.neighborTop);
-            locationDict.TryGetValue(p + new Point(0, -1), out c.neighborBottom);
-            locationDict.TryGetValue(p + new Point(-1, 0), out c.neighborLeft);
-            locationDict.TryGetValue(p + new Point(1, 0), out c.neighborRight);
+
+            Constituent top, bottom, left, right;
+            locationDict.TryGetValue(p + new Point(0, 1), out top);
+            locationDict.TryGetValue(p + new Point(0, -1), out bottom);
+            locationDict.TryGetValue(p + new Point(-1, 0), out left);
+            locationDict.TryGetValue(p + new Point(1, 0), out right);
+            c.SetNeighbors(top, bottom, left, right);
         }
 
         if (setupString.Length > 0)
