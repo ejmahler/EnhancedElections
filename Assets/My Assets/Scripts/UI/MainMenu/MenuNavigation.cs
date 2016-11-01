@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class MenuNavigation : MonoBehaviour
@@ -22,43 +23,43 @@ public class MenuNavigation : MonoBehaviour
     public void TutorialClicked()
     {
         audioManager.PlayGavel();
-        Application.LoadLevel("TutorialMode");
+		SceneManager.LoadScene("TutorialMode");
     }
 
     public void NormalCompetitionClicked()
     {
         audioManager.PlayGavel();
-        Application.LoadLevel("CompetitionMode");
+		SceneManager.LoadScene("CompetitionMode");
     }
 
     public void NormalAIClicked()
     {
         audioManager.PlayGavel();
-        Application.LoadLevel("AIMode");
+		SceneManager.LoadScene("AIMode");
     }
 
     public void NormalSandboxClicked()
     {
         audioManager.PlayGavel();
-        Application.LoadLevel("SandboxMode");
+		SceneManager.LoadScene("SandboxMode");
     }
 
     public void LargeCompetitionClicked()
     {
         audioManager.PlayGavel();
-        Application.LoadLevel("CompetitionModeLarge");
+		SceneManager.LoadScene("CompetitionModeLarge");
     }
 
     public void LargeAIClicked()
     {
         audioManager.PlayGavel();
-        Application.LoadLevel("AIModeLarge");
+		SceneManager.LoadScene("AIModeLarge");
     }
 
     public void LargeSandboxClicked()
     {
         audioManager.PlayGavel();
-        Application.LoadLevel("SandboxModeLarge");
+		SceneManager.LoadScene("SandboxModeLarge");
     }
 
     public void AboutClicked()

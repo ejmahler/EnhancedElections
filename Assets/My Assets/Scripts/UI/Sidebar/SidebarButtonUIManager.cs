@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class SidebarButtonUIManager : MonoBehaviour
@@ -57,12 +58,12 @@ public class SidebarButtonUIManager : MonoBehaviour
     public void ReloadClicked()
     {
         audioManager.PlayGavel();
-        Application.LoadLevel(Application.loadedLevelName);
+		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void MainMenuClicked()
     {
         audioManager.PlayGavel();
-        Application.LoadLevel("MainMenu");
+		SceneManager.LoadScene("MainMenu");
     }
 }

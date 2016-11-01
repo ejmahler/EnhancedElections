@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class EndGameUIManager : MonoBehaviour
@@ -35,11 +36,11 @@ public class EndGameUIManager : MonoBehaviour
 
     public void MainMenuClicked()
     {
-        Application.LoadLevel("MainMenu");
+		SceneManager.LoadScene("MainMenu");
     }
 
     public void PlayAgainClicked()
     {
-        Application.LoadLevel(Application.loadedLevelName);
+		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
