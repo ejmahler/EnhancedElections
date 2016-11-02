@@ -1,11 +1,23 @@
 ﻿using UnityEngine;
 using UnityEngine.Audio;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 public class AudioManager : MonoBehaviour
 {
+    private static AudioManager _instance;
+    public static AudioManager instance
+    {
+        get
+        {
+            if(_instance == null)
+            {
+                _instance = Instantiate<AudioManager>(Resources.Load<AudioManager>("Prefabs/AudioManager"));
+                DontDestroyOnLoad(_instance.gameObject);
+            }
+            return _instance;
+        }
+    }
+
     private AudioSource[] sources;
 
     [SerializeField]
@@ -17,13 +29,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     private AudioMixer audioMixer;
 
-    void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
-
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         sources = new AudioSource[] { 
 			transform.FindChild ("Audio Source 1").GetComponent<AudioSource>(),

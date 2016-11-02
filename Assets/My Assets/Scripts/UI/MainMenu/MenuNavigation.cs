@@ -4,88 +4,78 @@ using System.Collections;
 
 public class MenuNavigation : MonoBehaviour
 {
-    private AudioManager audioManager;
+    [SerializeField]
+    private CanvasGroup _AboutPopupPrefab;
 
     [SerializeField]
-    private GameObject canvas;
+    private CanvasGroup _SettingsPopupPrefab;
 
     [SerializeField]
-    private GameObject aboutCard;
+    private CanvasGroup _Local1v1PopupPrefab;
 
     [SerializeField]
-    private GameObject settingsCard;
+    private CanvasGroup _LAN1v1PopupPrefab;
 
-    void Start()
-    {
-        audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
-    }
+    [SerializeField]
+    private CanvasGroup _AIPopuPrefabp;
+
+    [SerializeField]
+    private CanvasGroup _SandboxPopupPrefab;
+
+    private CanvasGroup activePopupInstance;
 
     public void TutorialClicked()
     {
-        audioManager.PlayGavel();
+        AudioManager.instance.PlayGavel();
 		SceneManager.LoadScene("TutorialMode");
     }
 
-    public void NormalCompetitionClicked()
+    public void Local1v1Clicked()
     {
-        audioManager.PlayGavel();
-		SceneManager.LoadScene("CompetitionMode");
+        AudioManager.instance.PlayGavel();
+        ShowPopup(_Local1v1PopupPrefab);
     }
 
-    public void NormalAIClicked()
+    public void LAN1v1Clicked()
     {
-        audioManager.PlayGavel();
-		SceneManager.LoadScene("AIMode");
+        AudioManager.instance.PlayGavel();
+        ShowPopup(_LAN1v1PopupPrefab);
     }
 
-    public void NormalSandboxClicked()
+    public void AIClicked()
     {
-        audioManager.PlayGavel();
-		SceneManager.LoadScene("SandboxMode");
+        AudioManager.instance.PlayGavel();
+        ShowPopup(_AIPopuPrefabp);
     }
 
-    public void LargeCompetitionClicked()
+    public void SandboxClicked()
     {
-        audioManager.PlayGavel();
-		SceneManager.LoadScene("CompetitionModeLarge");
-    }
-
-    public void LargeAIClicked()
-    {
-        audioManager.PlayGavel();
-		SceneManager.LoadScene("AIModeLarge");
-    }
-
-    public void LargeSandboxClicked()
-    {
-        audioManager.PlayGavel();
-		SceneManager.LoadScene("SandboxModeLarge");
+        AudioManager.instance.PlayGavel();
+        ShowPopup(_SandboxPopupPrefab);
     }
 
     public void AboutClicked()
     {
-        StartCoroutine(ShowCard(aboutCard));
+        AudioManager.instance.PlayGavel();
+        ShowPopup(_AboutPopupPrefab);
     }
 
     public void SettingsClicked()
     {
-        StartCoroutine(ShowCard(settingsCard));
+        AudioManager.instance.PlayGavel();
+        ShowPopup(_SettingsPopupPrefab);
     }
 
-    private IEnumerator ShowCard(GameObject prefab)
+    private void ShowPopup(CanvasGroup prefab)
     {
-        //show the desired card
-        var card = (GameObject)Instantiate(prefab);
-        card.transform.SetParent(canvas.transform, false);
-
-        //wait one frame before checking for input
-        yield return null;
-
-        //wait for the user to click through, then destroy the card
-        while (!Input.GetKeyDown(KeyCode.Space))
+        if(activePopupInstance != null)
         {
-            yield return null;
+            var previousPopup = activePopupInstance;
+            LeanTween.alphaCanvas(previousPopup, 0f, .25f).setOnComplete(() => Destroy(previousPopup.gameObject));
         }
-        Destroy(card);
+
+        activePopupInstance = Instantiate<CanvasGroup>(prefab);
+        activePopupInstance.alpha = 0f;
+        LeanTween.alphaCanvas(activePopupInstance, 1f, .25f);
     }
 }
