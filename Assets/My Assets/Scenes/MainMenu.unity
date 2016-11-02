@@ -1563,10 +1563,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _AboutPopupPrefab: {fileID: 0}
   _SettingsPopupPrefab: {fileID: 0}
-  _Local1v1PopupPrefab: {fileID: 0}
-  _LAN1v1PopupPrefab: {fileID: 0}
-  _AIPopuPrefabp: {fileID: 0}
-  _SandboxPopupPrefab: {fileID: 0}
+  _Local1v1PopupPrefab: {fileID: 225000010676480870, guid: 8ab46820da5cca04da29f686a699a4bf,
+    type: 2}
+  _LAN1v1PopupPrefab: {fileID: 225000014203609102, guid: a2bfb09c3297fe2498920edc5d9e4400,
+    type: 2}
+  _AIPopuPrefabp: {fileID: 225000012500540784, guid: d062dfd3f49d5b64994784195bd0c484,
+    type: 2}
+  _SandboxPopupPrefab: {fileID: 225000011866989162, guid: 942741dfab951da48a7d2713a9d0b48e,
+    type: 2}
 --- !u!1 &1420402308
 GameObject:
   m_ObjectHideFlags: 0
