@@ -12,13 +12,11 @@ public class SidebarButtonUIManager : MonoBehaviour
     private Button undoAllButton;
 
     private MoveManager moveManager;
-    private AudioManager audioManager;
 
     // Use this for initialization
     void Start()
     {
         moveManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MoveManager>();
-        audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
     }
 
     // Update is called once per frame
@@ -57,13 +55,13 @@ public class SidebarButtonUIManager : MonoBehaviour
 
     public void ReloadClicked()
     {
-        audioManager.PlayGavel();
+        AudioManager.instance.PlayGavel();
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void MainMenuClicked()
     {
-        audioManager.PlayGavel();
+        AudioManager.instance.PlayGavel();
 		SceneManager.LoadScene("MainMenu");
     }
 }

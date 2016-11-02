@@ -5,9 +5,6 @@ using System.Linq;
 [RequireComponent(typeof(CityGenerator))]
 public class MoveManager : MonoBehaviour
 {
-
-    private AudioManager audioManager;
-
     public District CurrentlySelectedDistrict { get; private set; }
 
     private Constituent _currentlySelectedConstituent;
@@ -89,7 +86,6 @@ public class MoveManager : MonoBehaviour
     {
         _lockedConstituents = new HashSet<Constituent>();
         cityGenerator = GetComponent<CityGenerator>();
-        audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
         UndoStack = new Stack<Move>();
         OriginalDistricts = new Dictionary<Constituent, District>();
     }
@@ -119,7 +115,7 @@ public class MoveManager : MonoBehaviour
 
             CurrentlySelectedConstituent = c;
 
-            audioManager.PlayScrape();
+            AudioManager.instance.PlayScrape();
         }
         else if (c.District == CurrentlySelectedDistrict)
         {

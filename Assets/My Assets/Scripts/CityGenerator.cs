@@ -5,13 +5,6 @@ using System.Collections.Generic;
 
 public class CityGenerator : MonoBehaviour
 {
-
-    [SerializeField]
-    private int width;
-    [SerializeField]
-    private int height;
-    [SerializeField]
-    private int numDistricts;
     [SerializeField]
     private float populationFalloffDistance;
 
@@ -20,9 +13,6 @@ public class CityGenerator : MonoBehaviour
     [SerializeField]
     private GameObject districtPrefab;
 
-    [SerializeField]
-    private string setupString;
-
     public List<District> Districts { get; private set; }
     public List<Constituent> Constituents { get; private set; }
 
@@ -30,16 +20,18 @@ public class CityGenerator : MonoBehaviour
 
     void Awake()
     {
-        float baseX = -width / 2.0f + 0.5f;
-        float baseY = -height / 2.0f + 0.5f;
+        MatchSettings settings = GameObject.FindGameObjectWithTag("MatchConfig").GetComponent<MatchConfig>().Settings;
+
+        float baseX = -settings.Width / 2.0f + 0.5f;
+        float baseY = -settings.Height / 2.0f + 0.5f;
 
         Dictionary<Point, Constituent> locationDict = new Dictionary<Point, Constituent>();
 
         //create each constituent
         Constituents = new List<Constituent>();
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < settings.Width; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < settings.Height; y++)
             {
                 Vector3 position = new Vector3(baseX + x, baseY + y, 0.0f);
                 var constituent = MakeConstituent(position);
@@ -61,9 +53,9 @@ public class CityGenerator : MonoBehaviour
             c.SetNeighbors(top, bottom, left, right);
         }
 
-        if (setupString.Length > 0)
+        if (settings.Cells != null)
         {
-            ParseCity(setupString);
+            ParseCity(settings.Cells);
 
             foreach (District d in Districts)
             {
@@ -72,7 +64,7 @@ public class CityGenerator : MonoBehaviour
         }
         else
         {
-            PartitionCity(Constituents);
+            PartitionCity(Constituents, settings.NumDistricts);
 
             foreach (District d in Districts)
             {
@@ -86,7 +78,7 @@ public class CityGenerator : MonoBehaviour
             BalanceDistrictCounts();
         }
 
-        float averageDistrictSize = (float)Constituents.Count((c) => { return c.party != Constituent.Party.None; }) / numDistricts;
+        float averageDistrictSize = (float)Constituents.Count((c) => { return c.party != Constituent.Party.None; }) / settings.NumDistricts;
         MinDistrictSize = (int)System.Math.Round(averageDistrictSize * 0.75f);
 
         foreach (Constituent c in Constituents)
@@ -95,6 +87,7 @@ public class CityGenerator : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -102,30 +95,31 @@ public class CityGenerator : MonoBehaviour
             Debug.Log(SerializeCity());
         }
     }
+#endif
 
-    private void ParseCity(string cityString)
+    private void ParseCity(List<MatchSettings.CityCell> cells)
     {
-        string[] splitData = setupString.Split('|');
-
-        if (splitData.Length != Constituents.Count)
+        if (cells.Count != Constituents.Count)
         {
             throw new System.Exception("Wrong setup string length");
         }
 
         SortedDictionary<string, District> districtMap = new SortedDictionary<string, District>();
 
-        for (int i = 0; i < splitData.Length; i++)
+        for (int i = 0; i < cells.Count; i++)
         {
-            var partitioned = splitData[i].Split('-');
-            Constituents[i].party = Utils.ParseEnumString<Constituent.Party>(partitioned[0]);
+            Constituents[i].party = cells[i].Party;
 
-            if (!districtMap.ContainsKey(partitioned[1]))
+            string districtName = cells[i].DistrictId.ToString();
+
+            District district;
+            if (!districtMap.TryGetValue(districtName, out district))
             {
-                District newDistrict = MakeDistrict(partitioned[1]);
-                districtMap.Add(partitioned[1], newDistrict);
+                district = MakeDistrict(districtName);
+                districtMap.Add(districtName, district);
             }
 
-            Constituents[i].District = districtMap[partitioned[1]];
+            Constituents[i].District = district;
         }
 
         Districts = districtMap.Values.ToList();
@@ -139,7 +133,7 @@ public class CityGenerator : MonoBehaviour
         }).ToArray());
     }
 
-    private void PartitionCity(List<Constituent> constituents)
+    private void PartitionCity(List<Constituent> constituents, int numDistricts)
     {
         //partition the constituents into districts
         Districts = new List<District>();
