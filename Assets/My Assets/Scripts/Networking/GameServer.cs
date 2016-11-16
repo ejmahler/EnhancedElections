@@ -59,14 +59,29 @@ public class GameServer : MonoBehaviour
             yield break;
         }
 
-		server.RegisterHandler (ReadyMessage, (msg) => LogDebug ("Client has reported ready"));
+        //listen for the local player and the remote player to 
+        NetworkConnection localConnection = null;
+        NetworkConnection remoteConnection = null;
 
-		Debug.Log ("test");
+		server.RegisterHandler (ReadyMessage, (msg) => {
+            if(msg.ReadMessage<ClientReadyMessage>().LocalClient)
+            {
+                localConnection = msg.conn;
+                LogDebug("Host player connected");
+            }
+            else
+            {
+                LogDebug("Networked player connected, IP Address: " + msg.conn.address);
+                remoteConnection = msg.conn;
+            }
+        });
+        
+        yield return new WaitUntil(() => localConnection != null && remoteConnection != null);
 
-		yield return new WaitUntil (() => server.connections.Count > 0);
-		LogDebug("1 player connected to server. Waiting for 1 more");
-		yield return new WaitUntil (() => server.connections.Count > 1);
-		LogDebug("2 player connected to server. Beginning match...");
+        LogDebug("Both players connected to server. Beginning match in 3 seconds");
+
+        //2 players are connected, so stop listening for ready messages
+        server.UnregisterHandler(ReadyMessage);
     }
 
     private void LogDebug(string msg)
