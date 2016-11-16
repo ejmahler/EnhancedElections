@@ -12,11 +12,11 @@ public class MatchConfig : MonoBehaviour
             {
                 if (_SetupString == null || _SetupString.Length == 0)
                 {
-                    _settings = new MatchSettings(_Width, _Height, _NumDistricts);
+					_settings = MatchSettings.MakeSettings(_Width, _Height, _NumDistricts);
                 }
                 else
                 {
-                    _settings = new MatchSettings(_Width, _Height, _NumDistricts, ParseString(_SetupString));
+					_settings = MatchSettings.MakeSettings(_Width, _Height, _NumDistricts, ParseString(_SetupString));
                 }
             }
             return _settings;
@@ -39,7 +39,7 @@ public class MatchConfig : MonoBehaviour
     [SerializeField]
     private int _NumDistricts;
 
-    private List<MatchSettings.CityCell> ParseString(string cityString)
+    private MatchSettings.CityCell[] ParseString(string cityString)
     {
         string[] splitData = _SetupString.Split('|');
 
@@ -48,7 +48,7 @@ public class MatchConfig : MonoBehaviour
             throw new System.Exception("Wrong setup string length");
         }
 
-        List<MatchSettings.CityCell> results = new List<MatchSettings.CityCell>(splitData.Length);
+        MatchSettings.CityCell[] results = new MatchSettings.CityCell[splitData.Length];
 
         for (int i = 0; i < splitData.Length; i++)
         {
@@ -56,7 +56,7 @@ public class MatchConfig : MonoBehaviour
             Constituent.Party party = Utils.ParseEnumString<Constituent.Party>(partitioned[0]);
             int district = int.Parse(partitioned[1]);
 
-            results.Add(new MatchSettings.CityCell(party, district));
+			results[i] = new MatchSettings.CityCell(party, district);
         }
 
         return results;

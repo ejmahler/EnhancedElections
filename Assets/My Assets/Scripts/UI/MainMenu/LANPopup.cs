@@ -25,16 +25,26 @@ public class LANPopup : MainMenuPopup
 
         _StatusField.text = "";
 
-        runningServer.PrepareLANGame(new MatchSettings(2,3,4));
+		runningServer.PrepareLANGame(MatchSettings.MakeSettings(2,3,4));
 
         localClient = runningServer.MakeLocalClient();
+		localClient.RegisterHandler(MsgType.Connect, (msg) => {
+			WriteLog("Local client connected");
+			Debug.Log("connected: " + localClient.isConnected);
+			Debug.Log("server ip: " + localClient.serverIp);
+			localClient.Send(GameServer.ReadyMessage, new ReadyMessage(local:true));
+		});
     }
 
     public void ClientClicked()
     {
         NetworkClient client = GameServer.MakeRemoteClient(_IpAddressField.text);
 
-        client.RegisterHandler(MsgType.Connect, (msg) => Debug.Log("remote client connected"));
+		_StatusField.text = "";
+		client.RegisterHandler(MsgType.Connect, (msg) => {
+			WriteLog("Client connected to remote server");
+			client.Send(GameServer.ReadyMessage, new ReadyMessage(local:false));
+		});
     }
 
     void OnDestroy()

@@ -97,16 +97,16 @@ public class CityGenerator : MonoBehaviour
     }
 #endif
 
-    private void ParseCity(List<MatchSettings.CityCell> cells)
+    private void ParseCity(MatchSettings.CityCell[] cells)
     {
-        if (cells.Count != Constituents.Count)
+		if (cells.Length != Constituents.Count)
         {
             throw new System.Exception("Wrong setup string length");
         }
 
         SortedDictionary<string, District> districtMap = new SortedDictionary<string, District>();
 
-        for (int i = 0; i < cells.Count; i++)
+		for (int i = 0; i < cells.Length; i++)
         {
             Constituents[i].party = cells[i].Party;
 
