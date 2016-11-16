@@ -3,13 +3,10 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class MainMenuPopup : MonoBehaviour {
-
+public class MainMenuPopup : MonoBehaviour
+{
     [SerializeField]
-    private string _NormalSceneName;
-
-    [SerializeField]
-    private string _LargeSceneName;
+    private string _TargetSceneName;
 
     [SerializeField]
     private Toggle _NormalToggle;
@@ -22,15 +19,8 @@ public class MainMenuPopup : MonoBehaviour {
 
     }
 
-    public void LaunchClicked()
+    public virtual void LaunchClicked()
     {
-        if (_NormalToggle.isOn)
-        {
-            SceneManager.LoadScene(_NormalSceneName);
-        }
-        else if (_LargeToggle.isOn)
-        {
-            SceneManager.LoadScene(_LargeSceneName);
-        }
+        SceneManager.LoadScene(_TargetSceneName);
     }
 }
