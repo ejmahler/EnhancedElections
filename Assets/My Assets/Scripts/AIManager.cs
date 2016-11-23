@@ -62,7 +62,7 @@ public class AIManager : MonoBehaviour {
             //if we actually found a beneficial move
             if(move.constituent != null)
             {
-                moveManager.MoveConstituent(move.constituent, move.newDistrict);
+                moveManager.MoveConstituent(move.constituent, move.newDistrict, undo:false);
             }
             else
             {

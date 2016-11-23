@@ -26,6 +26,8 @@ public class Constituent : MonoBehaviour
     private Constituent[] _neighbors;
     public Constituent[] Neighbors { get { return _neighbors; } } 
 
+    public Point Position { get; set; }
+
     private District _district;
     public District District
     {

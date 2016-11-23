@@ -18,6 +18,9 @@ public class CityGenerator : MonoBehaviour
 
     public int MinDistrictSize { get; private set; }
 
+    public readonly Dictionary<Point, Constituent> ConstituentsByPosition = new Dictionary<Point, Constituent>();
+    public readonly Dictionary<string, District> DistrictsByName = new Dictionary<string, District>();
+
     void Awake()
     {
         MatchSettings settings = GameObject.FindGameObjectWithTag("MatchConfig").GetComponent<MatchConfig>().Settings;
@@ -39,7 +42,7 @@ public class CityGenerator : MonoBehaviour
             for (int y = 0; y < settings.Height; y++)
             {
                 Vector3 position = new Vector3(baseX + x, baseY + y, 0.0f);
-                var constituent = MakeConstituent(position);
+                var constituent = MakeConstituent(position, new Point(x,y));
                 locationDict.Add(new Point(x, y), constituent);
                 Constituents.Add(constituent);
             }
@@ -185,12 +188,13 @@ public class CityGenerator : MonoBehaviour
         }
     }
 
-    private Constituent MakeConstituent(Vector3 position)
+    private Constituent MakeConstituent(Vector3 position, Point boardPosition)
     {
         GameObject obj = Instantiate(constituentPrefab, position, new Quaternion()) as GameObject;
         obj.transform.parent = transform;
 
         var constituent = obj.GetComponent<Constituent>();
+        constituent.Position = boardPosition;
 
         var length = position.magnitude;
         var adjusted = System.Math.Max(0.0f, length - populationFalloffDistance);
@@ -203,6 +207,8 @@ public class CityGenerator : MonoBehaviour
         partyChances.Add(Constituent.Party.Red, 1.0f);
         constituent.party = Utils.ChooseWeightedRandom(partyChances);
 
+        ConstituentsByPosition[boardPosition] = constituent;
+
         return constituent;
     }
 
@@ -213,6 +219,8 @@ public class CityGenerator : MonoBehaviour
 
         var district = obj.GetComponent<District>();
         district.name = name;
+
+        DistrictsByName[name] = district;
 
         return district;
     }
@@ -378,7 +386,7 @@ public class CityGenerator : MonoBehaviour
             axis = new Vector3(1.0f, 0.0f, 0.0f);
         }
 
-        //rotate the axis by a tiny bit, since the points are on a grid
+        //rotate the axis by a tiny bit for a nice visual effect; the districts look nice when they arne't perfect squares
         float maxRandom = 10.0f;
         float randomAngle = (Random.value - 0.5f) * maxRandom;
         axis = Quaternion.AngleAxis(randomAngle, Vector3.forward) * axis;
@@ -421,15 +429,16 @@ public class CityGenerator : MonoBehaviour
 
         return result;
     }
+}
 
-    private struct Point
+[System.Serializable]
+public struct Point
+{
+    public int x, y;
+
+    public Point(int _x, int _y) { x = _x; y = _y; }
+    public static Point operator +(Point lhs, Point rhs)
     {
-        public int x, y;
-
-        public Point(int _x, int _y) { x = _x; y = _y; }
-        public static Point operator +(Point lhs, Point rhs)
-        {
-            return new Point(lhs.x + rhs.x, lhs.y + rhs.y);
-        }
+        return new Point(lhs.x + rhs.x, lhs.y + rhs.y);
     }
 }

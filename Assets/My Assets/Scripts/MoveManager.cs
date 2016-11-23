@@ -5,6 +5,8 @@ using System.Linq;
 [RequireComponent(typeof(CityGenerator))]
 public class MoveManager : MonoBehaviour
 {
+    public event System.Action<Constituent, District, bool> MoveMade;
+
     public District CurrentlySelectedDistrict { get; private set; }
 
     private Constituent _currentlySelectedConstituent;
@@ -111,7 +113,7 @@ public class MoveManager : MonoBehaviour
         if (CurrentlySelectedDistrict != null && CurrentValidMoves.Contains(c))
         {
             UndoStack.Push(new Move(c, c.District, CurrentlySelectedDistrict));
-            MoveConstituents(new Dictionary<Constituent, District> { { c, CurrentlySelectedDistrict } });
+            MoveConstituents(new Dictionary<Constituent, District> { { c, CurrentlySelectedDistrict } }, undo:false);
 
             CurrentlySelectedConstituent = c;
 
@@ -140,28 +142,28 @@ public class MoveManager : MonoBehaviour
                 undoMoves.Add(lastMove.constituent, lastMove.oldDistrict);
             }
 
-            MoveConstituents(undoMoves);
+            MoveConstituents(undoMoves, undo:true);
         }
     }
 
     public void UndoAll()
     {
         //move every modified constituent back into its original district
-        MoveConstituents(new Dictionary<Constituent, District>(OriginalDistricts));
+        MoveConstituents(new Dictionary<Constituent, District>(OriginalDistricts), undo:true);
 
         //clear the undo stack since it isn't of much use anymore
         UndoStack.Clear();
     }
 
-    public void MoveConstituent(Constituent c, District newDistrict)
+    public void MoveConstituent(Constituent c, District newDistrict, bool undo)
     {
         if(IsValidMove(c, newDistrict))
         {
-            MoveConstituents(new Dictionary<Constituent, District> { { c, newDistrict } });
+            MoveConstituents(new Dictionary<Constituent, District> { { c, newDistrict } }, undo);
         }
     }
 
-    private void MoveConstituents(Dictionary<Constituent, District> moves)
+    private void MoveConstituents(Dictionary<Constituent, District> moves, bool undo)
     {
         HashSet<District> modifiedDistricts = new HashSet<District>();
 
@@ -200,6 +202,14 @@ public class MoveManager : MonoBehaviour
         foreach (Constituent c in cityGenerator.Constituents.Where(c => modifiedDistricts.Contains(c.District)))
         {
             c.UpdateBorders();
+        }
+
+        if (MoveMade != null)
+        {
+            foreach (var item in moves)
+            {
+                MoveMade(item.Key, item.Value, undo);
+            }
         }
     }
 

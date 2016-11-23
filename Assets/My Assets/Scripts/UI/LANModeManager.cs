@@ -22,6 +22,7 @@ public class LANModeManager : MonoBehaviour
     private CurrentTurnUIManager currentTurnUIManager;
     private EndTurnUIManager endTurnUIManager;
 
+    private MoveManager moveManager;
     private TurnManager turnManager;
     private CityGenerator cityGenerator;
 
@@ -31,6 +32,7 @@ public class LANModeManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        moveManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MoveManager>();
         turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
         cityGenerator = GameObject.FindGameObjectWithTag("GameController").GetComponent<CityGenerator>();
         currentTurnUIManager = GetComponentInChildren<CurrentTurnUIManager>();
@@ -49,20 +51,37 @@ public class LANModeManager : MonoBehaviour
 
         endTurnUIManager.SetEndTurnButtonInteractable(turnManager.CurrentPlayer == turnManager.LocalHumanPlayer);
 
-        Debug.Log(client.isConnected);
-
         //listen for stuff from the client
         client.RegisterHandler(GameServer.OPPONENT_ENDED_TURN, (msg) =>
         {
-            Debug.Log("Recieved notification that opponent ended their turn");
             AdvanceTurn();
         });
+        client.RegisterHandler(GameServer.OPPONENT_MOVED, (msg) =>
+        {
+            Debug.Log("move message recieved");
+
+            MoveMessage moveData = msg.ReadMessage<MoveMessage>();
+
+            Constituent movedC = cityGenerator.ConstituentsByPosition[moveData.location];
+            District newDistrict = cityGenerator.DistrictsByName[moveData.newDistrictName];
+
+            //temporarily stop listening to the move manager's "move made" message, otherwise we'll have an infinite loop
+            moveManager.MoveMade -= MoveMade;
+
+            //make this move
+            moveManager.MoveConstituent(movedC, newDistrict, moveData.undo);
+
+            //resubscribe to move made messages
+            moveManager.MoveMade += MoveMade;
+        });
+
+        //listen for changes made by the move manager
+        moveManager.MoveMade += MoveMade;
     }
 
     public void AdvanceTurnButton()
     {
         //notify the server that the turn has ended
-        Debug.Log("Sending nd turn notification. connected: " + client.isConnected);
         client.Send(GameServer.PERFORM_END_TURN, new EndTurnMessage());
 
         //advance the turn on our end
@@ -91,6 +110,12 @@ public class LANModeManager : MonoBehaviour
 
             endTurnUIManager.SetEndTurnButtonInteractable(turnManager.CurrentPlayer == turnManager.LocalHumanPlayer);
         }
+    }
+
+    private void MoveMade(Constituent c, District d, bool undo)
+    {
+        Debug.Log("Move made, sending message");
+        client.Send(GameServer.PERFORM_MOVE, new MoveMessage(c.Position, d.name, undo));
     }
 
     private IEnumerator EndGame()

@@ -92,7 +92,8 @@ public class GameServer : MonoBehaviour
 
         //set up game handlers
         SetupIngameHandlers(localConnection, remoteConnection);
-        SetupIngameHandlers(remoteConnection, localConnection);
+
+        yield return new WaitForSeconds(1f);
 
         //send the settings to the players
         localConnection.Send(BEGIN_MATCH, localSettings);
@@ -119,14 +120,27 @@ public class GameServer : MonoBehaviour
         return client;
     }
 
-    private void SetupIngameHandlers(NetworkConnection source, NetworkConnection destination)
+    private void SetupIngameHandlers(NetworkConnection localConnection, NetworkConnection remoteConnection)
     {
-        source.RegisterHandler(PERFORM_END_TURN, (msg) => {
-            Debug.Log("Server recieved notification from a player that their turn is over. Relaying to other client.");
-            Debug.Log(source == destination);
-            destination.Send(OPPONENT_ENDED_TURN, msg.ReadMessage<EndTurnMessage>());
-            
-            });
-        source.RegisterHandler(PERFORM_MOVE, (msg) => destination.Send(OPPONENT_MOVED, msg.ReadMessage<MoveMessage>()));
+        server.RegisterHandler(PERFORM_END_TURN, (msg) => {
+            if (msg.conn.connectionId == localConnection.connectionId)
+            {
+                remoteConnection.Send(OPPONENT_ENDED_TURN, msg.ReadMessage<EndTurnMessage>());
+            }
+            else
+            {
+                localConnection.Send(OPPONENT_ENDED_TURN, msg.ReadMessage<EndTurnMessage>());
+            }
+        });
+        server.RegisterHandler(PERFORM_MOVE, (msg) => {
+            if (msg.conn.connectionId == localConnection.connectionId)
+            {
+                remoteConnection.Send(OPPONENT_MOVED, msg.ReadMessage<MoveMessage>());
+            }
+            else
+            {
+                localConnection.Send(OPPONENT_MOVED, msg.ReadMessage<MoveMessage>());
+            }
+        });
     }
 }
