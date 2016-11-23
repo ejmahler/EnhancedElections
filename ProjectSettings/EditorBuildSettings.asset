@@ -10,14 +10,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/My Assets/Scenes/CompetitionMode.unity
   - enabled: 0
-    path: Assets/My Assets/Scenes/CompetitionModeLarge.unity
-  - enabled: 0
     path: Assets/My Assets/Scenes/SandboxMode.unity
-  - enabled: 0
-    path: Assets/My Assets/Scenes/SandboxModeLarge.unity
   - enabled: 0
     path: Assets/My Assets/Scenes/AIMode.unity
   - enabled: 0
-    path: Assets/My Assets/Scenes/AIModeLarge.unity
-  - enabled: 0
     path: Assets/My Assets/Scenes/TutorialMode.unity
+  - enabled: 1
+    path: Assets/My Assets/Scenes/LANMode.unity

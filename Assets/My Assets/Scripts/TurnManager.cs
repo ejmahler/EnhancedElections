@@ -6,7 +6,8 @@ using System.Linq;
 [RequireComponent(typeof(MoveManager))]
 public class TurnManager : MonoBehaviour
 {
-    public enum GameMode { AI, TwoPlayer }
+    public enum GameMode { AI, TwoPlayer, LAN, Tutorial }
+    public enum Player { Blue = 0, Red = 1 }
 
     [SerializeField]
     private GameMode _mode;
@@ -30,7 +31,7 @@ public class TurnManager : MonoBehaviour
     public int TotalRounds { get { return _totalRounds; } }
 
     private int currentTurnIndex = 0;
-    public Player firstPlayer { get; set; }
+    public Player LocalHumanPlayer { get; private set; }
 
 
     private MoveManager moveManager;
@@ -42,21 +43,8 @@ public class TurnManager : MonoBehaviour
     private bool transitioningTurn = false;
 
     //code to deterime which player is currently playing, and which player is up next
-    public Player CurrentPlayer
-    {
-        get
-        {
-            return (Player)(((int)firstPlayer + currentTurnIndex) % 2);
-        }
-    }
-
-    public Player NextPlayer
-    {
-        get
-        {
-            return (Player)(((int)firstPlayer + currentTurnIndex + 1) % 2);
-        }
-    }
+    public Player CurrentPlayer { get; private set; }
+    public Player NextPlayer { get { return CurrentPlayer.Opponent(); } }
 
 
     public int CurrentRound { get { return currentTurnIndex / 2 + 1; } }
@@ -79,23 +67,42 @@ public class TurnManager : MonoBehaviour
 
         lockedConstituents = new Dictionary<Constituent, int>();
 
-        firstPlayer = Utils.ChooseRandom(new List<Player> { Player.Red, Player.Blue });
+        
+
+        if(Mode == GameMode.LAN)
+        {
+            MatchSettings settings = GameObject.FindGameObjectWithTag("MatchConfig").GetComponent<MatchConfig>().Settings;
+
+            LocalHumanPlayer = settings.ThisPlayer;
+            CurrentPlayer = settings.FirstPlayer;
+        }
+        else if(Mode == GameMode.Tutorial)
+        {
+            LocalHumanPlayer = Player.Red;
+            CurrentPlayer = LocalHumanPlayer;
+        }
+        else
+        {
+            LocalHumanPlayer = Utils.RandomPlayer();
+            CurrentPlayer = Utils.RandomPlayer();
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (MovesThisTurn >= MovesPerTurn || transitioningTurn )
+        if(Mode == GameMode.AI)
         {
-            moveManager.AllowMoves = false;
+            moveManager.AllowMoves = CurrentPlayer == LocalHumanPlayer && MovesThisTurn < MovesPerTurn && !transitioningTurn;
         }
-        else if(Mode == GameMode.AI && CurrentPlayer == firstPlayer)
+        else if(Mode == GameMode.TwoPlayer)
         {
-            moveManager.AllowMoves = false;
+            moveManager.AllowMoves = MovesThisTurn < MovesPerTurn && !transitioningTurn;
         }
-        else
+        else if(Mode == GameMode.LAN)
         {
-            moveManager.AllowMoves = true;
+            moveManager.AllowMoves = CurrentPlayer == LocalHumanPlayer && MovesThisTurn < MovesPerTurn && !transitioningTurn;
         }
     }
 
@@ -109,6 +116,7 @@ public class TurnManager : MonoBehaviour
     public void AdvanceTurn()
     {
         currentTurnIndex += 1;
+        CurrentPlayer = NextPlayer;
         transitioningTurn = false;
 
         //remove locked constituents if the lock has expired, aka only keep them if their turn hasn't been reached yet
@@ -158,11 +166,6 @@ public class TurnManager : MonoBehaviour
             }
             d.UpdateMemberData();
         }
-    }
-
-    public enum Player
-    {
-        Red = 1, Blue = 0,
     }
 
     public Constituent.Party GetPartyforPlayer(Player p)

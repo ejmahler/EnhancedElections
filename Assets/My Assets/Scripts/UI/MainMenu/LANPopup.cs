@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
-using UnityEngine.Networking.NetworkSystem;
 
 public class LANPopup : MainMenuPopup
 {
@@ -18,6 +18,7 @@ public class LANPopup : MainMenuPopup
     public override void LaunchClicked()
     {
         GameObject serverObject = new GameObject("+MultiplayerServer");
+        DontDestroyOnLoad(serverObject);
         runningServer = serverObject.AddComponent<GameServer>();
 
         runningServer.debugLog += WriteLog;
@@ -25,12 +26,21 @@ public class LANPopup : MainMenuPopup
 
         _StatusField.text = "";
 
-		runningServer.PrepareLANGame(MatchSettings.MakeSettings(2,3,4));
+		runningServer.PrepareLANGame(MatchSettings.MakeSettings(Utils.RandomPlayer(), Utils.RandomPlayer(), 8,6,5, seed: Random.Range(1,1000000)));
         
         localClient = runningServer.MakeLocalClient();
 		localClient.RegisterHandler(MsgType.Connect, (msg) => {
-			localClient.Send(GameServer.ReadyMessage, ClientReadyMessage.New(local: true));
+			localClient.Send(GameServer.READY_MESSAGE, ClientReadyMessage.New(local: true));
 		});
+
+        localClient.RegisterHandler(GameServer.BEGIN_MATCH, (msg) =>
+        {
+            MakeConfigObject(msg.ReadMessage<MatchSettings>(), localClient);
+
+            SceneManager.LoadScene("LANMode");
+
+            connectionSuccess = true;
+        });
     }
 
     public void ClientClicked()
@@ -40,8 +50,15 @@ public class LANPopup : MainMenuPopup
 		_StatusField.text = "";
 		client.RegisterHandler(MsgType.Connect, (msg) => {
 			WriteLog("Client connected to remote server at IP: " + msg.conn.address);
-			client.Send(GameServer.ReadyMessage, ClientReadyMessage.New(local:false));
+			client.Send(GameServer.READY_MESSAGE, ClientReadyMessage.New(local:false));
 		});
+
+        client.RegisterHandler(GameServer.BEGIN_MATCH, (msg) =>
+        {
+            MakeConfigObject(msg.ReadMessage<MatchSettings>(), client);
+
+            SceneManager.LoadScene("LANMode");
+        });
     }
 
     void OnDestroy()
@@ -60,5 +77,16 @@ public class LANPopup : MainMenuPopup
     private void WriteError(string errorMessage)
     {
         _StatusField.text += string.Format("<color=\"red\">{0}</color>\n", errorMessage);
+    }
+
+    private void MakeConfigObject(MatchSettings settings, NetworkClient client)
+    {
+        GameObject obj = new GameObject("+MatchConfig");
+        obj.tag = "MatchConfig";
+        DontDestroyOnLoad(obj);
+
+        MatchConfig config = obj.AddComponent<MatchConfig>();
+        config.Settings = settings;
+        config.Client = client;
     }
 }

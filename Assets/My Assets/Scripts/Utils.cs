@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Utils : MonoBehaviour
+public static class Utils
 {
 
     public static bool Chance(float chance)
@@ -20,6 +20,11 @@ public class Utils : MonoBehaviour
     {
         int index = Random.Range(0, items.Length);
         return items[index];
+    }
+
+    public static TurnManager.Player RandomPlayer()
+    {
+        return Random.value < .5f ? TurnManager.Player.Blue : TurnManager.Player.Red;
     }
 
     public static List<T> RandomShuffle<T>(List<T> items)
@@ -183,5 +188,10 @@ public class Utils : MonoBehaviour
     public static T ParseEnumString<T>(string enumString)
     {
         return (T)System.Enum.Parse(typeof(T), enumString);
+    }
+
+    public static TurnManager.Player Opponent(this TurnManager.Player player)
+    {
+        return (TurnManager.Player)((~((int)player)) + 2);
     }
 }

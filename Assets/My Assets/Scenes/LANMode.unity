@@ -197,9 +197,54 @@ Prefab:
       propertyPath: backgroundPanels.Array.data[4]
       value: 
       objectReference: {fileID: 915819452}
-    m_RemovedComponents: []
+    - target: {fileID: 11408568, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 161345067}
+    - target: {fileID: 11408568, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: AdvanceTurnButton
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 11494666, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &161345064 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11492976, guid: 078f979dee1905c46bcdaf9a5cc1ac17,
+    type: 2}
+  m_PrefabInternal: {fileID: 161345063}
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+--- !u!114 &161345065 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11492984, guid: 078f979dee1905c46bcdaf9a5cc1ac17,
+    type: 2}
+  m_PrefabInternal: {fileID: 161345063}
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+--- !u!1 &161345066 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 161386, guid: 078f979dee1905c46bcdaf9a5cc1ac17, type: 2}
+  m_PrefabInternal: {fileID: 161345063}
+--- !u!114 &161345067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 161345066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 096946d4a3f26904697cc803da859894, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blueBackgroundColor: {r: 0.28676468, g: 0.35070974, b: 1, a: 0.609}
+  redBackgroundColor: {r: 1, g: 0.2205882, b: 0.2205882, a: 0.497}
+  backgroundPanels:
+  - {fileID: 1122753048}
+  - {fileID: 158098723}
+  - {fileID: 915819452}
+  - {fileID: 161345065}
+  - {fileID: 161345064}
+  endScreenPrefab: {fileID: 0}
 --- !u!1 &246687335
 GameObject:
   m_ObjectHideFlags: 0
@@ -461,7 +506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fb5cad4d44eddb40a9b3a2d79b5967b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mode: 1
+  _mode: 2
   lockDuration: 6
   _MovesPerTurn: 5
   _totalRounds: 8

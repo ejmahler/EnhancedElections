@@ -43,7 +43,6 @@ public class TutorialScript : MonoBehaviour
     void Awake()
     {
         turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
-        turnManager.firstPlayer = TurnManager.Player.Red;
         moveManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<MoveManager>();
         cityGenerator = GameObject.FindGameObjectWithTag("GameController").GetComponent<CityGenerator>();
         inputManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<InputManager>();
@@ -73,7 +72,6 @@ public class TutorialScript : MonoBehaviour
         var seventhDistrict = cityGenerator.Districts.First((district => district.name == "7"));
         var upperRightDistrict = cityGenerator.Districts.First((district => district.name == "8"));
 
-        turnManager.firstPlayer = TurnManager.Player.Red;
         inputManager.SelectionEnabled = false;
         endTurnButton.interactable = false;
 

@@ -6,7 +6,14 @@ using UnityEngine.Networking.NetworkSystem;
 public class GameServer : MonoBehaviour
 {
     private const short PORT = 26837;
-	public const short ReadyMessage = MsgType.Highest + 1;
+    public const short READY_MESSAGE = MsgType.Highest + 1;
+    public const short BEGIN_MATCH = MsgType.Highest + 2;
+
+    public const short PERFORM_END_TURN = MsgType.Highest + 3;
+    public const short OPPONENT_ENDED_TURN = MsgType.Highest + 4;
+
+    public const short PERFORM_MOVE = MsgType.Highest + 5;
+    public const short OPPONENT_MOVED = MsgType.Highest + 6;
 
     public event System.Action<string> debugLog;
     public event System.Action<string> errorLog;
@@ -63,7 +70,7 @@ public class GameServer : MonoBehaviour
         NetworkConnection localConnection = null;
         NetworkConnection remoteConnection = null;
 
-		server.RegisterHandler (ReadyMessage, (msg) => {
+		server.RegisterHandler (READY_MESSAGE, (msg) => {
             if(msg.ReadMessage<ClientReadyMessage>().LocalClient)
             {
                 localConnection = msg.conn;
@@ -81,7 +88,18 @@ public class GameServer : MonoBehaviour
         LogDebug("Both players connected to server. Beginning match in 3 seconds");
 
         //2 players are connected, so stop listening for ready messages
-        server.UnregisterHandler(ReadyMessage);
+        server.UnregisterHandler(READY_MESSAGE);
+
+        //set up game handlers
+        SetupIngameHandlers(localConnection, remoteConnection);
+        SetupIngameHandlers(remoteConnection, localConnection);
+
+        //send the settings to the players
+        localConnection.Send(BEGIN_MATCH, localSettings);
+
+        MatchSettings remoteSettings = new MatchSettings(localSettings);
+        remoteSettings.ThisPlayer = localSettings.ThisPlayer.Opponent();
+        remoteConnection.Send(BEGIN_MATCH, remoteSettings);
     }
 
     private void LogDebug(string msg)
@@ -99,5 +117,16 @@ public class GameServer : MonoBehaviour
         NetworkClient client = new NetworkClient();
         client.Connect(remoteIp, PORT);
         return client;
+    }
+
+    private void SetupIngameHandlers(NetworkConnection source, NetworkConnection destination)
+    {
+        source.RegisterHandler(PERFORM_END_TURN, (msg) => {
+            Debug.Log("Server recieved notification from a player that their turn is over. Relaying to other client.");
+            Debug.Log(source == destination);
+            destination.Send(OPPONENT_ENDED_TURN, msg.ReadMessage<EndTurnMessage>());
+            
+            });
+        source.RegisterHandler(PERFORM_MOVE, (msg) => destination.Send(OPPONENT_MOVED, msg.ReadMessage<MoveMessage>()));
     }
 }

@@ -606,7 +606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fb5cad4d44eddb40a9b3a2d79b5967b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mode: 0
+  _mode: 3
   lockDuration: 8
   _MovesPerTurn: 5
   _totalRounds: 3

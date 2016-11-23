@@ -3,14 +3,15 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Networking;
+using UnityEngine.Networking.NetworkSystem;
 
-public class AIModeUIManager : MonoBehaviour
+public class LANModeManager : MonoBehaviour
 {
-
     [SerializeField]
-    private Color bluesTurnBackgroundColor;
+    private Color blueBackgroundColor;
     [SerializeField]
-    private Color redsTurnBackgroundColor;
+    private Color redBackgroundColor;
 
     [SerializeField]
     private List<Image> backgroundPanels;
@@ -21,38 +22,56 @@ public class AIModeUIManager : MonoBehaviour
     private CurrentTurnUIManager currentTurnUIManager;
     private EndTurnUIManager endTurnUIManager;
 
-    private AudioManager audioManager;
-    private AIManager aiManager;
-
     private TurnManager turnManager;
     private CityGenerator cityGenerator;
+
+    private MatchSettings settings;
+    private NetworkClient client;
 
     // Use this for initialization
     void Start()
     {
         turnManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<TurnManager>();
         cityGenerator = GameObject.FindGameObjectWithTag("GameController").GetComponent<CityGenerator>();
-        aiManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<AIManager>();
         currentTurnUIManager = GetComponentInChildren<CurrentTurnUIManager>();
         endTurnUIManager = GetComponentInChildren<EndTurnUIManager>();
 
-        audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
+        MatchConfig config = GameObject.FindGameObjectWithTag("MatchConfig").GetComponent<MatchConfig>();
+        settings = config.Settings;
+        client = config.Client;
 
         //color the background based on the human player
-        var currentBackgroundColor = GetBackgroundColorForPlayer(turnManager.NextPlayer);
+        var currentBackgroundColor = GetBackgroundColorForPlayer(settings.ThisPlayer);
         foreach (var panel in backgroundPanels)
         {
             panel.color = currentBackgroundColor;
         }
 
-        endTurnUIManager.SetEndTurnButtonInteractable(false);
+        endTurnUIManager.SetEndTurnButtonInteractable(turnManager.CurrentPlayer == turnManager.LocalHumanPlayer);
 
-        StartCoroutine(AITurn());
+        Debug.Log(client.isConnected);
+
+        //listen for stuff from the client
+        client.RegisterHandler(GameServer.OPPONENT_ENDED_TURN, (msg) =>
+        {
+            Debug.Log("Recieved notification that opponent ended their turn");
+            AdvanceTurn();
+        });
     }
 
-    public void AdvanceTurn()
+    public void AdvanceTurnButton()
     {
-        audioManager.PlayGavel();
+        //notify the server that the turn has ended
+        Debug.Log("Sending nd turn notification. connected: " + client.isConnected);
+        client.Send(GameServer.PERFORM_END_TURN, new EndTurnMessage());
+
+        //advance the turn on our end
+        AdvanceTurn();
+    }
+
+    private void AdvanceTurn()
+    {
+        AudioManager.instance.PlayGavel();
 
         float transitionDuration = 1.0f;
 
@@ -70,22 +89,8 @@ public class AIModeUIManager : MonoBehaviour
         {
             turnManager.AdvanceTurn();
 
-            if(turnManager.CurrentPlayer != turnManager.LocalHumanPlayer)
-            {
-                StartCoroutine(AITurn());
-            }
-            else
-            {
-                endTurnUIManager.SetEndTurnButtonInteractable(true);
-            }
+            endTurnUIManager.SetEndTurnButtonInteractable(turnManager.CurrentPlayer == turnManager.LocalHumanPlayer);
         }
-    }
-
-    public IEnumerator AITurn()
-    {
-        yield return StartCoroutine(aiManager.AITurn());
-
-        AdvanceTurn();
     }
 
     private IEnumerator EndGame()
@@ -147,17 +152,17 @@ public class AIModeUIManager : MonoBehaviour
     private Color GetBackgroundColorForPlayer(TurnManager.Player player)
     {
         if (player == TurnManager.Player.Red)
-            return redsTurnBackgroundColor;
+            return redBackgroundColor;
         else
-            return bluesTurnBackgroundColor;
+            return blueBackgroundColor;
     }
 
     private Color GetBackgroundColorForPlayer(Constituent.Party player)
     {
         if (player == Constituent.Party.Red)
-            return redsTurnBackgroundColor;
+            return redBackgroundColor;
         else if (player == Constituent.Party.Blue)
-            return bluesTurnBackgroundColor;
+            return blueBackgroundColor;
         else
             return Color.black;
     }

@@ -22,6 +22,11 @@ public class CityGenerator : MonoBehaviour
     {
         MatchSettings settings = GameObject.FindGameObjectWithTag("MatchConfig").GetComponent<MatchConfig>().Settings;
 
+        if(settings.RandomSeed > 0)
+        {
+            Random.InitState(settings.RandomSeed);
+        }
+
         float baseX = -settings.Width / 2.0f + 0.5f;
         float baseY = -settings.Height / 2.0f + 0.5f;
 
@@ -53,7 +58,7 @@ public class CityGenerator : MonoBehaviour
             c.SetNeighbors(top, bottom, left, right);
         }
 
-        if (settings.Cells != null)
+        if (settings.Cells != null && settings.Cells.Length > 0)
         {
             ParseCity(settings.Cells);
 

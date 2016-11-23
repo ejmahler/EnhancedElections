@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 public class MatchConfig : MonoBehaviour
 {
@@ -12,11 +13,11 @@ public class MatchConfig : MonoBehaviour
             {
                 if (_SetupString == null || _SetupString.Length == 0)
                 {
-					_settings = MatchSettings.MakeSettings(_Width, _Height, _NumDistricts);
+					_settings = MatchSettings.MakeSettings(Utils.RandomPlayer(), Utils.RandomPlayer(), _Width, _Height, _NumDistricts);
                 }
                 else
                 {
-					_settings = MatchSettings.MakeSettings(_Width, _Height, _NumDistricts, ParseString(_SetupString));
+					_settings = MatchSettings.MakeSettings(Utils.RandomPlayer(), Utils.RandomPlayer(), _Width, _Height, _NumDistricts, ParseString(_SetupString));
                 }
             }
             return _settings;
@@ -26,6 +27,8 @@ public class MatchConfig : MonoBehaviour
             _settings = value;
         }
     }
+
+    public NetworkClient Client { get; set; }
 
     [SerializeField]
     private string _SetupString;
