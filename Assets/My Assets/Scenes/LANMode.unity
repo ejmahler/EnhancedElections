@@ -507,7 +507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mode: 2
-  lockDuration: 6
+  lockDuration: 12
   _MovesPerTurn: 5
   _totalRounds: 8
 --- !u!114 &1467050357

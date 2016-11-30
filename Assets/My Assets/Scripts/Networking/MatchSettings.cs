@@ -18,7 +18,6 @@ public class MatchSettings: MessageBase
 
 	public static MatchSettings MakeSettings(TurnManager.Player player, TurnManager.Player firstPlayer, int width, int height, int NumDistricts, CityCell[] cells = null, int seed = -1)
     {
-        Debug.Log("Making settings with cells");
 		MatchSettings item = new MatchSettings ();
 
         item.ThisPlayer = player;

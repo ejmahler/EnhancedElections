@@ -135,7 +135,7 @@ public class TurnManager : MonoBehaviour
         moveManager.OriginalDistricts.Clear();
         moveManager.UndoStack.Clear();
 
-        ConvertUndecideds();
+        //ConvertUndecideds();
     }
 
     private void ConvertUndecideds()

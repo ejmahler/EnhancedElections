@@ -26,7 +26,7 @@ public class LANPopup : MainMenuPopup
 
         _StatusField.text = "";
 
-		runningServer.PrepareLANGame(MatchSettings.MakeSettings(Utils.RandomPlayer(), Utils.RandomPlayer(), 8,6,5, seed: Random.Range(1,1000000)));
+		runningServer.PrepareLANGame(MatchSettings.MakeSettings(Utils.RandomPlayer(), Utils.RandomPlayer(), 21,14,11, seed: Random.Range(1,1000000)));
         
         localClient = runningServer.MakeLocalClient();
 		localClient.RegisterHandler(MsgType.Connect, (msg) => {

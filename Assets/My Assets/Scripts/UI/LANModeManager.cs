@@ -58,8 +58,6 @@ public class LANModeManager : MonoBehaviour
         });
         client.RegisterHandler(GameServer.OPPONENT_MOVED, (msg) =>
         {
-            Debug.Log("move message recieved");
-
             MoveMessage moveData = msg.ReadMessage<MoveMessage>();
 
             Constituent movedC = cityGenerator.ConstituentsByPosition[moveData.location];
@@ -69,7 +67,7 @@ public class LANModeManager : MonoBehaviour
             moveManager.MoveMade -= MoveMade;
 
             //make this move
-            moveManager.MoveConstituent(movedC, newDistrict, moveData.undo);
+            moveManager.TryMove(movedC, newDistrict, moveData.undo);
 
             //resubscribe to move made messages
             moveManager.MoveMade += MoveMade;
@@ -114,7 +112,6 @@ public class LANModeManager : MonoBehaviour
 
     private void MoveMade(Constituent c, District d, bool undo)
     {
-        Debug.Log("Move made, sending message");
         client.Send(GameServer.PERFORM_MOVE, new MoveMessage(c.Position, d.name, undo));
     }
 
